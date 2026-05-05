@@ -9,12 +9,28 @@
   <body>
     <main class="page">
       <section class="hero">
+        <div class="hero-bg" aria-hidden="true"></div>
         <div class="hero-copy">
-          <p class="eyebrow">OSF-aligned capstone prototype</p>
+          <p class="eyebrow">Kenya-first civic intelligence prototype</p>
           <h1>Civic Access Navigator</h1>
           <p class="intro">
-            A lightweight civic information assistant focused on rights, democratic
-            participation, and equitable access to public-interest resources.
+            A civic navigation tool for Kenya and Africa that adds region-aware
+            guidance, curated civic resources, and a lightweight assistant for
+            deeper exploration.
+          </p>
+          <div class="region-selector" role="tablist" aria-label="Region selector">
+            <button class="region-pill is-active" type="button" data-region="kenya" aria-pressed="true">
+              Kenya
+            </button>
+            <button class="region-pill" type="button" data-region="east-africa" aria-pressed="false">
+              East Africa
+            </button>
+            <button class="region-pill" type="button" data-region="africa" aria-pressed="false">
+              Africa
+            </button>
+          </div>
+          <p class="hero-note" id="region-note">
+            Start with Kenya, then expand to East Africa and the wider continent.
           </p>
         </div>
         <dl class="hero-stats">
@@ -23,12 +39,12 @@
             <dd>Open Society Foundations</dd>
           </div>
           <div>
-            <dt>Capstone focus</dt>
-            <dd>Trusted civic information access</dd>
+            <dt>Prototype zone</dt>
+            <dd>Kenya and Africa</dd>
           </div>
           <div>
             <dt>Next build</dt>
-            <dd>Grounded Q&amp;A over curated sources</dd>
+            <dd>Interactive bot and grounded Q&amp;A</dd>
           </div>
         </dl>
       </section>
@@ -46,12 +62,61 @@
         </div>
       </section>
 
+      <section class="panel split-panel">
+        <div>
+          <div class="panel-head">
+            <h2>Starter Resource Library</h2>
+            <span id="health-status" class="status">Checking API...</span>
+          </div>
+          <div id="resource-grid" class="grid"></div>
+        </div>
+        <aside class="bot-panel" aria-label="Assistant preview">
+          <div class="panel-head compact">
+            <h2>Navigator Bot</h2>
+            <span class="status status-dark">Preview</span>
+          </div>
+          <p class="bot-copy">
+            Ask for Kenya-specific civic topics, compare regions, or request a plain
+            language summary of a curated source.
+          </p>
+          <div class="chat-feed" id="chat-feed">
+            <div class="chat-bubble bot">
+              Try: "Show me civic resources for Kenya."
+            </div>
+            <div class="chat-bubble user">
+              What changes when we expand to Africa?
+            </div>
+          </div>
+          <form class="bot-composer" id="bot-form">
+            <input
+              id="bot-input"
+              type="text"
+              placeholder="Ask the navigator..."
+              aria-label="Ask the navigator"
+            />
+            <button type="submit">Send</button>
+          </form>
+        </aside>
+      </section>
+
       <section class="panel">
         <div class="panel-head">
-          <h2>Starter Resource Library</h2>
-          <span id="health-status" class="status">Checking API...</span>
+          <h2>Expansion Path</h2>
         </div>
-        <div id="resource-grid" class="grid"></div>
+        <div class="expansion-grid">
+          <article class="expansion-card">
+            <h3>Kenya pilot</h3>
+            <p>Start with country-level civic information, participation channels, and trusted public-interest sources.</p>
+          </article>
+          <article class="expansion-card">
+            <h3>East Africa</h3>
+            <p>Add regional civic comparisons, cross-border governance context, and multilingual assistance.</p>
+          </article>
+          <article class="expansion-card">
+            <h3>Africa-wide</h3>
+            <p>Expand into a continent map of curated resources, theme filters, and source-grounded guidance.</p>
+          </article>
+        </div>
       </section>
 
       <section class="panel">
