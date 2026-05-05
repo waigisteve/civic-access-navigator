@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: civic-access-navigator
+    env: python
+    plan: free
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: python -m backend.app.main
+    envVars:
+      - key: APP_RELOAD
+        value: "0"

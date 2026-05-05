@@ -6,6 +6,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
+from backend.app.config import settings
 from backend.app.services.resource_service import ResourceItem, get_resource_items
 
 
@@ -62,3 +63,18 @@ def index() -> FileResponse:
 
 
 app.mount("/", StaticFiles(directory=STATIC_DIR), name="static")
+
+
+def run() -> None:
+    import uvicorn
+
+    uvicorn.run(
+        "backend.app.main:app",
+        host=settings.host,
+        port=settings.port,
+        reload=settings.reload,
+    )
+
+
+if __name__ == "__main__":
+    run()

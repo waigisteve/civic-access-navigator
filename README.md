@@ -81,9 +81,37 @@ http://192.168.1.42:8000
 
 `127.0.0.1` only works on the same machine that is running the app.
 
+You can also run the app through the built-in launcher, which reads `APP_HOST`, `APP_PORT`, and `APP_RELOAD` from the environment:
+
+```bash
+python -m backend.app.main
+```
+
 ## Sharing As A Link
 
 To make the app reachable from anywhere on the internet, it must be deployed to a hosting platform or tunnel service. A GitHub repo link is useful for sharing the code, but it does not by itself host the running app.
+
+## Render Deployment
+
+This repository includes a `render.yaml` blueprint for Render's free web service tier. Render will provide the public URL after deploy, and the app will bind to the platform's `PORT` value automatically.
+
+Suggested flow:
+
+1. Create a new Web Service on Render from this GitHub repo.
+2. Use the included `render.yaml` blueprint or the dashboard settings.
+3. Let Render run the build command:
+
+```bash
+pip install -r backend/requirements.txt
+```
+
+4. Let Render run the start command:
+
+```bash
+python -m backend.app.main
+```
+
+5. Use the Render-generated `https://<service-name>.onrender.com` URL as the public link.
 
 ## Next Build Steps
 
