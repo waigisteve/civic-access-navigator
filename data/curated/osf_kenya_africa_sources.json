@@ -1,0 +1,38 @@
+[
+  {
+    "id": "osf-focus-areas",
+    "title": "Open Society Foundations focus areas",
+    "region": "africa",
+    "source_type": "website",
+    "url": "https://www.opensocietyfoundations.org/what-we-do",
+    "summary": "OSF describes its work across rights and dignity, democratic practice, and equity in governance.",
+    "keywords": ["rights", "dignity", "democratic practice", "equity", "governance", "open society"]
+  },
+  {
+    "id": "kenya-civic-rights",
+    "title": "Kenya civic rights starter note",
+    "region": "kenya",
+    "source_type": "curated-note",
+    "url": "internal://kenya-civic-rights",
+    "summary": "A Kenya-first starter note on civic rights, participation, and finding trusted public-interest guidance.",
+    "keywords": ["kenya", "rights", "civic", "participation", "government", "public information"]
+  },
+  {
+    "id": "east-africa-participation",
+    "title": "East Africa participation guide",
+    "region": "east-africa",
+    "source_type": "curated-note",
+    "url": "internal://east-africa-participation",
+    "summary": "A regional guide for comparing participation pathways, governance issues, and civic access questions.",
+    "keywords": ["east africa", "participation", "governance", "regional", "citizenship"]
+  },
+  {
+    "id": "africa-expanded-context",
+    "title": "Africa-wide expansion context",
+    "region": "africa",
+    "source_type": "curated-note",
+    "url": "internal://africa-expanded-context",
+    "summary": "A broad Africa-wide framing for expanding civic access tools beyond the Kenya pilot.",
+    "keywords": ["africa", "expansion", "continental", "civic access", "governance"]
+  }
+]

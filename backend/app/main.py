@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from backend.app.config import settings
+from backend.app.routes import register_routes
 from backend.app.services.resource_service import ResourceItem, get_resource_items
 
 
@@ -63,6 +64,7 @@ def index() -> FileResponse:
 
 
 app.mount("/", StaticFiles(directory=STATIC_DIR), name="static")
+register_routes(app)
 
 
 def run() -> None:

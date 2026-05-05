@@ -4,6 +4,14 @@ const REGION_COPY = {
   africa: "Use the same interaction model across the continent with region-specific source sets.",
 };
 
+const REGION_MAP = {
+  kenya: "kenya",
+  "east-africa": "east-africa",
+  africa: "africa",
+};
+
+let currentRegion = "kenya";
+
 async function loadProject() {
   const response = await fetch("/api/project");
   const data = await response.json();
@@ -43,6 +51,7 @@ function wireRegionSelector() {
 
   for (const button of buttons) {
     button.addEventListener("click", () => {
+      currentRegion = REGION_MAP[button.dataset.region];
       for (const other of buttons) {
         other.classList.toggle("is-active", other === button);
         other.setAttribute("aria-pressed", other === button ? "true" : "false");
@@ -71,14 +80,41 @@ function wireBotPreview() {
     userBubble.textContent = message;
     feed.appendChild(userBubble);
 
-    const botBubble = document.createElement("div");
-    botBubble.className = "chat-bubble bot";
-    botBubble.textContent =
-      "I can map that to Kenya first, then show how it expands to East Africa and Africa.";
-    feed.appendChild(botBubble);
-
     input.value = "";
     feed.scrollTop = feed.scrollHeight;
+
+    fetch("/api/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        message,
+        region: currentRegion,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        const botBubble = document.createElement("div");
+        botBubble.className = "chat-bubble bot";
+        botBubble.textContent = data.answer || "I could not generate a grounded answer.";
+        feed.appendChild(botBubble);
+
+        if (Array.isArray(data.citations) && data.citations.length > 0) {
+          const citationBubble = document.createElement("div");
+          citationBubble.className = "chat-bubble bot citation";
+          citationBubble.textContent = `Sources: ${data.citations.join(" | ")}`;
+          feed.appendChild(citationBubble);
+        }
+
+        feed.scrollTop = feed.scrollHeight;
+      })
+      .catch(() => {
+        const botBubble = document.createElement("div");
+        botBubble.className = "chat-bubble bot";
+        botBubble.textContent = "I could not reach the grounded answer service just now.";
+        feed.appendChild(botBubble);
+      });
   });
 }
 

@@ -1,12 +1,13 @@
 :root {
   color-scheme: light;
-  --bg: #f5f1e8;
-  --ink: #1d2a2a;
-  --muted: #536161;
-  --panel: #fffdf8;
-  --line: #d7d0c4;
+  --bg: #f4efe6;
+  --ink: #162226;
+  --muted: #5b666d;
+  --panel: rgba(255, 252, 246, 0.86);
+  --line: rgba(31, 49, 57, 0.12);
   --accent: #0b6e4f;
   --accent-soft: #d9efe6;
+  --shadow: 0 18px 40px rgba(16, 23, 26, 0.12);
 }
 
 * {
@@ -17,7 +18,7 @@ body {
   margin: 0;
   font-family: Georgia, "Times New Roman", serif;
   background:
-    linear-gradient(180deg, rgba(247, 243, 234, 0.88), rgba(239, 231, 216, 0.96)),
+    linear-gradient(180deg, rgba(247, 243, 234, 0.82), rgba(239, 231, 216, 0.95)),
     url("/kenya-africa-bg.png");
   background-size: cover;
   background-position: center top;
@@ -38,7 +39,9 @@ body {
   grid-template-columns: minmax(0, 1.7fr) minmax(280px, 0.9fr);
   gap: 28px;
   align-items: end;
-  padding: 24px 0 32px;
+  padding: 28px 0 34px;
+  border-radius: 22px;
+  backdrop-filter: blur(12px);
 }
 
 .hero-bg {
@@ -46,7 +49,7 @@ body {
   inset: 0;
   background: url("/kenya-africa-bg.png") center top / cover no-repeat;
   filter: saturate(0.82) contrast(0.9);
-  opacity: 0.22;
+  opacity: 0.28;
   transform: scale(1.02);
   pointer-events: none;
 }
@@ -125,7 +128,8 @@ h1 {
   padding: 18px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: rgba(255, 253, 248, 0.92);
+  background: rgba(255, 253, 248, 0.88);
+  box-shadow: var(--shadow);
 }
 
 .hero-stats div + div {
@@ -148,9 +152,10 @@ h1 {
 .panel {
   background: var(--panel);
   border: 1px solid var(--line);
-  border-radius: 8px;
+  border-radius: 16px;
   padding: 22px;
   margin-top: 20px;
+  box-shadow: var(--shadow);
 }
 
 .split-panel {
@@ -211,8 +216,9 @@ h1 {
   min-height: 180px;
   padding: 18px;
   border: 1px solid var(--line);
-  border-radius: 8px;
+  border-radius: 14px;
   background: #fff;
+  box-shadow: 0 10px 24px rgba(16, 23, 26, 0.08);
 }
 
 .card h3 {
@@ -234,9 +240,10 @@ h1 {
 
 .bot-panel {
   border: 1px solid var(--line);
-  border-radius: 8px;
+  border-radius: 16px;
   background: rgba(255, 253, 248, 0.9);
   padding: 18px;
+  box-shadow: var(--shadow);
 }
 
 .bot-copy {
@@ -270,6 +277,11 @@ h1 {
   align-self: end;
 }
 
+.chat-bubble.citation {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
 .bot-composer {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
@@ -299,8 +311,9 @@ h1 {
 .expansion-card {
   padding: 18px;
   border: 1px solid var(--line);
-  border-radius: 8px;
+  border-radius: 14px;
   background: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 10px 24px rgba(16, 23, 26, 0.06);
 }
 
 .expansion-card h3 {
