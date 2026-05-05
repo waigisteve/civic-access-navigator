@@ -113,6 +113,8 @@ python -m backend.app.main
 
 5. Use the Render-generated `https://<service-name>.onrender.com` URL as the public link.
 
+If your existing Render service is already configured to install `requirements.txt` from the repository root, this repo now includes a root-level shim that forwards to `backend/requirements.txt`, so the same dashboard setup will work too.
+
 ## Next Build Steps
 
 - add a curated document set relevant to the chosen civic theme
