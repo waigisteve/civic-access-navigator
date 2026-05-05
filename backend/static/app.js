@@ -97,7 +97,7 @@ function wireBotPreview() {
       .then((data) => {
         const botBubble = document.createElement("div");
         botBubble.className = "chat-bubble bot";
-        botBubble.textContent = data.answer || "I could not generate a grounded answer.";
+        botBubble.textContent = `${data.answer || "I could not generate a grounded answer."}\n\nAnswered by: ${data.provider || "local"}`;
         feed.appendChild(botBubble);
 
         if (Array.isArray(data.citations) && data.citations.length > 0) {

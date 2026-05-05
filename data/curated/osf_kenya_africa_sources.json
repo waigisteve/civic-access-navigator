@@ -18,6 +18,15 @@
     "keywords": ["kenya", "rights", "civic", "participation", "government", "public information"]
   },
   {
+    "id": "kenya-bill-of-rights",
+    "title": "Kenya Bill of Rights summary",
+    "region": "kenya",
+    "source_type": "curated-note",
+    "url": "internal://kenya-bill-of-rights",
+    "summary": "Kenya's Constitution protects life, equality and freedom from discrimination, human dignity, security of the person, privacy, expression, information, religion, association, assembly, movement, political participation, and access to justice.",
+    "keywords": ["bill of rights", "constitution", "life", "equality", "dignity", "privacy", "expression", "information", "religion", "association", "assembly", "movement", "political participation", "access to justice"]
+  },
+  {
     "id": "east-africa-participation",
     "title": "East Africa participation guide",
     "region": "east-africa",

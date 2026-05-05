@@ -115,6 +115,21 @@ python -m backend.app.main
 
 If your existing Render service is already configured to install `requirements.txt` from the repository root, this repo now includes a root-level shim that forwards to `backend/requirements.txt`, so the same dashboard setup will work too.
 
+## Chat Providers
+
+The bot can route through one of three providers:
+
+- `CHAT_PROVIDER=openai`
+- `CHAT_PROVIDER=gemini`
+- `CHAT_PROVIDER=ollama`
+- `CHAT_PROVIDER=auto` to pick the first available provider
+
+Provider-specific settings:
+
+- OpenAI: `OPENAI_API_KEY`, optional `OPENAI_MODEL`
+- Gemini: `GEMINI_API_KEY`
+- Ollama: `OLLAMA_BASE_URL`, optional `OLLAMA_MODEL`
+
 ## Next Build Steps
 
 - add a curated document set relevant to the chosen civic theme
