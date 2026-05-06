@@ -162,28 +162,17 @@ def _openai_answer(query: str, region: str | None, hits: list[SourceHit]) -> dic
     ]
 
     configured_model = os.getenv("OPENAI_MODEL", "gpt-5.5").strip()
-    models_to_try = [configured_model, "gpt-4o-mini-search-preview"]
+    models_to_try = [configured_model, "gpt-4o-mini"]
 
     last_error = None
     for model in models_to_try:
         try:
-            if "search-preview" in model or model.endswith("-search-api"):
-                response = client.chat.completions.create(
-                    model=model,
-                    web_search_options={},
-                    messages=[
-                        {"role": "system", "content": prompt[0]["content"]},
-                        {"role": "user", "content": prompt[1]["content"]},
-                    ],
-                )
-                answer = (response.choices[0].message.content or "").strip()
-            else:
-                response = client.responses.create(
-                    model=model,
-                    tools=[{"type": "web_search"}],
-                    input=prompt,
-                )
-                answer = getattr(response, "output_text", "").strip()
+            response = client.responses.create(
+                model=model,
+                tools=[{"type": "web_search"}],
+                input=prompt,
+            )
+            answer = getattr(response, "output_text", "").strip()
             if answer:
                 return _format_response(answer, hits, f"openai-web:{model}", "openai")
         except Exception as exc:
@@ -191,7 +180,7 @@ def _openai_answer(query: str, region: str | None, hits: list[SourceHit]) -> dic
 
     if last_error is not None:
         return _format_response(
-            "OpenAI was configured, but the live response could not be generated just now. The app fell back to local grounding.",
+            f"OpenAI was configured, but the live response could not be generated just now: {last_error}. The app fell back to local grounding.",
             hits,
             "openai-error",
             "openai",
