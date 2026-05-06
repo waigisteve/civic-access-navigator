@@ -22,3 +22,9 @@ After loading the config, Codex should show filesystem tools such as:
 - `list_directory`
 - `search_files`
 - `directory_tree`
+
+## Onboarding Agent
+
+The workshop also includes a codebase onboarding agent that should be part of the submission context.
+
+See [ONBOARDING_AGENT.md](./ONBOARDING_AGENT.md) for the summary of the expected workflow and subcommands.
