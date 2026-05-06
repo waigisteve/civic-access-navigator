@@ -54,6 +54,90 @@
         </dl>
       </section>
 
+      <section class="panel control-panel">
+        <div class="panel-head">
+          <h2>Business Demo Controls</h2>
+          <span class="status">Interactive pilot</span>
+        </div>
+        <div class="control-tabs" role="tablist" aria-label="Demo controls">
+          <button class="control-tab is-active" type="button" data-control="language" aria-pressed="true">
+            Languages
+          </button>
+          <button class="control-tab" type="button" data-control="voice" aria-pressed="false">
+            Voiceover
+          </button>
+          <button class="control-tab" type="button" data-control="feedback" aria-pressed="false">
+            Feedback
+          </button>
+          <button class="control-tab" type="button" data-control="pilot" aria-pressed="false">
+            Pilot Views
+          </button>
+        </div>
+        <div class="control-panels">
+          <div class="control-pane is-active" data-pane="language">
+            <div class="language-row" role="tablist" aria-label="Language switcher">
+              <button class="language-pill is-active" type="button" data-language="en">English</button>
+              <button class="language-pill" type="button" data-language="sw">Swahili</button>
+              <button class="language-pill" type="button" data-language="fr">French</button>
+              <button class="language-pill" type="button" data-language="ar">Arabic</button>
+            </div>
+            <p class="control-copy" id="language-copy">
+              Switch the interface for pilots across countries without changing the core product.
+            </p>
+          </div>
+          <div class="control-pane" data-pane="voice">
+            <div class="voice-row">
+              <button class="voice-button" type="button" id="voice-play">Play voiceover</button>
+              <button class="voice-button secondary" type="button" id="voice-stop">Stop</button>
+            </div>
+            <p class="control-copy">
+              Hear a sponsor-ready summary of the current region, value proposition, and pilot stage.
+            </p>
+          </div>
+          <div class="control-pane" data-pane="feedback">
+            <div class="feedback-grid" id="feedback-grid">
+              <button class="feedback-card" type="button" data-feedback="clear">
+                <span class="feedback-icon clear"></span>
+                <strong>Clear</strong>
+                <small>Easy to understand at a glance</small>
+              </button>
+              <button class="feedback-card" type="button" data-feedback="useful">
+                <span class="feedback-icon useful"></span>
+                <strong>Useful</strong>
+                <small>Feels ready for a field pilot</small>
+              </button>
+              <button class="feedback-card" type="button" data-feedback="needs-work">
+                <span class="feedback-icon needs-work"></span>
+                <strong>Needs work</strong>
+                <small>Good concept, more polish needed</small>
+              </button>
+            </div>
+            <p class="control-copy" id="feedback-copy">
+              Pick a pictorial response to capture pilot sentiment quickly.
+            </p>
+          </div>
+          <div class="control-pane" data-pane="pilot">
+            <div class="pilot-strip">
+              <article class="pilot-snapshot">
+                <span class="snapshot-mark"></span>
+                <h3>Region zoning</h3>
+                <p>Kenya, East Africa, and Africa views help sponsors see the expansion path.</p>
+              </article>
+              <article class="pilot-snapshot">
+                <span class="snapshot-mark alt"></span>
+                <h3>Language layers</h3>
+                <p>Switch the UI to match the audience without rebuilding the product.</p>
+              </article>
+              <article class="pilot-snapshot">
+                <span class="snapshot-mark third"></span>
+                <h3>Voice and feedback</h3>
+                <p>Use voiceover plus pictorial feedback to make demos easy to scan and discuss.</p>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section class="panel project-overview">
         <div>
           <h2>Project Summary</h2>
@@ -160,6 +244,16 @@
         </div>
       </section>
     </main>
+
+    <div class="detail-overlay" id="detail-overlay" hidden>
+      <div class="detail-modal" role="dialog" aria-modal="true" aria-labelledby="detail-title">
+        <button class="detail-close" type="button" id="detail-close" aria-label="Close detail popout">×</button>
+        <p class="detail-eyebrow" id="detail-eyebrow">Detail view</p>
+        <h2 id="detail-title">Resource detail</h2>
+        <p id="detail-summary"></p>
+        <div class="detail-meta" id="detail-meta"></div>
+      </div>
+    </div>
 
     <script src="/app.js"></script>
   </body>

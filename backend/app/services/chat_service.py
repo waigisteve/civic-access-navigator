@@ -136,45 +136,41 @@ def _openai_answer(query: str, region: str | None, hits: list[SourceHit]) -> dic
     if not api_key:
         return local_answer(query, region=region)
 
-    source_block = "\n".join([f"- {hit.title}: {hit.summary} ({hit.url})" for hit in hits]) or "- No direct match found in curated sources."
-    payload = {
-        "model": os.getenv("OPENAI_MODEL", "gpt-4o-mini-search-preview"),
-        "web_search_options": {},
-        "messages": [
-            {
-                "role": "system",
-                "content": (
-                    "You are Civic Access Navigator, a Kenya-first civic information assistant. "
-                    "Answer only with sourced facts from web results and the provided curated sources. "
-                    "If the evidence is weak, say so. Prefer official and rights-focused sources. "
-                    "Return concise plain-language answers with cited links."
-                ),
-            },
-            {
-                "role": "user",
-                "content": (
-                    f"Question: {query}\n"
-                    f"Region: {region or 'kenya'}\n"
-                    f"Curated sources:\n{source_block}"
-                ),
-            },
-        ],
-    }
-    data = _http_json(
-        "POST",
-        "https://api.openai.com/v1/chat/completions",
-        payload,
-        headers={"Authorization": f"Bearer {api_key}"},
-    )
-    answer = data["choices"][0]["message"]["content"]
-    citations: list[str] = []
-    for choice in data.get("choices", []):
-        for annotation in choice.get("message", {}).get("annotations", []):
-            if annotation.get("url_citation", {}).get("url"):
-                citations.append(
-                    f"{annotation['url_citation'].get('title', 'Source')} ({annotation['url_citation']['url']})"
-                )
-    return _format_response(answer, hits, "openai-web", "openai")
+    try:
+        source_block = "\n".join([f"- {hit.title}: {hit.summary} ({hit.url})" for hit in hits]) or "- No direct match found in curated sources."
+        payload = {
+            "model": os.getenv("OPENAI_MODEL", "gpt-4o-mini-search-preview"),
+            "web_search_options": {},
+            "messages": [
+                {
+                    "role": "system",
+                    "content": (
+                        "You are Civic Access Navigator, a Kenya-first civic information assistant. "
+                        "Answer only with sourced facts from web results and the provided curated sources. "
+                        "If the evidence is weak, say so. Prefer official and rights-focused sources. "
+                        "Return concise plain-language answers with cited links."
+                    ),
+                },
+                {
+                    "role": "user",
+                    "content": (
+                        f"Question: {query}\n"
+                        f"Region: {region or 'kenya'}\n"
+                        f"Curated sources:\n{source_block}"
+                    ),
+                },
+            ],
+        }
+        data = _http_json(
+            "POST",
+            "https://api.openai.com/v1/chat/completions",
+            payload,
+            headers={"Authorization": f"Bearer {api_key}"},
+        )
+        answer = data["choices"][0]["message"]["content"]
+        return _format_response(answer, hits, "openai-web", "openai")
+    except Exception:
+        return local_answer(query, region=region)
 
 
 def _gemini_answer(query: str, region: str | None, hits: list[SourceHit]) -> dict[str, Any]:
@@ -182,41 +178,38 @@ def _gemini_answer(query: str, region: str | None, hits: list[SourceHit]) -> dic
     if not api_key:
         return local_answer(query, region=region)
 
-    source_block = "\n".join([f"- {hit.title}: {hit.summary} ({hit.url})" for hit in hits]) or "- No direct match found in curated sources."
-    payload = {
-        "contents": [
-            {
-                "parts": [
-                    {
-                        "text": (
-                            "You are Civic Access Navigator, a Kenya-first civic information assistant. "
-                            "Answer only from web-grounded evidence and the curated sources provided. "
-                            "Prefer rights-oriented official sources. If the evidence is weak, say so.\n\n"
-                            f"Question: {query}\n"
-                            f"Region: {region or 'kenya'}\n"
-                            f"Curated sources:\n{source_block}"
-                        )
-                    }
-                ]
-            }
-        ],
-        "tools": [{"google_search": {}}],
-    }
-    data = _http_json(
-        "POST",
-        "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key="
-        + urllib.parse.quote(api_key),
-        payload,
-    )
-    candidate = data["candidates"][0]
-    answer = candidate["content"]["parts"][0]["text"]
-    citations: list[str] = []
-    grounding = candidate.get("groundingMetadata", {})
-    for chunk in grounding.get("groundingChunks", []):
-        web = chunk.get("web", {})
-        if web.get("uri"):
-            citations.append(f"{web.get('title', 'Source')} ({web['uri']})")
-    return _format_response(answer, hits, "gemini-web", "gemini")
+    try:
+        source_block = "\n".join([f"- {hit.title}: {hit.summary} ({hit.url})" for hit in hits]) or "- No direct match found in curated sources."
+        payload = {
+            "contents": [
+                {
+                    "parts": [
+                        {
+                            "text": (
+                                "You are Civic Access Navigator, a Kenya-first civic information assistant. "
+                                "Answer only from web-grounded evidence and the curated sources provided. "
+                                "Prefer rights-oriented official sources. If the evidence is weak, say so.\n\n"
+                                f"Question: {query}\n"
+                                f"Region: {region or 'kenya'}\n"
+                                f"Curated sources:\n{source_block}"
+                            )
+                        }
+                    ]
+                }
+            ],
+            "tools": [{"google_search": {}}],
+        }
+        data = _http_json(
+            "POST",
+            "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key="
+            + urllib.parse.quote(api_key),
+            payload,
+        )
+        candidate = data["candidates"][0]
+        answer = candidate["content"]["parts"][0]["text"]
+        return _format_response(answer, hits, "gemini-web", "gemini")
+    except Exception:
+        return local_answer(query, region=region)
 
 
 def _ollama_answer(query: str, region: str | None, hits: list[SourceHit]) -> dict[str, Any]:
@@ -243,8 +236,11 @@ def _ollama_answer(query: str, region: str | None, hits: list[SourceHit]) -> dic
     )
 
     payload = {"model": model, "prompt": prompt, "stream": False}
-    data = _http_json("POST", f"{base_url}/api/generate", payload)
-    return _format_response(data.get("response", "I could not generate a grounded answer."), hits, "ollama-web", "ollama")
+    try:
+        data = _http_json("POST", f"{base_url}/api/generate", payload)
+        return _format_response(data.get("response", "I could not generate a grounded answer."), hits, "ollama-web", "ollama")
+    except Exception:
+        return local_answer(query, region=region)
 
 
 def chat_answer(query: str, region: str | None = None) -> dict[str, Any]:
