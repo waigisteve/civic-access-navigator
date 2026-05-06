@@ -195,18 +195,18 @@
         </div>
         <aside class="bot-panel" aria-label="Assistant preview">
           <div class="panel-head compact">
-            <h2 id="bot-heading">Navigator Bot</h2>
+          <h2 id="bot-heading">Navigator Bot</h2>
             <span class="status status-dark">Preview</span>
           </div>
-          <p class="bot-copy">
+          <p class="bot-copy" id="bot-intro">
             Ask for Kenya-specific peace topics, compare regions, or request a plain
             language summary of a curated source.
           </p>
           <div class="chat-feed" id="chat-feed">
-            <div class="chat-bubble bot">
+            <div class="chat-bubble bot" id="bot-try">
               Try: "Show me PeaceTech resources for Kenya."
             </div>
-            <div class="chat-bubble user">
+            <div class="chat-bubble user" id="bot-followup">
               How does this expand to the Sahel and the DRC?
             </div>
           </div>
@@ -295,6 +295,7 @@
       </div>
     </div>
 
+    <script src="/i18n.js"></script>
     <script src="/app.js"></script>
   </body>
 </html>

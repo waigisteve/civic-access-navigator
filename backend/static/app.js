@@ -34,19 +34,9 @@ const REGION_MAP = {
   africa: "africa",
 };
 
-const LANGUAGE_COPY = {
-  en: "English keeps the current sponsor-facing language crisp and direct.",
-  sw: "Swahili makes the pilot feel local and ready for Kenya-first rollout.",
-  fr: "French supports regional handoff across East and Central Africa.",
-  ar: "Arabic supports broader expansion and more diverse field settings.",
-};
-
-const LANGUAGE_LABELS = {
-  en: "English",
-  sw: "Swahili",
-  fr: "French",
-  ar: "Arabic",
-};
+const LANG = window.CAN_I18N;
+const LANGUAGE_COPY = Object.fromEntries(Object.entries(LANG.copy).map(([key, value]) => [key, value.languageCopy]));
+const LANGUAGE_LABELS = Object.fromEntries(Object.entries(LANG.languages).map(([key, value]) => [key, value.label]));
 
 const VOICE_SUMMARY = {
   kenya: "Kenya pilot. Civic Access Navigator helps users find trusted peace and civic guidance, with grounded answers, business-ready controls, and a region-aware interface.",
@@ -104,20 +94,9 @@ function wireControlTabs() {
   }
 }
 
-function wireLanguageSwitcher() {
-  const buttons = document.querySelectorAll(".language-pill, .language-toggle-btn");
-  const copy = document.getElementById("language-copy");
-  for (const button of buttons) {
-    button.addEventListener("click", () => {
-      setLanguage(button.dataset.language);
-      copy.textContent = LANGUAGE_COPY[currentLanguage];
-    });
-  }
-}
-
 function applyLanguageUI(language) {
   document.documentElement.lang = language;
-  document.documentElement.dir = language === "ar" ? "rtl" : "ltr";
+  document.documentElement.dir = LANG.languages[language]?.dir || "ltr";
   const buttons = document.querySelectorAll(".language-toggle-btn, .language-pill");
   for (const button of buttons) {
     const active = button.dataset.language === language;
@@ -126,290 +105,96 @@ function applyLanguageUI(language) {
   }
 }
 
-function setLanguage(language) {
-  currentLanguage = language;
-  applyLanguageUI(language);
-  updateLocalizedText();
-}
-
-function updateLocalizedText() {
-  const translations = {
-    en: {
-      kicker: "PeaceTech prototype",
-      eyebrow: "PeaceTech prototype for Africa",
-      intro:
-        "A PeaceTech navigation tool for Kenya and Africa that adds region-aware guidance, curated peace and civic resources, and a lightweight assistant for deeper exploration.",
-      mapTitle: "Regional Map",
-      mapStatus: "Pick a color-coded zone",
-      business: "Business Demo Controls",
-      languages: "Languages",
-      voice: "Voiceover",
-      feedback: "Feedback",
-      pilots: "Pilot Views",
-      project: "Project Summary",
-      tracks: "PeaceTech Tracks",
-      resources: "Starter Resource Library",
-      bot: "Navigator Bot",
-      deliverables: "Capstone Deliverables",
-      summary: "Summary",
-      context: "Context",
-      impact: "Impact partner",
-      prototype: "Prototype zone",
-      nextBuild: "Next build",
-      interactivePilot: "Interactive pilot",
-      projectPlan: "Project Plan",
-      pitch: "Pitch",
-      demoScript: "Demo Script",
-      proposal: "Proposal",
-      expansionHeading: "Expansion Path",
-      expansionOneTitle: "Kenya pilot",
-      expansionOneCopy:
-        "Start with country-level peace and civic information, participation channels, and trusted public-interest sources.",
-      expansionTwoTitle: "East Africa",
-      expansionTwoCopy:
-        "Add regional peacebuilding comparisons, cross-border governance context, and multilingual assistance.",
-      expansionThreeTitle: "Africa-wide",
-      expansionThreeCopy:
-        "Expand into a continent map of curated resources, theme filters, and source-grounded guidance.",
-      businessCaseHeading: "Winning Business Case",
-      businessOneTitle: "Reusable peace layer",
-      businessOneCopy:
-        "One core product can localize across countries, languages, and peace traditions without rebuilding from zero.",
-      businessTwoTitle: "Trust at the center",
-      businessTwoCopy:
-        "Citations, curated sources, and region-aware prompting keep the assistant useful and accountable.",
-      businessThreeTitle: "Visual by design",
-      businessThreeCopy:
-        "The interface is built to be cinematic, graphic, and mobile-friendly so it can hold attention quickly.",
-      businessFourTitle: "Expansion ready",
-      businessFourCopy:
-        "Kenya is the start, but the same structure can expand into the Sahel, DRC, Sudan, Mozambique, and beyond.",
-      projectSummary:
-        "A PeaceTech pilot for field partners and communities that need trusted civic guidance, region-aware explanations, and a public-interest interface that feels practical on the ground.",
-      overview:
-        "Switch the interface for pilots across countries without changing the core product.",
-    },
-    sw: {
-      kicker: "Mfumo wa PeaceTech",
-      eyebrow: "Mfumo wa PeaceTech kwa Afrika",
-      intro:
-        "Zana ya urambazaji ya PeaceTech kwa Kenya na Afrika inayobadilisha lugha, eneo, na mwongozo wa taarifa za amani na uraia.",
-      mapTitle: "Ramani ya Kanda",
-      mapStatus: "Chagua eneo lenye rangi",
-      business: "Vidhibiti vya Onyesho la Biashara",
-      languages: "Lugha",
-      voice: "Sauti",
-      feedback: "Maoni",
-      pilots: "Mitazamo ya Jaribio",
-      project: "Muhtasari wa Mradi",
-      tracks: "Njia za PeaceTech",
-      resources: "Maktaba ya Rasilimali",
-      bot: "Msaidizi wa Navigator",
-      deliverables: "Utoaji wa Mradi",
-      summary: "Muhtasari",
-      context: "Muktadha",
-      impact: "Mshirika wa athari",
-      prototype: "Eneo la mfano",
-      nextBuild: "Ujenzi unaofuata",
-      interactivePilot: "Jaribio la maingiliano",
-      projectPlan: "Mpango wa Mradi",
-      pitch: "Uwasilishaji",
-      demoScript: "Hati ya Onyesho",
-      proposal: "Pendekezo",
-      expansionHeading: "Njia ya Upanuzi",
-      expansionOneTitle: "Jaribio la Kenya",
-      expansionOneCopy:
-        "Anza na taarifa za amani na uraia za nchi, njia za ushiriki, na vyanzo vinavyoaminika vya maslahi ya umma.",
-      expansionTwoTitle: "Afrika Mashariki",
-      expansionTwoCopy:
-        "Ongeza ulinganisho wa ujenzi wa amani wa kanda, muktadha wa utawala wa mipakani, na msaada wa lugha nyingi.",
-      expansionThreeTitle: "Afrika nzima",
-      expansionThreeCopy:
-        "Panua kuwa ramani ya bara yenye rasilimali zilizochaguliwa, vichujio vya mada, na mwongozo unaotokana na vyanzo.",
-      businessCaseHeading: "Kesi ya Biashara Inayoshinda",
-      businessOneTitle: "Tabaka la amani linalotumika tena",
-      businessOneCopy:
-        "Bidhaa moja kuu inaweza kubadilishwa kwa nchi, lugha, na mila za amani bila kujengwa upya kutoka sifuri.",
-      businessTwoTitle: "Uaminifu katikati",
-      businessTwoCopy:
-        "Nukuu, vyanzo vilivyochaguliwa, na mwongozo unaozingatia eneo huifanya msaidizi kuwa muhimu na mwenye uwajibikaji.",
-      businessThreeTitle: "Muonekano kwa muundo",
-      businessThreeCopy:
-        "Kiolesura kimejengwa kiwe cha kuvutia, cha picha, na rafiki kwa simu ili kishike macho haraka.",
-      businessFourTitle: "Tayari kwa upanuzi",
-      businessFourCopy:
-        "Kenya ndio mwanzo, lakini muundo huo unaweza kupanuka hadi Sahel, DRC, Sudan, Mozambique, na kwingineko.",
-      projectSummary:
-        "Jaribio la PeaceTech kwa washirika wa uga na jamii zinazohitaji mwongozo unaoaminika, maelezo yanayoendana na eneo, na kiolesura cha maslahi ya umma kinachoonekana kufanya kazi uwanjani.",
-      overview:
-        "Badilisha kiolesura kwa mataifa tofauti bila kubadili bidhaa kuu.",
-    },
-    fr: {
-      kicker: "Prototype PeaceTech",
-      eyebrow: "Prototype PeaceTech pour l’Afrique",
-      intro:
-        "Un outil de navigation PeaceTech pour le Kenya et l’Afrique, avec langue, région et guidance adaptées au contexte.",
-      mapTitle: "Carte régionale",
-      mapStatus: "Choisissez une zone colorée",
-      business: "Contrôles de démonstration",
-      languages: "Langues",
-      voice: "Voix",
-      feedback: "Retour",
-      pilots: "Vues pilote",
-      project: "Résumé du projet",
-      tracks: "Axes PeaceTech",
-      resources: "Bibliothèque de ressources",
-      bot: "Bot Navigator",
-      deliverables: "Livrables du projet",
-      summary: "Résumé",
-      context: "Contexte",
-      impact: "Partenaire d'impact",
-      prototype: "Zone pilote",
-      nextBuild: "Prochaine étape",
-      interactivePilot: "Pilote interactif",
-      projectPlan: "Plan du projet",
-      pitch: "Présentation",
-      demoScript: "Script de démo",
-      proposal: "Proposition",
-      expansionHeading: "Parcours d’expansion",
-      expansionOneTitle: "Pilote Kenya",
-      expansionOneCopy:
-        "Commencez avec des informations civiles et de paix au niveau national, des canaux de participation et des sources fiables.",
-      expansionTwoTitle: "Afrique de l’Est",
-      expansionTwoCopy:
-        "Ajoutez des comparaisons régionales de consolidation de la paix, un contexte de gouvernance transfrontalière et une aide multilingue.",
-      expansionThreeTitle: "Afrique entière",
-      expansionThreeCopy:
-        "Étendez-le en carte continentale de ressources sélectionnées, filtres thématiques et conseils fondés sur les sources.",
-      businessCaseHeading: "Cas d’affaires gagnant",
-      businessOneTitle: "Couche de paix réutilisable",
-      businessOneCopy:
-        "Un seul produit peut se localiser selon les pays, les langues et les traditions de paix sans repartir de zéro.",
-      businessTwoTitle: "La confiance au centre",
-      businessTwoCopy:
-        "Les citations, les sources curées et les invites tenant compte de la région gardent l’assistant utile et responsable.",
-      businessThreeTitle: "Conçu pour le visuel",
-      businessThreeCopy:
-        "L’interface est cinématographique, graphique et mobile-friendly pour capter rapidement l’attention.",
-      businessFourTitle: "Prêt à s’étendre",
-      businessFourCopy:
-        "Le Kenya est le point de départ, mais la structure peut s’étendre au Sahel, à la RDC, au Soudan, au Mozambique et au-delà.",
-      projectSummary:
-        "Un pilote PeaceTech pour les partenaires de terrain et les communautés qui ont besoin de conseils civiques fiables, d’explications adaptées à la région et d’une interface d’intérêt public utile sur le terrain.",
-      overview:
-        "Adaptez l’interface selon le pays sans changer le produit principal.",
-    },
-    ar: {
-      kicker: "نموذج PeaceTech",
-      eyebrow: "نموذج PeaceTech لإفريقيا",
-      intro:
-        "أداة إرشاد PeaceTech لكينيا وإفريقيا مع لغة ومنطقة وخلفية صوتية تتغير حسب السياق.",
-      mapTitle: "الخريطة الإقليمية",
-      mapStatus: "اختر منطقة ملونة",
-      business: "عناصر العرض التجاري",
-      languages: "اللغة",
-      voice: "الصوت",
-      feedback: "التغذية",
-      pilots: "واجهات التجربة",
-      project: "ملخص المشروع",
-      tracks: "مسارات PeaceTech",
-      resources: "مكتبة الموارد",
-      bot: "مساعد Navigator",
-      deliverables: "مخرجات المشروع",
-      summary: "الملخص",
-      context: "السياق",
-      impact: "الشريك المؤثر",
-      prototype: "نطاق النموذج",
-      nextBuild: "البناء التالي",
-      interactivePilot: "تجربة تفاعلية",
-      projectPlan: "خطة المشروع",
-      pitch: "العرض",
-      demoScript: "نص العرض",
-      proposal: "المقترح",
-      expansionHeading: "مسار التوسع",
-      expansionOneTitle: "تجربة كينيا",
-      expansionOneCopy:
-        "ابدأ بمعلومات السلام والمواطنة على مستوى البلد، وقنوات المشاركة، ومصادر موثوقة للمصلحة العامة.",
-      expansionTwoTitle: "شرق إفريقيا",
-      expansionTwoCopy:
-        "أضف مقارنات إقليمية لبناء السلام، وسياق الحوكمة عبر الحدود، ومساعدة متعددة اللغات.",
-      expansionThreeTitle: "إفريقيا بالكامل",
-      expansionThreeCopy:
-        "وسّعه إلى خريطة قارية للموارد المختارة وفلاتر الموضوعات وإرشادات مبنية على المصادر.",
-      businessCaseHeading: "حالة عمل رابحة",
-      businessOneTitle: "طبقة سلام قابلة لإعادة الاستخدام",
-      businessOneCopy:
-        "يمكن لمنتج واحد أن يتكيف مع البلدان واللغات وتقليدات السلام دون إعادة البناء من الصفر.",
-      businessTwoTitle: "الثقة في المركز",
-      businessTwoCopy:
-        "الاستشهادات والمصادر المختارة والتوجيه المرتبط بالمنطقة تجعل المساعد مفيدًا ومسؤولًا.",
-      businessThreeTitle: "مصمم بصريًا",
-      businessThreeCopy:
-        "الواجهة مصممة لتكون جذابة ومرئية ومتوافقة مع الهاتف لتلفت الانتباه بسرعة.",
-      businessFourTitle: "جاهز للتوسع",
-      businessFourCopy:
-        "كينيا هي البداية، لكن نفس البنية يمكن أن تتوسع إلى الساحل، والكونغو الديمقراطية، والسودان، وموزمبيق، وغيرها.",
-      projectSummary:
-        "تجربة PeaceTech للشركاء الميدانيين والمجتمعات التي تحتاج إلى إرشاد مدني موثوق، وتفسيرات مرتبطة بالمنطقة، وواجهة منفعة عامة مناسبة للعمل الميداني.",
-      overview:
-        "غيّر الواجهة حسب البلد مع بقاء المنتج الأساسي نفسه.",
-    },
-  };
-
-  const copy = translations[language] || translations.en;
-  const setText = (id, value) => {
-    const node = document.getElementById(id);
-    if (node) node.textContent = value;
-  };
-  setText("header-kicker", copy.kicker);
-  setText("hero-eyebrow", copy.eyebrow);
-  setText("hero-intro", copy.intro);
-  setText("map-title", copy.mapTitle);
-  setText("map-status", copy.mapStatus);
-  setText("business-heading", copy.business);
-  setText("pilot-status", copy.interactivePilot);
-  setText("project-heading", copy.project);
-  setText("tracks-heading", copy.tracks);
-  setText("resources-heading", copy.resources);
-  setText("bot-heading", copy.bot);
-  setText("deliverables-heading", copy.deliverables);
-  setText("detail-summary-label", copy.summary);
-  setText("detail-context-label", copy.context);
-  setText("impact-partner-label", copy.impact);
-  setText("prototype-zone-label", copy.prototype);
-  setText("next-build-label", copy.nextBuild);
-  setText("control-languages", copy.languages);
-  setText("control-voice", copy.voice);
-  setText("control-feedback", copy.feedback);
-  setText("control-pilots", copy.pilots);
-  setText("deliverable-project-plan", copy.projectPlan);
-  setText("deliverable-pitch", copy.pitch);
-  setText("deliverable-demo-script", copy.demoScript);
-  setText("deliverable-proposal", copy.proposal);
-  setText("expansion-heading", copy.expansionHeading);
-  setText("expansion-one-title", copy.expansionOneTitle);
-  setText("expansion-one-copy", copy.expansionOneCopy);
-  setText("expansion-two-title", copy.expansionTwoTitle);
-  setText("expansion-two-copy", copy.expansionTwoCopy);
-  setText("expansion-three-title", copy.expansionThreeTitle);
-  setText("expansion-three-copy", copy.expansionThreeCopy);
-  setText("business-case-heading", copy.businessCaseHeading);
-  setText("business-one-title", copy.businessOneTitle);
-  setText("business-one-copy", copy.businessOneCopy);
-  setText("business-two-title", copy.businessTwoTitle);
-  setText("business-two-copy", copy.businessTwoCopy);
-  setText("business-three-title", copy.businessThreeTitle);
-  setText("business-three-copy", copy.businessThreeCopy);
-  setText("business-four-title", copy.businessFourTitle);
-  setText("business-four-copy", copy.businessFourCopy);
-  setText("project-summary", copy.projectSummary);
-  setText("language-copy", copy.overview);
-  const title = document.querySelector("title");
-  if (title) {
-    title.textContent = `Civic Access Navigator · ${LANGUAGE_LABELS[language] || "English"}`;
+function setText(id, value) {
+  const node = document.getElementById(id);
+  if (node && typeof value === "string") {
+    node.textContent = value;
   }
 }
 
+function setLanguage(language) {
+  const pack = LANG.copy[language] || LANG.copy.en;
+  currentLanguage = language;
+  applyLanguageUI(language);
+  document.documentElement.dataset.language = language;
+  document.documentElement.style.setProperty("--accent", REGION_THEME[currentRegion].accent);
+  document.documentElement.style.setProperty("--accent-soft", REGION_THEME[currentRegion].accentSoft);
+  document.documentElement.style.setProperty("--bg", REGION_THEME[currentRegion].bg);
+  setText("header-kicker", pack.headerKicker);
+  setText("hero-eyebrow", pack.heroEyebrow);
+  setText("hero-intro", pack.heroIntro);
+  setText("region-note", pack.regionNote);
+  setText("map-title", pack.mapTitle);
+  setText("map-status", pack.mapStatus);
+  setText("business-heading", pack.businessHeading);
+  setText("pilot-status", pack.pilotStatus);
+  setText("project-heading", pack.projectHeading);
+  setText("tracks-heading", pack.tracksHeading);
+  setText("resources-heading", pack.resourcesHeading);
+  setText("bot-heading", pack.botHeading);
+  setText("bot-intro", pack.botIntro);
+  setText("bot-try", pack.botTry);
+  setText("bot-followup", pack.botFollowup);
+  setText("expansion-heading", pack.expansionHeading);
+  setText("business-case-heading", pack.businessCaseHeading);
+  setText("deliverables-heading", pack.deliverablesHeading);
+  setText("control-languages", pack.controlLanguages);
+  setText("control-voice", pack.controlVoice);
+  setText("control-feedback", pack.controlFeedback);
+  setText("control-pilots", pack.controlPilots);
+  setText("language-copy", pack.languageCopy);
+  setText("feedback-copy", pack.feedbackCopy);
+  setText("feedback-clear-title", pack.feedbackClearTitle);
+  setText("feedback-clear-copy", pack.feedbackClearCopy);
+  setText("feedback-useful-title", pack.feedbackUsefulTitle);
+  setText("feedback-useful-copy", pack.feedbackUsefulCopy);
+  setText("feedback-needs-work-title", pack.feedbackNeedsWorkTitle);
+  setText("feedback-needs-work-copy", pack.feedbackNeedsWorkCopy);
+  setText("project-summary", pack.projectSummary);
+  const missionFocus = document.getElementById("mission-focus");
+  if (missionFocus) {
+    missionFocus.innerHTML = "";
+    for (const item of pack.tracks) {
+      const li = document.createElement("li");
+      li.textContent = item;
+      missionFocus.appendChild(li);
+    }
+  }
+  setText("expansion-one-title", pack.expansionOneTitle);
+  setText("expansion-one-copy", pack.expansionOneCopy);
+  setText("expansion-two-title", pack.expansionTwoTitle);
+  setText("expansion-two-copy", pack.expansionTwoCopy);
+  setText("expansion-three-title", pack.expansionThreeTitle);
+  setText("expansion-three-copy", pack.expansionThreeCopy);
+  setText("business-one-title", pack.businessOneTitle);
+  setText("business-one-copy", pack.businessOneCopy);
+  setText("business-two-title", pack.businessTwoTitle);
+  setText("business-two-copy", pack.businessTwoCopy);
+  setText("business-three-title", pack.businessThreeTitle);
+  setText("business-three-copy", pack.businessThreeCopy);
+  setText("business-four-title", pack.businessFourTitle);
+  setText("business-four-copy", pack.businessFourCopy);
+  setText("impact-partner-label", pack.impactLabel);
+  setText("prototype-zone-label", pack.prototypeLabel);
+  setText("next-build-label", pack.nextBuildLabel);
+  setText("deliverable-project-plan", pack.projectPlan);
+  setText("deliverable-pitch", pack.pitch);
+  setText("deliverable-demo-script", pack.demoScript);
+  setText("deliverable-proposal", pack.proposal);
+  setText("detail-summary-label", pack.detailSummary);
+  setText("detail-context-label", pack.detailContext);
+  const botInput = document.getElementById("bot-input");
+  if (botInput) botInput.placeholder = pack.botPlaceholder;
+  const title = document.querySelector("title");
+  if (title) title.textContent = `Civic Access Navigator · ${LANGUAGE_LABELS[language] || "English"}`;
+}
+
+function wireLanguageSwitcher() {
+  const buttons = document.querySelectorAll(".language-pill, .language-toggle-btn");
+  for (const button of buttons) {
+    button.addEventListener("click", () => setLanguage(button.dataset.language));
+  }
+}
 function speakSummary() {
   if (!("speechSynthesis" in window)) {
     return;
@@ -556,7 +341,9 @@ function wireRegionSelector() {
 
       const region = button.dataset.region;
       note.textContent = REGION_COPY[region];
-      mapStatus.textContent = `${button.dataset.label || button.textContent.trim()} selected`;
+      mapStatus.textContent = LANG.copy[currentLanguage][
+        region === "kenya" ? "mapKenya" : region === "east-africa" ? "mapEastAfrica" : "mapAfrica"
+      ];
       document.documentElement.dataset.region = region;
       const theme = REGION_THEME[region];
       document.documentElement.style.setProperty("--accent", theme.accent);
@@ -639,7 +426,6 @@ async function loadHealth() {
 async function bootstrap() {
   wireModeChips();
   applyLanguageUI(currentLanguage);
-  updateLocalizedText();
   wireRegionSelector();
   wireControlTabs();
   wireLanguageSwitcher();
@@ -648,7 +434,9 @@ async function bootstrap() {
   wireDetails();
   wireBusinessCards();
   wireBotPreview();
-  await Promise.all([loadProject(), loadResources(), loadHealth()]);
+  await Promise.all([loadResources(), loadHealth()]);
+  await loadProject();
+  setLanguage(currentLanguage);
 }
 
 bootstrap();
