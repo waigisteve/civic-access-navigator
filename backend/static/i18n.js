@@ -77,6 +77,7 @@ window.CAN_I18N = {
       botAnswerFallback: "I could not generate a grounded answer.",
       botServiceFallback: "I could not reach the grounded answer service just now.",
       botSourcesLabel: "Sources",
+      botAnsweredLabel: "Answered via",
       apiOnline: "API online",
       apiIssue: "API issue",
       projectSummary:
@@ -195,6 +196,7 @@ window.CAN_I18N = {
       botAnswerFallback: "Sikuweza kutoa jibu lililoegemezwa kwenye vyanzo.",
       botServiceFallback: "Sikuweza kufikia huduma ya majibu yaliyothibitika kwa sasa.",
       botSourcesLabel: "Vyanzo",
+      botAnsweredLabel: "Ilimjibiwa kupitia",
       apiOnline: "API ipo mtandaoni",
       apiIssue: "Tatizo la API",
       projectSummary:
@@ -313,6 +315,7 @@ window.CAN_I18N = {
       botAnswerFallback: "Je n’ai pas pu générer de réponse fondée.",
       botServiceFallback: "Je n’ai pas pu joindre le service de réponse fondée pour le moment.",
       botSourcesLabel: "Sources",
+      botAnsweredLabel: "Réponse via",
       apiOnline: "API en ligne",
       apiIssue: "Problème API",
       projectSummary:
@@ -431,6 +434,7 @@ window.CAN_I18N = {
       botAnswerFallback: "تعذر إنشاء إجابة موثوقة.",
       botServiceFallback: "تعذر الوصول إلى خدمة الإجابة الموثوقة الآن.",
       botSourcesLabel: "المصادر",
+      botAnsweredLabel: "تمت الإجابة عبر",
       apiOnline: "واجهة برمجة التطبيقات متصلة",
       apiIssue: "مشكلة في API",
       projectSummary:

@@ -661,7 +661,9 @@ function wireBotPreview() {
         const pack = LANG.copy[currentLanguage] || LANG.copy.en;
         const botBubble = document.createElement("div");
         botBubble.className = "chat-bubble bot";
-        botBubble.textContent = `${data.answer || pack.botAnswerFallback}\n\nAnswered by: ${data.provider || "local"}`;
+        const providerLabel = data.provider || "local";
+        const modeLabel = data.mode || "fallback";
+        botBubble.textContent = `${data.answer || pack.botAnswerFallback}\n\n${pack.botAnsweredLabel}: ${providerLabel} · ${modeLabel}`;
         feed.appendChild(botBubble);
 
         if (Array.isArray(data.citations) && data.citations.length > 0) {
