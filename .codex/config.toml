@@ -1,0 +1,9 @@
+model = "gpt-5.5"
+model_reasoning_effort = "low"
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+
+[mcp_servers.filesystem]
+command = "npx"
+args = ["-y", "@modelcontextprotocol/server-filesystem", "/mnt/c/Users/Hp/codex-demo"]
+startup_timeout_sec = 20
