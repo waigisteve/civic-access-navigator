@@ -327,6 +327,26 @@ h1 {
   font-size: 1.02rem;
 }
 
+
+.reveal-after-language {
+  opacity: 0;
+  transform: translateY(16px);
+  pointer-events: none;
+  max-height: 0;
+  overflow: hidden;
+  margin-top: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  transition: opacity 220ms ease, transform 220ms ease, max-height 220ms ease, margin 220ms ease, padding 220ms ease;
+}
+
+body.ui-ready .reveal-after-language {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+  max-height: 5000px;
+  overflow: visible;
+}
 .panel {
   background: var(--panel);
   border: 1px solid var(--line);

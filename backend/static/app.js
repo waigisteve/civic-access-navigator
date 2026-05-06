@@ -154,6 +154,7 @@ function setText(id, value) {
 function setLanguage(language) {
   const pack = LANG.copy[language] || LANG.copy.en;
   currentLanguage = language;
+  document.body.classList.add("ui-ready");
   applyLanguageUI(language);
   document.documentElement.dataset.language = language;
   document.documentElement.style.setProperty("--accent", REGION_THEME[currentRegion].accent);
@@ -333,7 +334,13 @@ function speakSummary() {
   }
   window.speechSynthesis.cancel();
   const pack = LANG.copy[currentLanguage] || LANG.copy.en;
-  speechUtterance = new SpeechSynthesisUtterance(`${pack.heroEyebrow}. ${pack.projectSummary}`);
+  const voicePack = {
+    en: `${pack.heroEyebrow}. ${pack.projectSummary}`,
+    sw: `Karibu. ${pack.projectSummary}`,
+    fr: `Bienvenue. ${pack.projectSummary}`,
+    ar: `مرحبا. ${pack.projectSummary}`,
+  };
+  speechUtterance = new SpeechSynthesisUtterance(voicePack[currentLanguage] || voicePack.en);
   speechUtterance.lang = currentLanguage;
   speechUtterance.voice = pickVoiceForLanguage(currentLanguage);
   speechUtterance.rate = 1;
