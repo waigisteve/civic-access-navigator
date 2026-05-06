@@ -581,10 +581,14 @@ h1 {
   position: fixed;
   inset: 0;
   background: rgba(8, 14, 16, 0.56);
-  display: grid;
+  display: none;
   place-items: center;
   padding: 24px;
   z-index: 40;
+}
+
+.detail-overlay.is-open {
+  display: grid;
 }
 
 .detail-modal {

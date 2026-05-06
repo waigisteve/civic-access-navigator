@@ -153,14 +153,16 @@ function openDetail(title, summary, meta, eyebrow = "Detail view") {
     row.textContent = line;
     metaNode.appendChild(row);
   }
-  overlay.style.display = "grid";
   overlay.hidden = false;
+  overlay.classList.add("is-open");
+  document.body.style.overflow = "hidden";
 }
 
 function closeDetail() {
   const overlay = document.getElementById("detail-overlay");
   overlay.hidden = true;
-  overlay.style.display = "";
+  overlay.classList.remove("is-open");
+  document.body.style.overflow = "";
 }
 
 function wireDetails() {
@@ -168,6 +170,11 @@ function wireDetails() {
   document.getElementById("detail-close").addEventListener("click", closeDetail);
   overlay.addEventListener("click", (event) => {
     if (event.target === overlay) {
+      closeDetail();
+    }
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !overlay.hidden) {
       closeDetail();
     }
   });
