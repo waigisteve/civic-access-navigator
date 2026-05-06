@@ -38,6 +38,30 @@ This project supports:
 - equitable opportunity by lowering information barriers for affected communities
 - community-led peacebuilding through responsible use of AI tools
 
+## Guardrails
+
+The project is designed to stay within a clear set of principles:
+
+- keep the core product grounded in curated, trusted sources
+- prefer local context over generic summaries
+- support multiple countries, languages, and community definitions of peace
+- cite sources when the bot answers
+- avoid legal advice, political prediction, or unverified claims
+- keep Codex as a workflow and onboarding aid, not as the product itself
+- preserve the main PeaceTech capstone as the center of the repo
+- use Codex to speed up delivery, structure the repo, and keep the project readable
+- keep the user-facing product distinct from the scaffolding used to build and review it
+- make every answer traceable, especially when the bot touches rights, peace, or public-interest guidance
+
+## How Codex Helps
+
+Codex supports the project by:
+
+- mapping the repo before making changes
+- keeping the capstone docs, code, and deployment notes aligned
+- helping with repeatable onboarding so the project is easier to hand off
+- reducing setup friction without replacing the project vision or domain judgment
+
 ## Repository Layout
 
 - `docs/` project framing, architecture notes, milestones, and submission materials
