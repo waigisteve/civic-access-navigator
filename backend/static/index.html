@@ -7,31 +7,36 @@
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
+    <header class="site-header">
+      <div class="brand-lockup">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <div>
+          <p class="brand-kicker" id="header-kicker">PeaceTech prototype</p>
+          <strong class="brand-name">Civic Access Navigator</strong>
+        </div>
+      </div>
+        <div class="header-actions">
+          <div class="language-toggle" role="tablist" aria-label="Language toggle">
+          <button class="language-toggle-btn is-active" type="button" data-language="en" aria-pressed="true">EN</button>
+          <button class="language-toggle-btn" type="button" data-language="sw" aria-pressed="false">SW</button>
+          <button class="language-toggle-btn" type="button" data-language="fr" aria-pressed="false">FR</button>
+          <button class="language-toggle-btn" type="button" data-language="ar" aria-pressed="false">AR</button>
+        </div>
+      </div>
+    </header>
+
     <main class="page">
       <section class="hero">
         <div class="hero-bg" aria-hidden="true"></div>
         <div class="hero-copy">
-          <p class="eyebrow">PeaceTech prototype for Africa</p>
+          <p class="eyebrow" id="hero-eyebrow">PeaceTech prototype for Africa</p>
           <h1>Civic Access Navigator</h1>
-          <p class="intro">
+          <p class="intro" id="hero-intro">
             A PeaceTech navigation tool for Kenya and Africa that adds region-aware
             guidance, curated peace and civic resources, and a lightweight assistant for
             deeper exploration.
           </p>
-          <div class="region-selector" role="tablist" aria-label="Region selector">
-            <button class="region-pill is-active" type="button" data-region="kenya" aria-pressed="true">
-              Kenya
-            </button>
-            <button class="region-pill" type="button" data-region="east-africa" aria-pressed="false">
-              East Africa
-            </button>
-            <button class="region-pill" type="button" data-region="africa" aria-pressed="false">
-              Africa
-            </button>
-          </div>
-          <p class="hero-note" id="region-note">
-            Start with Kenya, then expand to East Africa and the wider continent.
-          </p>
+          <p class="hero-note" id="region-note">Start with Kenya, then expand to East Africa and the wider continent.</p>
           <div class="mode-row" aria-label="Language and peace lens">
             <div class="mode-chip is-active">Language-aware</div>
             <div class="mode-chip">Doctrines-aware</div>
@@ -54,9 +59,38 @@
         </dl>
       </section>
 
+      <section class="panel map-panel">
+        <div class="panel-head">
+          <h2 id="map-title">Regional Map</h2>
+          <span class="status" id="map-status">Pick a color-coded zone</span>
+        </div>
+        <div class="map-shell" aria-label="Interactive region map">
+          <button class="map-zone kenya is-active" type="button" data-region="kenya" data-label="Kenya" aria-pressed="true">
+            <span class="zone-dot"></span>
+            <strong>Kenya</strong>
+            <small>Swahili-ready pilot</small>
+          </button>
+          <button class="map-zone east-africa" type="button" data-region="east-africa" data-label="East Africa" aria-pressed="false">
+            <span class="zone-dot"></span>
+            <strong>East Africa</strong>
+            <small>Regional expansion</small>
+          </button>
+          <button class="map-zone africa" type="button" data-region="africa" data-label="Africa" aria-pressed="false">
+            <span class="zone-dot"></span>
+            <strong>Africa</strong>
+            <small>Continental scale</small>
+          </button>
+          <div class="map-legend">
+            <span><i class="legend-swatch kenya"></i> Kenya</span>
+            <span><i class="legend-swatch east-africa"></i> East Africa</span>
+            <span><i class="legend-swatch africa"></i> Africa</span>
+          </div>
+        </div>
+      </section>
+
       <section class="panel control-panel">
         <div class="panel-head">
-          <h2>Business Demo Controls</h2>
+          <h2 id="business-heading">Business Demo Controls</h2>
           <span class="status">Interactive pilot</span>
         </div>
         <div class="control-tabs" role="tablist" aria-label="Demo controls">
@@ -140,11 +174,11 @@
 
       <section class="panel project-overview">
         <div>
-          <h2>Project Summary</h2>
+          <h2 id="project-heading">Project Summary</h2>
           <p id="project-summary">Loading project details...</p>
         </div>
         <div>
-          <h2>PeaceTech Tracks</h2>
+          <h2 id="tracks-heading">PeaceTech Tracks</h2>
           <ul id="mission-focus" class="focus-list">
             <li>Loading mission focus...</li>
           </ul>
@@ -154,14 +188,14 @@
       <section class="panel split-panel">
         <div>
           <div class="panel-head">
-            <h2>Starter Resource Library</h2>
+            <h2 id="resources-heading">Starter Resource Library</h2>
             <span id="health-status" class="status">Checking API...</span>
           </div>
           <div id="resource-grid" class="grid"></div>
         </div>
         <aside class="bot-panel" aria-label="Assistant preview">
           <div class="panel-head compact">
-            <h2>Navigator Bot</h2>
+            <h2 id="bot-heading">Navigator Bot</h2>
             <span class="status status-dark">Preview</span>
           </div>
           <p class="bot-copy">

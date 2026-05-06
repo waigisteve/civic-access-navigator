@@ -4,6 +4,30 @@ const REGION_COPY = {
   africa: "Use the same interaction model across the continent with region-specific source sets.",
 };
 
+const REGION_THEME = {
+  kenya: {
+    accent: "#0b6e4f",
+    accentSoft: "#d9efe6",
+    bg: "#f4efe6",
+  },
+  "east-africa": {
+    accent: "#1f4966",
+    accentSoft: "#dce9f2",
+    bg: "#f1f5f8",
+  },
+  africa: {
+    accent: "#cb9b31",
+    accentSoft: "#f5e9c8",
+    bg: "#f7f0df",
+  },
+};
+
+const REGION_LANGUAGE = {
+  kenya: "sw",
+  "east-africa": "en",
+  africa: "fr",
+};
+
 const REGION_MAP = {
   kenya: "kenya",
   "east-africa": "east-africa",
@@ -85,14 +109,123 @@ function wireLanguageSwitcher() {
   const copy = document.getElementById("language-copy");
   for (const button of buttons) {
     button.addEventListener("click", () => {
-      currentLanguage = button.dataset.language;
-      for (const other of buttons) {
-        other.classList.toggle("is-active", other === button);
-        other.setAttribute("aria-pressed", other === button ? "true" : "false");
-      }
+      setLanguage(button.dataset.language);
       copy.textContent = LANGUAGE_COPY[currentLanguage];
     });
   }
+}
+
+function applyLanguageUI(language) {
+  document.documentElement.lang = language;
+  const buttons = document.querySelectorAll(".language-toggle-btn, .language-pill");
+  for (const button of buttons) {
+    const active = button.dataset.language === language;
+    button.classList.toggle("is-active", active);
+    button.setAttribute("aria-pressed", active ? "true" : "false");
+  }
+}
+
+function setLanguage(language) {
+  currentLanguage = language;
+  applyLanguageUI(language);
+  updateLocalizedText();
+}
+
+function updateLocalizedText() {
+  const translations = {
+    en: {
+      kicker: "PeaceTech prototype",
+      eyebrow: "PeaceTech prototype for Africa",
+      intro:
+        "A PeaceTech navigation tool for Kenya and Africa that adds region-aware guidance, curated peace and civic resources, and a lightweight assistant for deeper exploration.",
+      mapTitle: "Regional Map",
+      mapStatus: "Pick a color-coded zone",
+      business: "Business Demo Controls",
+      languages: "Languages",
+      voice: "Voiceover",
+      feedback: "Feedback",
+      pilots: "Pilot Views",
+      project: "Project Summary",
+      tracks: "PeaceTech Tracks",
+      resources: "Starter Resource Library",
+      bot: "Navigator Bot",
+      overview:
+        "Switch the interface for pilots across countries without changing the core product.",
+    },
+    sw: {
+      kicker: "Mfumo wa PeaceTech",
+      eyebrow: "Mfumo wa PeaceTech kwa Afrika",
+      intro:
+        "Zana ya urambazaji ya PeaceTech kwa Kenya na Afrika inayobadilisha lugha, eneo, na mwongozo wa taarifa za amani na uraia.",
+      mapTitle: "Ramani ya Kanda",
+      mapStatus: "Chagua eneo lenye rangi",
+      business: "Vidhibiti vya Onyesho la Biashara",
+      languages: "Lugha",
+      voice: "Sauti",
+      feedback: "Maoni",
+      pilots: "Mitazamo ya Jaribio",
+      project: "Muhtasari wa Mradi",
+      tracks: "Njia za PeaceTech",
+      resources: "Maktaba ya Rasilimali",
+      bot: "Msaidizi wa Navigator",
+      overview:
+        "Badilisha kiolesura kwa mataifa tofauti bila kubadili bidhaa kuu.",
+    },
+    fr: {
+      kicker: "Prototype PeaceTech",
+      eyebrow: "Prototype PeaceTech pour l’Afrique",
+      intro:
+        "Un outil de navigation PeaceTech pour le Kenya et l’Afrique, avec langue, région et guidance adaptées au contexte.",
+      mapTitle: "Carte régionale",
+      mapStatus: "Choisissez une zone colorée",
+      business: "Contrôles de démonstration",
+      languages: "Langues",
+      voice: "Voix",
+      feedback: "Retour",
+      pilots: "Vues pilote",
+      project: "Résumé du projet",
+      tracks: "Axes PeaceTech",
+      resources: "Bibliothèque de ressources",
+      bot: "Bot Navigator",
+      overview:
+        "Adaptez l’interface selon le pays sans changer le produit principal.",
+    },
+    ar: {
+      kicker: "نموذج PeaceTech",
+      eyebrow: "نموذج PeaceTech لإفريقيا",
+      intro:
+        "أداة إرشاد PeaceTech لكينيا وإفريقيا مع لغة ومنطقة وخلفية صوتية تتغير حسب السياق.",
+      mapTitle: "الخريطة الإقليمية",
+      mapStatus: "اختر منطقة ملونة",
+      business: "عناصر العرض التجاري",
+      languages: "اللغة",
+      voice: "الصوت",
+      feedback: "التغذية",
+      pilots: "واجهات التجربة",
+      project: "ملخص المشروع",
+      tracks: "مسارات PeaceTech",
+      resources: "مكتبة الموارد",
+      bot: "مساعد Navigator",
+      overview:
+        "غيّر الواجهة حسب البلد مع بقاء المنتج الأساسي نفسه.",
+    },
+  };
+
+  const copy = translations[language] || translations.en;
+  const setText = (id, value) => {
+    const node = document.getElementById(id);
+    if (node) node.textContent = value;
+  };
+  setText("header-kicker", copy.kicker);
+  setText("hero-eyebrow", copy.eyebrow);
+  setText("hero-intro", copy.intro);
+  setText("map-title", copy.mapTitle);
+  setText("map-status", copy.mapStatus);
+  setText("business-heading", copy.business);
+  setText("project-heading", copy.project);
+  setText("tracks-heading", copy.tracks);
+  setText("resources-heading", copy.resources);
+  setText("bot-heading", copy.bot);
 }
 
 function speakSummary() {
@@ -227,8 +360,9 @@ async function loadResources() {
 }
 
 function wireRegionSelector() {
-  const buttons = document.querySelectorAll(".region-pill");
+  const buttons = document.querySelectorAll(".region-pill, .map-zone");
   const note = document.getElementById("region-note");
+  const mapStatus = document.getElementById("map-status");
 
   for (const button of buttons) {
     button.addEventListener("click", () => {
@@ -240,6 +374,22 @@ function wireRegionSelector() {
 
       const region = button.dataset.region;
       note.textContent = REGION_COPY[region];
+      mapStatus.textContent = `${button.dataset.label || button.textContent.trim()} selected`;
+      document.documentElement.dataset.region = region;
+      const theme = REGION_THEME[region];
+      document.documentElement.style.setProperty("--accent", theme.accent);
+      document.documentElement.style.setProperty("--accent-soft", theme.accentSoft);
+      document.documentElement.style.setProperty("--bg", theme.bg);
+      document.body.style.background =
+        `linear-gradient(180deg, rgba(247, 243, 234, 0.82), rgba(239, 231, 216, 0.95)), url("/kenya-africa-bg.png")`;
+      const mappedLanguage = REGION_LANGUAGE[region];
+      currentLanguage = mappedLanguage;
+      applyLanguageUI(mappedLanguage);
+      updateLocalizedText();
+      const copyNode = document.getElementById("language-copy");
+      if (copyNode) {
+        copyNode.textContent = LANGUAGE_COPY[currentLanguage];
+      }
     });
   }
 }
@@ -308,6 +458,8 @@ async function loadHealth() {
 
 async function bootstrap() {
   wireModeChips();
+  applyLanguageUI(currentLanguage);
+  updateLocalizedText();
   wireRegionSelector();
   wireControlTabs();
   wireLanguageSwitcher();
