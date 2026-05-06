@@ -63,8 +63,8 @@ def index() -> FileResponse:
     return FileResponse(STATIC_DIR / "index.html")
 
 
-app.mount("/", StaticFiles(directory=STATIC_DIR), name="static")
 register_routes(app)
+app.mount("/", StaticFiles(directory=STATIC_DIR), name="static")
 
 
 def run() -> None:
