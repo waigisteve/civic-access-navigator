@@ -95,6 +95,94 @@ body {
   color: #fff;
 }
 
+.language-toggle-btn[data-language="en"].is-active,
+.language-pill[data-language="en"].is-active {
+  background: #0b6e4f;
+  color: #fff;
+}
+
+.language-toggle-btn[data-language="sw"].is-active,
+.language-pill[data-language="sw"].is-active {
+  background: #1f4966;
+  color: #fff;
+}
+
+.language-toggle-btn[data-language="fr"].is-active,
+.language-pill[data-language="fr"].is-active {
+  background: #7a5c11;
+  color: #fff;
+}
+
+.language-toggle-btn[data-language="ar"].is-active,
+.language-pill[data-language="ar"].is-active {
+  background: #8b3d62;
+  color: #fff;
+}
+
+.language-toggle-btn[data-language="en"],
+.language-pill[data-language="en"] {
+  border-color: rgba(11, 110, 79, 0.28);
+}
+
+.language-toggle-btn[data-language="sw"],
+.language-pill[data-language="sw"] {
+  border-color: rgba(31, 73, 102, 0.28);
+}
+
+.language-toggle-btn[data-language="fr"],
+.language-pill[data-language="fr"] {
+  border-color: rgba(122, 92, 17, 0.28);
+}
+
+.language-toggle-btn[data-language="ar"],
+.language-pill[data-language="ar"] {
+  border-color: rgba(139, 61, 98, 0.28);
+}
+
+.language-toggle-btn[data-language="en"].is-active,
+.language-pill[data-language="en"].is-active {
+  background: #0b6e4f;
+  color: #fff;
+}
+
+.language-toggle-btn[data-language="sw"].is-active,
+.language-pill[data-language="sw"].is-active {
+  background: #1f4966;
+  color: #fff;
+}
+
+.language-toggle-btn[data-language="fr"].is-active,
+.language-pill[data-language="fr"].is-active {
+  background: #7a5c11;
+  color: #fff;
+}
+
+.language-toggle-btn[data-language="ar"].is-active,
+.language-pill[data-language="ar"].is-active {
+  background: #8b3d62;
+  color: #fff;
+}
+
+.language-toggle-btn[data-language="en"],
+.language-pill[data-language="en"] {
+  border-color: rgba(11, 110, 79, 0.28);
+}
+
+.language-toggle-btn[data-language="sw"],
+.language-pill[data-language="sw"] {
+  border-color: rgba(31, 73, 102, 0.28);
+}
+
+.language-toggle-btn[data-language="fr"],
+.language-pill[data-language="fr"] {
+  border-color: rgba(122, 92, 17, 0.28);
+}
+
+.language-toggle-btn[data-language="ar"],
+.language-pill[data-language="ar"] {
+  border-color: rgba(139, 61, 98, 0.28);
+}
+
 .page {
   width: min(1120px, calc(100% - 32px));
   margin: 0 auto;

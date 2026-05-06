@@ -105,7 +105,7 @@ function wireControlTabs() {
 }
 
 function wireLanguageSwitcher() {
-  const buttons = document.querySelectorAll(".language-pill");
+  const buttons = document.querySelectorAll(".language-pill, .language-toggle-btn");
   const copy = document.getElementById("language-copy");
   for (const button of buttons) {
     button.addEventListener("click", () => {
@@ -117,6 +117,7 @@ function wireLanguageSwitcher() {
 
 function applyLanguageUI(language) {
   document.documentElement.lang = language;
+  document.documentElement.dir = language === "ar" ? "rtl" : "ltr";
   const buttons = document.querySelectorAll(".language-toggle-btn, .language-pill");
   for (const button of buttons) {
     const active = button.dataset.language === language;
@@ -149,6 +150,17 @@ function updateLocalizedText() {
       tracks: "PeaceTech Tracks",
       resources: "Starter Resource Library",
       bot: "Navigator Bot",
+      deliverables: "Capstone Deliverables",
+      summary: "Summary",
+      context: "Context",
+      impact: "Impact partner",
+      prototype: "Prototype zone",
+      nextBuild: "Next build",
+      interactivePilot: "Interactive pilot",
+      projectPlan: "Project Plan",
+      pitch: "Pitch",
+      demoScript: "Demo Script",
+      proposal: "Proposal",
       overview:
         "Switch the interface for pilots across countries without changing the core product.",
     },
@@ -168,6 +180,17 @@ function updateLocalizedText() {
       tracks: "Njia za PeaceTech",
       resources: "Maktaba ya Rasilimali",
       bot: "Msaidizi wa Navigator",
+      deliverables: "Utoaji wa Mradi",
+      summary: "Muhtasari",
+      context: "Muktadha",
+      impact: "Mshirika wa athari",
+      prototype: "Eneo la mfano",
+      nextBuild: "Ujenzi unaofuata",
+      interactivePilot: "Jaribio la maingiliano",
+      projectPlan: "Mpango wa Mradi",
+      pitch: "Uwasilishaji",
+      demoScript: "Hati ya Onyesho",
+      proposal: "Pendekezo",
       overview:
         "Badilisha kiolesura kwa mataifa tofauti bila kubadili bidhaa kuu.",
     },
@@ -187,6 +210,17 @@ function updateLocalizedText() {
       tracks: "Axes PeaceTech",
       resources: "Bibliothèque de ressources",
       bot: "Bot Navigator",
+      deliverables: "Livrables du projet",
+      summary: "Résumé",
+      context: "Contexte",
+      impact: "Partenaire d'impact",
+      prototype: "Zone pilote",
+      nextBuild: "Prochaine étape",
+      interactivePilot: "Pilote interactif",
+      projectPlan: "Plan du projet",
+      pitch: "Présentation",
+      demoScript: "Script de démo",
+      proposal: "Proposition",
       overview:
         "Adaptez l’interface selon le pays sans changer le produit principal.",
     },
@@ -206,6 +240,17 @@ function updateLocalizedText() {
       tracks: "مسارات PeaceTech",
       resources: "مكتبة الموارد",
       bot: "مساعد Navigator",
+      deliverables: "مخرجات المشروع",
+      summary: "الملخص",
+      context: "السياق",
+      impact: "الشريك المؤثر",
+      prototype: "نطاق النموذج",
+      nextBuild: "البناء التالي",
+      interactivePilot: "تجربة تفاعلية",
+      projectPlan: "خطة المشروع",
+      pitch: "العرض",
+      demoScript: "نص العرض",
+      proposal: "المقترح",
       overview:
         "غيّر الواجهة حسب البلد مع بقاء المنتج الأساسي نفسه.",
     },
@@ -222,10 +267,29 @@ function updateLocalizedText() {
   setText("map-title", copy.mapTitle);
   setText("map-status", copy.mapStatus);
   setText("business-heading", copy.business);
+  setText("pilot-status", copy.interactivePilot);
   setText("project-heading", copy.project);
   setText("tracks-heading", copy.tracks);
   setText("resources-heading", copy.resources);
   setText("bot-heading", copy.bot);
+  setText("deliverables-heading", copy.deliverables);
+  setText("detail-summary-label", copy.summary);
+  setText("detail-context-label", copy.context);
+  setText("impact-partner-label", copy.impact);
+  setText("prototype-zone-label", copy.prototype);
+  setText("next-build-label", copy.nextBuild);
+  setText("control-languages", copy.languages);
+  setText("control-voice", copy.voice);
+  setText("control-feedback", copy.feedback);
+  setText("control-pilots", copy.pilots);
+  setText("deliverable-project-plan", copy.projectPlan);
+  setText("deliverable-pitch", copy.pitch);
+  setText("deliverable-demo-script", copy.demoScript);
+  setText("deliverable-proposal", copy.proposal);
+  const title = document.querySelector("title");
+  if (title) {
+    title.textContent = `Civic Access Navigator · ${LANGUAGE_LABELS[language] || "English"}`;
+  }
 }
 
 function speakSummary() {
@@ -383,9 +447,7 @@ function wireRegionSelector() {
       document.body.style.background =
         `linear-gradient(180deg, rgba(247, 243, 234, 0.82), rgba(239, 231, 216, 0.95)), url("/kenya-africa-bg.png")`;
       const mappedLanguage = REGION_LANGUAGE[region];
-      currentLanguage = mappedLanguage;
-      applyLanguageUI(mappedLanguage);
-      updateLocalizedText();
+      setLanguage(mappedLanguage);
       const copyNode = document.getElementById("language-copy");
       if (copyNode) {
         copyNode.textContent = LANGUAGE_COPY[currentLanguage];

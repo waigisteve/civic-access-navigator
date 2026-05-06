@@ -45,16 +45,16 @@
         </div>
         <dl class="hero-stats">
           <div>
-            <dt>Impact partner</dt>
-            <dd>Open Society Foundations</dd>
+            <dt id="impact-partner-label">Impact partner</dt>
+            <dd id="impact-partner-value">Open Society Foundations</dd>
           </div>
           <div>
-            <dt>Prototype zone</dt>
-            <dd>Kenya and Africa</dd>
+            <dt id="prototype-zone-label">Prototype zone</dt>
+            <dd id="prototype-zone-value">Kenya and Africa</dd>
           </div>
           <div>
-            <dt>Next build</dt>
-            <dd>Interactive bot and grounded Q&amp;A</dd>
+            <dt id="next-build-label">Next build</dt>
+            <dd id="next-build-value">Interactive bot and grounded Q&amp;A</dd>
           </div>
         </dl>
       </section>
@@ -91,29 +91,29 @@
       <section class="panel control-panel">
         <div class="panel-head">
           <h2 id="business-heading">Business Demo Controls</h2>
-          <span class="status">Interactive pilot</span>
+          <span class="status" id="pilot-status">Interactive pilot</span>
         </div>
         <div class="control-tabs" role="tablist" aria-label="Demo controls">
-          <button class="control-tab is-active" type="button" data-control="language" aria-pressed="true">
+          <button class="control-tab is-active" type="button" data-control="language" aria-pressed="true" id="control-languages">
             Languages
           </button>
-          <button class="control-tab" type="button" data-control="voice" aria-pressed="false">
+          <button class="control-tab" type="button" data-control="voice" aria-pressed="false" id="control-voice">
             Voiceover
           </button>
-          <button class="control-tab" type="button" data-control="feedback" aria-pressed="false">
+          <button class="control-tab" type="button" data-control="feedback" aria-pressed="false" id="control-feedback">
             Feedback
           </button>
-          <button class="control-tab" type="button" data-control="pilot" aria-pressed="false">
+          <button class="control-tab" type="button" data-control="pilot" aria-pressed="false" id="control-pilots">
             Pilot Views
           </button>
         </div>
         <div class="control-panels">
           <div class="control-pane is-active" data-pane="language">
             <div class="language-row" role="tablist" aria-label="Language switcher">
-              <button class="language-pill is-active" type="button" data-language="en">English</button>
-              <button class="language-pill" type="button" data-language="sw">Swahili</button>
-              <button class="language-pill" type="button" data-language="fr">French</button>
-              <button class="language-pill" type="button" data-language="ar">Arabic</button>
+              <button class="language-pill is-active" type="button" data-language="en" id="lang-en">English</button>
+              <button class="language-pill" type="button" data-language="sw" id="lang-sw">Swahili</button>
+              <button class="language-pill" type="button" data-language="fr" id="lang-fr">French</button>
+              <button class="language-pill" type="button" data-language="ar" id="lang-ar">Arabic</button>
             </div>
             <p class="control-copy" id="language-copy">
               Switch the interface for pilots across countries without changing the core product.
@@ -132,18 +132,18 @@
             <div class="feedback-grid" id="feedback-grid">
               <button class="feedback-card" type="button" data-feedback="clear">
                 <span class="feedback-icon clear"></span>
-                <strong>Clear</strong>
-                <small>Easy to understand at a glance</small>
+                <strong id="feedback-clear-title">Clear</strong>
+                <small id="feedback-clear-copy">Easy to understand at a glance</small>
               </button>
               <button class="feedback-card" type="button" data-feedback="useful">
                 <span class="feedback-icon useful"></span>
-                <strong>Useful</strong>
-                <small>Feels ready for a field pilot</small>
+                <strong id="feedback-useful-title">Useful</strong>
+                <small id="feedback-useful-copy">Feels ready for a field pilot</small>
               </button>
               <button class="feedback-card" type="button" data-feedback="needs-work">
                 <span class="feedback-icon needs-work"></span>
-                <strong>Needs work</strong>
-                <small>Good concept, more polish needed</small>
+                <strong id="feedback-needs-work-title">Needs work</strong>
+                <small id="feedback-needs-work-copy">Good concept, more polish needed</small>
               </button>
             </div>
             <p class="control-copy" id="feedback-copy">
@@ -224,7 +224,7 @@
 
       <section class="panel">
         <div class="panel-head">
-          <h2>Expansion Path</h2>
+          <h2 id="expansion-heading">Expansion Path</h2>
         </div>
         <div class="expansion-grid">
           <article class="expansion-card">
@@ -268,13 +268,13 @@
 
       <section class="panel">
         <div class="panel-head">
-          <h2>Capstone Deliverables</h2>
+          <h2 id="deliverables-heading">Capstone Deliverables</h2>
         </div>
         <div class="deliverables">
-          <a href="/files/PROJECT_PLAN.md" class="deliverable">Project Plan</a>
-          <a href="/files/PITCH.md" class="deliverable">Pitch</a>
-          <a href="/files/DEMO_SCRIPT.md" class="deliverable">Demo Script</a>
-          <a href="/files/docs/project-proposal.md" class="deliverable">Proposal</a>
+          <a href="/files/PROJECT_PLAN.md" class="deliverable" id="deliverable-project-plan">Project Plan</a>
+          <a href="/files/PITCH.md" class="deliverable" id="deliverable-pitch">Pitch</a>
+          <a href="/files/DEMO_SCRIPT.md" class="deliverable" id="deliverable-demo-script">Demo Script</a>
+          <a href="/files/docs/project-proposal.md" class="deliverable" id="deliverable-proposal">Proposal</a>
         </div>
       </section>
     </main>
@@ -285,11 +285,11 @@
         <p class="detail-eyebrow" id="detail-eyebrow">Detail view</p>
         <h2 id="detail-title">Resource detail</h2>
         <div class="detail-section">
-          <span class="detail-label">Summary</span>
+          <span class="detail-label" id="detail-summary-label">Summary</span>
           <p id="detail-summary" class="detail-summary"></p>
         </div>
         <div class="detail-section">
-          <span class="detail-label">Context</span>
+          <span class="detail-label" id="detail-context-label">Context</span>
           <div class="detail-meta" id="detail-meta"></div>
         </div>
       </div>
