@@ -164,6 +164,9 @@ function setLanguage(language) {
   setText("region-note", pack.regionNote);
   setText("map-title", pack.mapTitle);
   setText("map-status", pack.mapStatus);
+  setText("country-heading", pack.countryHeading);
+  setText("country-status", pack.countrySelectStatus);
+  setText("country-copy", currentCountry === "Kenya" ? pack.countryKenyaPilot : `${currentCountry} ${pack.countryPrototype}`);
   setText("business-heading", pack.businessHeading);
   setText("pilot-status", pack.pilotStatus);
   setText("project-heading", pack.projectHeading);
@@ -223,6 +226,18 @@ function setLanguage(language) {
   setText("detail-context-label", pack.detailContext);
   const botInput = document.getElementById("bot-input");
   if (botInput) botInput.placeholder = pack.botPlaceholder;
+  const pilotOneTitle = document.getElementById("pilot-one-title");
+  const pilotOneCopy = document.getElementById("pilot-one-copy");
+  const pilotTwoTitle = document.getElementById("pilot-two-title");
+  const pilotTwoCopy = document.getElementById("pilot-two-copy");
+  const pilotThreeTitle = document.getElementById("pilot-three-title");
+  const pilotThreeCopy = document.getElementById("pilot-three-copy");
+  if (pilotOneTitle) pilotOneTitle.textContent = pack.pilotOneTitle;
+  if (pilotOneCopy) pilotOneCopy.textContent = pack.pilotOneCopy;
+  if (pilotTwoTitle) pilotTwoTitle.textContent = pack.pilotTwoTitle;
+  if (pilotTwoCopy) pilotTwoCopy.textContent = pack.pilotTwoCopy;
+  if (pilotThreeTitle) pilotThreeTitle.textContent = pack.pilotThreeTitle;
+  if (pilotThreeCopy) pilotThreeCopy.textContent = pack.pilotThreeCopy;
   const title = document.querySelector("title");
   if (title) title.textContent = `Civic Access Navigator · ${LANGUAGE_LABELS[language] || "English"}`;
 }
@@ -230,6 +245,7 @@ function setLanguage(language) {
 function renderZoneMap() {
   const mapZones = document.getElementById("map-zones");
   mapZones.innerHTML = "";
+  const pack = LANG.copy[currentLanguage] || LANG.copy.en;
   for (const [zoneId, zone] of Object.entries(ZONES)) {
     const button = document.createElement("button");
     button.className = `map-zone ${zoneId}${currentZone === zoneId ? " is-active" : ""}`;
@@ -239,8 +255,8 @@ function renderZoneMap() {
     button.setAttribute("aria-pressed", currentZone === zoneId ? "true" : "false");
     button.innerHTML = `
       <span class="zone-dot"></span>
-      <strong>${zone.label}</strong>
-      <small>${zone.countries.join(", ")}</small>
+      <strong>${pack[zoneId === "swahili" ? "zoneSwahiliTitle" : zoneId === "english" ? "zoneEnglishTitle" : zoneId === "french" ? "zoneFrenchTitle" : "zoneArabicTitle"]}</strong>
+      <small>${pack[zoneId === "swahili" ? "zoneSwahiliCopy" : zoneId === "english" ? "zoneEnglishCopy" : zoneId === "french" ? "zoneFrenchCopy" : "zoneArabicCopy"]}</small>
     `;
     button.addEventListener("click", () => setZone(zoneId));
     mapZones.appendChild(button);
@@ -251,12 +267,13 @@ function renderCountries() {
   const strip = document.getElementById("country-strip");
   strip.innerHTML = "";
   const zone = ZONES[currentZone];
+  const pack = LANG.copy[currentLanguage] || LANG.copy.en;
   for (const country of zone.countries) {
     const chip = document.createElement("button");
     chip.className = `country-chip${currentCountry === country ? " is-active" : ""}`;
     chip.type = "button";
     chip.dataset.country = country;
-    chip.innerHTML = `<strong>${country}</strong>${country === "Kenya" ? "<small>pilot data</small>" : "<small>dry run</small>"}`;
+    chip.innerHTML = `<strong>${country}</strong>${country === "Kenya" ? `<small>${pack.countryPilotData}</small>` : `<small>${pack.countryPrototype}</small>`}`;
     chip.addEventListener("click", () => setCountry(country));
     strip.appendChild(chip);
   }
@@ -273,12 +290,12 @@ function setZone(zoneId) {
   const mapStatus = document.getElementById("map-status");
   mapStatus.textContent = LANG.copy[currentLanguage][zone.noteKey];
   const countryStatus = document.getElementById("country-status");
-  countryStatus.textContent = currentCountry === "Kenya" ? LANG.copy[currentLanguage].mapKenya : `${currentCountry} dry run`;
+  countryStatus.textContent = currentCountry === "Kenya" ? LANG.copy[currentLanguage].mapKenya : `${currentCountry} ${LANG.copy[currentLanguage].countryPrototype}`;
   const countryCopy = document.getElementById("country-copy");
   countryCopy.textContent =
-    currentCountry === "Kenya"
-      ? LANG.copy[currentLanguage].projectSummary
-      : `Dry run only: the app currently has live data for Kenya. ${currentCountry} is shown as a zoning prototype.`;
+      currentCountry === "Kenya"
+      ? LANG.copy[currentLanguage].countryKenyaPilot
+      : `${currentCountry}: ${LANG.copy[currentLanguage].countryPrototype}`;
 }
 
 function setCountry(country) {
@@ -288,10 +305,10 @@ function setCountry(country) {
   const countryCopy = document.getElementById("country-copy");
   if (country === "Kenya") {
     countryStatus.textContent = LANG.copy[currentLanguage].mapKenya;
-    countryCopy.textContent = LANG.copy[currentLanguage].projectSummary;
+    countryCopy.textContent = LANG.copy[currentLanguage].countryKenyaPilot;
   } else {
-    countryStatus.textContent = `${country} dry run`;
-    countryCopy.textContent = `Dry run only: the app currently has live data for Kenya. ${country} is included here to show the full Africa zoning path.`;
+    countryStatus.textContent = `${country} ${LANG.copy[currentLanguage].countryPrototype}`;
+    countryCopy.textContent = `${country}: ${LANG.copy[currentLanguage].countryPrototype}`;
   }
   loadResources();
 }
@@ -314,9 +331,11 @@ function speakSummary() {
     return;
   }
   window.speechSynthesis.cancel();
+  const pack = LANG.copy[currentLanguage] || LANG.copy.en;
   speechUtterance = new SpeechSynthesisUtterance(
-    `${LANGUAGE_LABELS[currentLanguage]}. ${REGION_COPY[currentRegion]} ${VOICE_SUMMARY[currentRegion]}`
+    `${LANGUAGE_LABELS[currentLanguage]}. ${pack.heroEyebrow}. ${pack.projectSummary}`
   );
+  speechUtterance.lang = currentLanguage;
   speechUtterance.rate = 1;
   speechUtterance.pitch = 1;
   window.speechSynthesis.speak(speechUtterance);
