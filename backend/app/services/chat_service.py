@@ -138,37 +138,56 @@ def _openai_answer(query: str, region: str | None, hits: list[SourceHit]) -> dic
     if not api_key:
         return local_answer(query, region=region)
 
-    try:
-        client = OpenAI(api_key=api_key)
-        source_block = "\n".join([f"- {hit.title}: {hit.summary} ({hit.url})" for hit in hits]) or "- No direct match found in curated sources."
-        response = client.responses.create(
-            model=os.getenv("OPENAI_MODEL", "gpt-5.5"),
-            tools=[{"type": "web_search"}],
-            input=[
-                {
-                    "role": "system",
-                    "content": (
-                        "You are Civic Access Navigator, a Kenya-first PeaceTech assistant. "
-                        "Answer the user's question naturally and directly. "
-                        "Prefer official, legal, and rights-focused sources. "
-                        "Use the provided curated context, but do not invent facts. "
-                        "If the evidence is weak, say so plainly."
-                    ),
-                },
-                {
-                    "role": "user",
-                    "content": (
-                        f"Question: {query}\n"
-                        f"Region: {region or 'kenya'}\n"
-                        f"Curated sources:\n{source_block}"
-                    ),
-                },
-            ],
+    client = OpenAI(api_key=api_key)
+    source_block = "\n".join([f"- {hit.title}: {hit.summary} ({hit.url})" for hit in hits]) or "- No direct match found in curated sources."
+    prompt = [
+        {
+            "role": "system",
+            "content": (
+                "You are Civic Access Navigator, a Kenya-first PeaceTech assistant. "
+                "Answer the user's question naturally and directly. "
+                "Prefer official, legal, and rights-focused sources. "
+                "Use the provided curated context, but do not invent facts. "
+                "If the evidence is weak, say so plainly."
+            ),
+        },
+        {
+            "role": "user",
+            "content": (
+                f"Question: {query}\n"
+                f"Region: {region or 'kenya'}\n"
+                f"Curated sources:\n{source_block}"
+            ),
+        },
+    ]
+
+    models_to_try = [
+        os.getenv("OPENAI_MODEL", "gpt-5.5"),
+        "gpt-4o-mini-search-preview",
+    ]
+
+    last_error = None
+    for model in models_to_try:
+        try:
+            response = client.responses.create(
+                model=model,
+                tools=[{"type": "web_search"}],
+                input=prompt,
+            )
+            answer = getattr(response, "output_text", "").strip()
+            if answer:
+                return _format_response(answer, hits, f"openai-web:{model}", "openai")
+        except Exception as exc:
+            last_error = exc
+
+    if last_error is not None:
+        return _format_response(
+            "OpenAI was configured, but the live response could not be generated just now. The app fell back to local grounding.",
+            hits,
+            "openai-error",
+            "openai",
         )
-        answer = getattr(response, "output_text", "") or "I could not generate a grounded answer."
-        return _format_response(answer, hits, "openai-web", "openai")
-    except Exception:
-        return local_answer(query, region=region)
+    return local_answer(query, region=region)
 
 
 def _gemini_answer(query: str, region: str | None, hits: list[SourceHit]) -> dict[str, Any]:
