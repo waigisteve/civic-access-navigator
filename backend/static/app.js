@@ -141,11 +141,13 @@ function wireFeedback() {
 function openDetail(title, summary, meta, eyebrow = "Detail view") {
   const overlay = document.getElementById("detail-overlay");
   document.getElementById("detail-title").textContent = title;
-  document.getElementById("detail-summary").textContent = summary;
+  document.getElementById("detail-summary").textContent =
+    summary || "This detail view shows the expanded pitch context, region focus, and the business rationale behind the selected item.";
   document.getElementById("detail-eyebrow").textContent = eyebrow;
   const metaNode = document.getElementById("detail-meta");
   metaNode.innerHTML = "";
-  for (const line of meta) {
+  const details = Array.isArray(meta) && meta.length > 0 ? meta : ["No extra metadata provided."];
+  for (const line of details) {
     const row = document.createElement("div");
     row.textContent = line;
     metaNode.appendChild(row);
@@ -205,7 +207,7 @@ async function loadResources() {
       openDetail(
         item.title,
         item.summary,
-        [`Theme: ${item.theme}`, `Audience: ${item.audience}`, `Region: ${currentRegion}`],
+        [`Theme: ${item.theme}`, `Audience: ${item.audience}`, `Region view: ${currentRegion}`],
         "Resource detail"
       );
     });

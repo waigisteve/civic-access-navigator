@@ -617,6 +617,12 @@ h1 {
   letter-spacing: 0.02em;
 }
 
+.detail-summary {
+  margin: 10px 0 0;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
 .detail-meta {
   margin-top: 16px;
   display: grid;
