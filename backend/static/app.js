@@ -85,6 +85,7 @@ let currentZone = "english";
 let currentCountry = "Kenya";
 let speechUtterance = null;
 let resourceCache = [];
+let availableVoices = [];
 
 async function loadProject() {
   const response = await fetch("/api/project");
@@ -332,13 +333,25 @@ function speakSummary() {
   }
   window.speechSynthesis.cancel();
   const pack = LANG.copy[currentLanguage] || LANG.copy.en;
-  speechUtterance = new SpeechSynthesisUtterance(
-    `${LANGUAGE_LABELS[currentLanguage]}. ${pack.heroEyebrow}. ${pack.projectSummary}`
-  );
+  speechUtterance = new SpeechSynthesisUtterance(`${pack.heroEyebrow}. ${pack.projectSummary}`);
   speechUtterance.lang = currentLanguage;
+  speechUtterance.voice = pickVoiceForLanguage(currentLanguage);
   speechUtterance.rate = 1;
   speechUtterance.pitch = 1;
   window.speechSynthesis.speak(speechUtterance);
+}
+
+function pickVoiceForLanguage(language) {
+  const voices = availableVoices.length > 0 ? availableVoices : window.speechSynthesis.getVoices();
+  const candidates = voices.filter((voice) => {
+    const lang = (voice.lang || "").toLowerCase();
+    const name = (voice.name || "").toLowerCase();
+    if (language === "sw") return lang.startsWith("sw") || name.includes("swahili");
+    if (language === "fr") return lang.startsWith("fr") || name.includes("french");
+    if (language === "ar") return lang.startsWith("ar") || name.includes("arabic");
+    return lang.startsWith("en");
+  });
+  return candidates[0] || voices.find((voice) => (voice.lang || "").toLowerCase().startsWith(language)) || voices[0] || null;
 }
 
 function stopVoiceover() {
@@ -579,6 +592,13 @@ async function bootstrap() {
   wireDetails();
   wireBusinessCards();
   wireBotPreview();
+  if ("speechSynthesis" in window) {
+    const refreshVoices = () => {
+      availableVoices = window.speechSynthesis.getVoices();
+    };
+    refreshVoices();
+    window.speechSynthesis.onvoiceschanged = refreshVoices;
+  }
   renderZoneMap();
   renderCountries();
   setZone(currentZone);
