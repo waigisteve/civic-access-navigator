@@ -189,6 +189,8 @@ function setLanguage(language) {
   setText("voice-play", pack.voicePlay);
   setText("voice-stop", pack.voiceStop);
   setText("voice-copy", pack.voiceCopy);
+  setText("bot-voice", pack.botVoiceQuery);
+  setText("bot-voice-status", pack.botVoiceHint);
   setText("feedback-copy", pack.feedbackCopy);
   setText("feedback-clear-title", pack.feedbackClearTitle);
   setText("feedback-clear-copy", pack.feedbackClearCopy);
@@ -509,6 +511,22 @@ async function loadResources() {
   }
 }
 
+function getVoiceRecognition() {
+  return window.SpeechRecognition || window.webkitSpeechRecognition || null;
+}
+
+function createVoiceRecognition() {
+  const Recognition = getVoiceRecognition();
+  if (!Recognition) {
+    return null;
+  }
+  const recognition = new Recognition();
+  recognition.continuous = false;
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+  return recognition;
+}
+
 function wireRegionSelector() {
   const buttons = document.querySelectorAll(".region-pill");
   const note = document.getElementById("region-note");
@@ -548,6 +566,70 @@ function wireBotPreview() {
   const form = document.getElementById("bot-form");
   const input = document.getElementById("bot-input");
   const feed = document.getElementById("chat-feed");
+  const voiceButton = document.getElementById("bot-voice");
+  const voiceStatus = document.getElementById("bot-voice-status");
+  const recognition = createVoiceRecognition();
+  let listening = false;
+
+  const refreshVoiceUI = () => {
+    const pack = LANG.copy[currentLanguage] || LANG.copy.en;
+    if (voiceButton) {
+      voiceButton.classList.toggle("is-active", listening);
+      voiceButton.textContent = listening ? pack.voiceStop : pack.botVoiceQuery;
+    }
+    if (voiceStatus) {
+      voiceStatus.textContent = listening ? pack.botVoiceListening : pack.botVoiceHint;
+    }
+  };
+
+  if (voiceButton) {
+    voiceButton.addEventListener("click", () => {
+      const pack = LANG.copy[currentLanguage] || LANG.copy.en;
+      if (!recognition) {
+        if (voiceStatus) {
+          voiceStatus.textContent = pack.botVoiceUnsupported;
+        }
+        return;
+      }
+      if (listening) {
+        recognition.stop();
+        listening = false;
+        refreshVoiceUI();
+        return;
+      }
+
+      recognition.lang = currentLanguage;
+      recognition.onstart = () => {
+        listening = true;
+        refreshVoiceUI();
+      };
+      recognition.onerror = () => {
+        listening = false;
+        refreshVoiceUI();
+      };
+      recognition.onend = () => {
+        listening = false;
+        refreshVoiceUI();
+      };
+      recognition.onresult = (event) => {
+        const transcript = event.results?.[0]?.[0]?.transcript?.trim();
+        if (!transcript) {
+          return;
+        }
+        input.value = transcript;
+        form.requestSubmit();
+      };
+      try {
+        recognition.start();
+      } catch (_error) {
+        listening = false;
+        refreshVoiceUI();
+        if (voiceStatus) {
+          voiceStatus.textContent = pack.botVoiceUnsupported;
+        }
+      }
+    });
+  }
 
   form.addEventListener("submit", (event) => {
     event.preventDefault();

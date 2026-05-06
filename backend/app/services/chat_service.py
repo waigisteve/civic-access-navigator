@@ -9,6 +9,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from openai import OpenAI
+
 
 CURATED_PATH = Path(__file__).resolve().parents[3] / "data" / "curated" / "osf_kenya_africa_sources.json"
 
@@ -137,18 +139,20 @@ def _openai_answer(query: str, region: str | None, hits: list[SourceHit]) -> dic
         return local_answer(query, region=region)
 
     try:
+        client = OpenAI(api_key=api_key)
         source_block = "\n".join([f"- {hit.title}: {hit.summary} ({hit.url})" for hit in hits]) or "- No direct match found in curated sources."
-        payload = {
-            "model": os.getenv("OPENAI_MODEL", "gpt-4o-mini-search-preview"),
-            "web_search_options": {},
-            "messages": [
+        response = client.responses.create(
+            model=os.getenv("OPENAI_MODEL", "gpt-5.5"),
+            tools=[{"type": "web_search"}],
+            input=[
                 {
                     "role": "system",
                     "content": (
-                        "You are Civic Access Navigator, a Kenya-first civic information assistant. "
-                        "Answer only with sourced facts from web results and the provided curated sources. "
-                        "If the evidence is weak, say so. Prefer official and rights-focused sources. "
-                        "Return concise plain-language answers with cited links."
+                        "You are Civic Access Navigator, a Kenya-first PeaceTech assistant. "
+                        "Answer the user's question naturally and directly. "
+                        "Prefer official, legal, and rights-focused sources. "
+                        "Use the provided curated context, but do not invent facts. "
+                        "If the evidence is weak, say so plainly."
                     ),
                 },
                 {
@@ -160,14 +164,8 @@ def _openai_answer(query: str, region: str | None, hits: list[SourceHit]) -> dic
                     ),
                 },
             ],
-        }
-        data = _http_json(
-            "POST",
-            "https://api.openai.com/v1/chat/completions",
-            payload,
-            headers={"Authorization": f"Bearer {api_key}"},
         )
-        answer = data["choices"][0]["message"]["content"]
+        answer = getattr(response, "output_text", "") or "I could not generate a grounded answer."
         return _format_response(answer, hits, "openai-web", "openai")
     except Exception:
         return local_answer(query, region=region)
