@@ -619,15 +619,29 @@ h1 {
 
 .detail-summary {
   margin: 10px 0 0;
-  color: var(--muted);
-  line-height: 1.65;
+  color: var(--ink);
+  line-height: 1.7;
+  font-size: 1.02rem;
+}
+
+.detail-section + .detail-section {
+  margin-top: 16px;
+}
+
+.detail-label {
+  display: inline-flex;
+  margin-bottom: 6px;
+  color: var(--accent);
+  font-size: 0.88rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
 }
 
 .detail-meta {
-  margin-top: 16px;
   display: grid;
   gap: 8px;
   color: var(--muted);
+  line-height: 1.55;
 }
 
 @media (max-width: 900px) {

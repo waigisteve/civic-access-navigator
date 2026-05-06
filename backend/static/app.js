@@ -141,7 +141,8 @@ function wireFeedback() {
 function openDetail(title, summary, meta, eyebrow = "Detail view") {
   const overlay = document.getElementById("detail-overlay");
   document.getElementById("detail-title").textContent = title;
-  document.getElementById("detail-summary").textContent =
+  const summaryNode = document.getElementById("detail-summary");
+  summaryNode.textContent =
     summary || "This detail view shows the expanded pitch context, region focus, and the business rationale behind the selected item.";
   document.getElementById("detail-eyebrow").textContent = eyebrow;
   const metaNode = document.getElementById("detail-meta");
@@ -152,11 +153,14 @@ function openDetail(title, summary, meta, eyebrow = "Detail view") {
     row.textContent = line;
     metaNode.appendChild(row);
   }
+  overlay.style.display = "grid";
   overlay.hidden = false;
 }
 
 function closeDetail() {
-  document.getElementById("detail-overlay").hidden = true;
+  const overlay = document.getElementById("detail-overlay");
+  overlay.hidden = true;
+  overlay.style.display = "";
 }
 
 function wireDetails() {
