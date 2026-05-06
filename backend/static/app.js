@@ -186,6 +186,9 @@ function setLanguage(language) {
   setText("control-feedback", pack.controlFeedback);
   setText("control-pilots", pack.controlPilots);
   setText("language-copy", pack.languageCopy);
+  setText("voice-play", pack.voicePlay);
+  setText("voice-stop", pack.voiceStop);
+  setText("voice-copy", pack.voiceCopy);
   setText("feedback-copy", pack.feedbackCopy);
   setText("feedback-clear-title", pack.feedbackClearTitle);
   setText("feedback-clear-copy", pack.feedbackClearCopy);
@@ -368,25 +371,35 @@ function stopVoiceover() {
 }
 
 function wireVoiceControls() {
-  document.getElementById("voice-play").addEventListener("click", speakSummary);
-  document.getElementById("voice-stop").addEventListener("click", stopVoiceover);
+  const play = document.getElementById("voice-play");
+  const stop = document.getElementById("voice-stop");
+  play.addEventListener("click", speakSummary);
+  stop.addEventListener("click", stopVoiceover);
 }
 
 function wireFeedback() {
   const cards = document.querySelectorAll(".feedback-card");
   const copy = document.getElementById("feedback-copy");
-  const feedbackText = {
-    clear: "Clear feedback helps us refine layout, wording, and sponsor-ready presentation.",
-    useful: "Useful feedback signals the current design is strong enough for pilot review.",
-    "needs-work": "Needs work feedback captures where the prototype should sharpen before field testing.",
-  };
 
   for (const card of cards) {
     card.addEventListener("click", () => {
       for (const other of cards) {
         other.classList.toggle("is-active", other === card);
       }
-      copy.textContent = feedbackText[card.dataset.feedback];
+      const pack = LANG.copy[currentLanguage] || LANG.copy.en;
+      const titleKey =
+        card.dataset.feedback === "clear"
+          ? "feedbackClearTitle"
+          : card.dataset.feedback === "useful"
+            ? "feedbackUsefulTitle"
+            : "feedbackNeedsWorkTitle";
+      const copyKey =
+        card.dataset.feedback === "clear"
+          ? "feedbackClearCopy"
+          : card.dataset.feedback === "useful"
+            ? "feedbackUsefulCopy"
+            : "feedbackNeedsWorkCopy";
+      copy.textContent = `${pack[titleKey]} - ${pack[copyKey]}`;
     });
   }
 }
