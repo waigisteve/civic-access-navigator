@@ -97,6 +97,30 @@ h1 {
   margin-top: 22px;
 }
 
+.mode-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.mode-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(255, 253, 248, 0.76);
+  box-shadow: 0 8px 18px rgba(16, 23, 26, 0.08);
+  cursor: pointer;
+}
+
+.mode-chip.is-active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
 .region-pill,
 .bot-composer button {
   border: 1px solid var(--line);
@@ -246,6 +270,29 @@ h1 {
   box-shadow: var(--shadow);
 }
 
+.business-panel {
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.92), rgba(247, 243, 234, 0.88));
+}
+
+.business-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.business-card {
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 10px 24px rgba(16, 23, 26, 0.08);
+}
+
+.business-card.primary {
+  background: linear-gradient(135deg, rgba(11,110,79,0.12), rgba(255,255,255,0.95));
+}
+
 .bot-copy {
   color: var(--muted);
   line-height: 1.55;
@@ -359,7 +406,9 @@ h1 {
   }
 
   .split-panel,
-  .expansion-grid {
+  .expansion-grid,
+  .business-grid,
+  .project-overview {
     grid-template-columns: 1fr;
   }
 

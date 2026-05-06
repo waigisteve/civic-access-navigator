@@ -1,6 +1,6 @@
 const REGION_COPY = {
   kenya: "Start with Kenya, then expand to East Africa and the wider continent.",
-  "east-africa": "Connect Kenya to neighboring regional patterns and cross-border civic context.",
+  "east-africa": "Connect Kenya to neighboring regional patterns and cross-border peacebuilding context.",
   africa: "Use the same interaction model across the continent with region-specific source sets.",
 };
 
@@ -24,6 +24,17 @@ async function loadProject() {
     const listItem = document.createElement("li");
     listItem.textContent = item;
     missionFocus.appendChild(listItem);
+  }
+}
+
+function wireModeChips() {
+  const chips = document.querySelectorAll(".mode-chip");
+  for (const chip of chips) {
+    chip.addEventListener("click", () => {
+      for (const other of chips) {
+        other.classList.toggle("is-active", other === chip);
+      }
+    });
   }
 }
 
@@ -126,6 +137,7 @@ async function loadHealth() {
 }
 
 async function bootstrap() {
+  wireModeChips();
   wireRegionSelector();
   wireBotPreview();
   await Promise.all([loadProject(), loadResources(), loadHealth()]);

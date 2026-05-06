@@ -1,8 +1,8 @@
 # Civic Access Navigator
 
-Civic Access Navigator is a capstone project aligned with the Open Society Foundations mission of advancing rights, dignity, democratic participation, and accountable governance.
+Civic Access Navigator is a PeaceTech capstone aligned with the Open Society Foundations mission and the Transformative Peace in Africa initiative.
 
-The project helps users find and understand trusted civic information through a simple AI-assisted interface. The initial scope is intentionally practical: a lightweight web application that can organize approved resources, surface key themes, and support plain-language explanations.
+The project helps users explore trusted, locally grounded peace and civic information through a simple AI-assisted interface. The initial scope is intentionally practical: a lightweight web application that can organize approved resources, surface key themes, and support plain-language explanations for conflict-affected communities.
 
 ## Working Guidance
 
@@ -18,25 +18,25 @@ Key expectations from that file:
 
 ## Problem
 
-Public-interest information is often fragmented, technical, and difficult to navigate. Students, journalists, community groups, and ordinary citizens may struggle to find relevant civic resources quickly or understand what action to take next.
+Peacebuilding information is often fragmented, technical, and disconnected from local realities. Communities affected by conflict, along with advocates and field partners, may struggle to find relevant resources quickly or understand what action to take next.
 
 ## Proposed Solution
 
-Build an AI-assisted civic information navigator that:
+Build an AI-assisted peace and civic information navigator that:
 
-- organizes trusted civic resources
+- organizes trusted peace, civic, and accountability resources
 - explains information in plain language
-- highlights themes connected to rights, governance, and participation
-- provides a simple foundation for later document retrieval and question answering
+- highlights themes connected to voice and accountability, dignity and opportunity, and peace and community
+- provides a simple foundation for later document retrieval, grounded question answering, and regional expansion
 
 ## Why It Fits OSF
 
 This project supports:
 
-- democratic practice through easier access to civic information
+- transformative peace through easier access to trusted local information
 - rights and dignity through clearer explanations of public-interest resources
-- equity in governance by lowering information barriers
-- future-facing civic participation through responsible use of AI tools
+- equitable opportunity by lowering information barriers for affected communities
+- community-led peacebuilding through responsible use of AI tools
 
 ## Repository Layout
 
@@ -44,7 +44,7 @@ This project supports:
 - `backend/` FastAPI starter application
 - `backend/app/` API code and future service modules
 - `backend/static/` minimal front-end prototype served by the backend
-- `data/` placeholder space for curated civic resources
+- `data/` placeholder space for curated peace and civic resources
 - `tests/` backend test coverage
 - `notes/` working notes, prompts, and research placeholders
 
@@ -129,6 +129,30 @@ Provider-specific settings:
 - OpenAI: `OPENAI_API_KEY`, optional `OPENAI_MODEL`
 - Gemini: `GEMINI_API_KEY`
 - Ollama: `OLLAMA_BASE_URL`, optional `OLLAMA_MODEL`
+
+## PeaceTech Tracks
+
+The product is being realigned toward OSF's PeaceTech invitation tracks:
+
+- Voice and accountability
+- Dignity and opportunity
+- Peace and community
+
+The first prototype zone remains Kenya, with expansion planned across Africa and OSF's conflict-affected regions.
+
+## Business Case
+
+The winning case for this project is that it is not a one-country chatbot. It is a reusable peace-navigation platform that can localize by region, language, and local meaning while keeping a shared trust layer for citations, curated sources, and accountable answers.
+
+The core value proposition is:
+
+- one interface
+- many countries
+- many languages
+- many doctrines and community definitions of peace
+- one grounded information backbone
+
+That makes it easier to scale from Kenya into the Sahel, DRC, Sudan, Mozambique, and other OSF contexts without rebuilding the product from scratch.
 
 ## Next Build Steps
 

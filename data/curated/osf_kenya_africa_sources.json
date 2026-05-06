@@ -5,8 +5,8 @@
     "region": "africa",
     "source_type": "website",
     "url": "https://www.opensocietyfoundations.org/what-we-do",
-    "summary": "OSF describes its work across rights and dignity, democratic practice, and equity in governance.",
-    "keywords": ["rights", "dignity", "democratic practice", "equity", "governance", "open society"]
+    "summary": "OSF describes its work across rights and dignity, democratic practice, and equity in governance as part of its public-interest mission.",
+    "keywords": ["rights", "dignity", "democratic practice", "equity", "governance", "open society", "peace"]
   },
   {
     "id": "kenya-civic-rights",
@@ -32,8 +32,8 @@
     "region": "east-africa",
     "source_type": "curated-note",
     "url": "internal://east-africa-participation",
-    "summary": "A regional guide for comparing participation pathways, governance issues, and civic access questions.",
-    "keywords": ["east africa", "participation", "governance", "regional", "citizenship"]
+    "summary": "A regional guide for comparing participation pathways, governance issues, peacebuilding questions, and civic access questions.",
+    "keywords": ["east africa", "participation", "governance", "regional", "citizenship", "peacebuilding"]
   },
   {
     "id": "africa-expanded-context",
@@ -41,7 +41,7 @@
     "region": "africa",
     "source_type": "curated-note",
     "url": "internal://africa-expanded-context",
-    "summary": "A broad Africa-wide framing for expanding civic access tools beyond the Kenya pilot.",
-    "keywords": ["africa", "expansion", "continental", "civic access", "governance"]
+    "summary": "A broad Africa-wide framing for expanding peace and civic access tools beyond the Kenya pilot.",
+    "keywords": ["africa", "expansion", "continental", "civic access", "governance", "peace"]
   }
 ]
