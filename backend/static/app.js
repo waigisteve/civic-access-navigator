@@ -161,6 +161,31 @@ function updateLocalizedText() {
       pitch: "Pitch",
       demoScript: "Demo Script",
       proposal: "Proposal",
+      expansionHeading: "Expansion Path",
+      expansionOneTitle: "Kenya pilot",
+      expansionOneCopy:
+        "Start with country-level peace and civic information, participation channels, and trusted public-interest sources.",
+      expansionTwoTitle: "East Africa",
+      expansionTwoCopy:
+        "Add regional peacebuilding comparisons, cross-border governance context, and multilingual assistance.",
+      expansionThreeTitle: "Africa-wide",
+      expansionThreeCopy:
+        "Expand into a continent map of curated resources, theme filters, and source-grounded guidance.",
+      businessCaseHeading: "Winning Business Case",
+      businessOneTitle: "Reusable peace layer",
+      businessOneCopy:
+        "One core product can localize across countries, languages, and peace traditions without rebuilding from zero.",
+      businessTwoTitle: "Trust at the center",
+      businessTwoCopy:
+        "Citations, curated sources, and region-aware prompting keep the assistant useful and accountable.",
+      businessThreeTitle: "Visual by design",
+      businessThreeCopy:
+        "The interface is built to be cinematic, graphic, and mobile-friendly so it can hold attention quickly.",
+      businessFourTitle: "Expansion ready",
+      businessFourCopy:
+        "Kenya is the start, but the same structure can expand into the Sahel, DRC, Sudan, Mozambique, and beyond.",
+      projectSummary:
+        "A PeaceTech pilot for field partners and communities that need trusted civic guidance, region-aware explanations, and a public-interest interface that feels practical on the ground.",
       overview:
         "Switch the interface for pilots across countries without changing the core product.",
     },
@@ -191,6 +216,31 @@ function updateLocalizedText() {
       pitch: "Uwasilishaji",
       demoScript: "Hati ya Onyesho",
       proposal: "Pendekezo",
+      expansionHeading: "Njia ya Upanuzi",
+      expansionOneTitle: "Jaribio la Kenya",
+      expansionOneCopy:
+        "Anza na taarifa za amani na uraia za nchi, njia za ushiriki, na vyanzo vinavyoaminika vya maslahi ya umma.",
+      expansionTwoTitle: "Afrika Mashariki",
+      expansionTwoCopy:
+        "Ongeza ulinganisho wa ujenzi wa amani wa kanda, muktadha wa utawala wa mipakani, na msaada wa lugha nyingi.",
+      expansionThreeTitle: "Afrika nzima",
+      expansionThreeCopy:
+        "Panua kuwa ramani ya bara yenye rasilimali zilizochaguliwa, vichujio vya mada, na mwongozo unaotokana na vyanzo.",
+      businessCaseHeading: "Kesi ya Biashara Inayoshinda",
+      businessOneTitle: "Tabaka la amani linalotumika tena",
+      businessOneCopy:
+        "Bidhaa moja kuu inaweza kubadilishwa kwa nchi, lugha, na mila za amani bila kujengwa upya kutoka sifuri.",
+      businessTwoTitle: "Uaminifu katikati",
+      businessTwoCopy:
+        "Nukuu, vyanzo vilivyochaguliwa, na mwongozo unaozingatia eneo huifanya msaidizi kuwa muhimu na mwenye uwajibikaji.",
+      businessThreeTitle: "Muonekano kwa muundo",
+      businessThreeCopy:
+        "Kiolesura kimejengwa kiwe cha kuvutia, cha picha, na rafiki kwa simu ili kishike macho haraka.",
+      businessFourTitle: "Tayari kwa upanuzi",
+      businessFourCopy:
+        "Kenya ndio mwanzo, lakini muundo huo unaweza kupanuka hadi Sahel, DRC, Sudan, Mozambique, na kwingineko.",
+      projectSummary:
+        "Jaribio la PeaceTech kwa washirika wa uga na jamii zinazohitaji mwongozo unaoaminika, maelezo yanayoendana na eneo, na kiolesura cha maslahi ya umma kinachoonekana kufanya kazi uwanjani.",
       overview:
         "Badilisha kiolesura kwa mataifa tofauti bila kubadili bidhaa kuu.",
     },
@@ -221,6 +271,31 @@ function updateLocalizedText() {
       pitch: "Présentation",
       demoScript: "Script de démo",
       proposal: "Proposition",
+      expansionHeading: "Parcours d’expansion",
+      expansionOneTitle: "Pilote Kenya",
+      expansionOneCopy:
+        "Commencez avec des informations civiles et de paix au niveau national, des canaux de participation et des sources fiables.",
+      expansionTwoTitle: "Afrique de l’Est",
+      expansionTwoCopy:
+        "Ajoutez des comparaisons régionales de consolidation de la paix, un contexte de gouvernance transfrontalière et une aide multilingue.",
+      expansionThreeTitle: "Afrique entière",
+      expansionThreeCopy:
+        "Étendez-le en carte continentale de ressources sélectionnées, filtres thématiques et conseils fondés sur les sources.",
+      businessCaseHeading: "Cas d’affaires gagnant",
+      businessOneTitle: "Couche de paix réutilisable",
+      businessOneCopy:
+        "Un seul produit peut se localiser selon les pays, les langues et les traditions de paix sans repartir de zéro.",
+      businessTwoTitle: "La confiance au centre",
+      businessTwoCopy:
+        "Les citations, les sources curées et les invites tenant compte de la région gardent l’assistant utile et responsable.",
+      businessThreeTitle: "Conçu pour le visuel",
+      businessThreeCopy:
+        "L’interface est cinématographique, graphique et mobile-friendly pour capter rapidement l’attention.",
+      businessFourTitle: "Prêt à s’étendre",
+      businessFourCopy:
+        "Le Kenya est le point de départ, mais la structure peut s’étendre au Sahel, à la RDC, au Soudan, au Mozambique et au-delà.",
+      projectSummary:
+        "Un pilote PeaceTech pour les partenaires de terrain et les communautés qui ont besoin de conseils civiques fiables, d’explications adaptées à la région et d’une interface d’intérêt public utile sur le terrain.",
       overview:
         "Adaptez l’interface selon le pays sans changer le produit principal.",
     },
@@ -251,6 +326,31 @@ function updateLocalizedText() {
       pitch: "العرض",
       demoScript: "نص العرض",
       proposal: "المقترح",
+      expansionHeading: "مسار التوسع",
+      expansionOneTitle: "تجربة كينيا",
+      expansionOneCopy:
+        "ابدأ بمعلومات السلام والمواطنة على مستوى البلد، وقنوات المشاركة، ومصادر موثوقة للمصلحة العامة.",
+      expansionTwoTitle: "شرق إفريقيا",
+      expansionTwoCopy:
+        "أضف مقارنات إقليمية لبناء السلام، وسياق الحوكمة عبر الحدود، ومساعدة متعددة اللغات.",
+      expansionThreeTitle: "إفريقيا بالكامل",
+      expansionThreeCopy:
+        "وسّعه إلى خريطة قارية للموارد المختارة وفلاتر الموضوعات وإرشادات مبنية على المصادر.",
+      businessCaseHeading: "حالة عمل رابحة",
+      businessOneTitle: "طبقة سلام قابلة لإعادة الاستخدام",
+      businessOneCopy:
+        "يمكن لمنتج واحد أن يتكيف مع البلدان واللغات وتقليدات السلام دون إعادة البناء من الصفر.",
+      businessTwoTitle: "الثقة في المركز",
+      businessTwoCopy:
+        "الاستشهادات والمصادر المختارة والتوجيه المرتبط بالمنطقة تجعل المساعد مفيدًا ومسؤولًا.",
+      businessThreeTitle: "مصمم بصريًا",
+      businessThreeCopy:
+        "الواجهة مصممة لتكون جذابة ومرئية ومتوافقة مع الهاتف لتلفت الانتباه بسرعة.",
+      businessFourTitle: "جاهز للتوسع",
+      businessFourCopy:
+        "كينيا هي البداية، لكن نفس البنية يمكن أن تتوسع إلى الساحل، والكونغو الديمقراطية، والسودان، وموزمبيق، وغيرها.",
+      projectSummary:
+        "تجربة PeaceTech للشركاء الميدانيين والمجتمعات التي تحتاج إلى إرشاد مدني موثوق، وتفسيرات مرتبطة بالمنطقة، وواجهة منفعة عامة مناسبة للعمل الميداني.",
       overview:
         "غيّر الواجهة حسب البلد مع بقاء المنتج الأساسي نفسه.",
     },
@@ -286,6 +386,24 @@ function updateLocalizedText() {
   setText("deliverable-pitch", copy.pitch);
   setText("deliverable-demo-script", copy.demoScript);
   setText("deliverable-proposal", copy.proposal);
+  setText("expansion-heading", copy.expansionHeading);
+  setText("expansion-one-title", copy.expansionOneTitle);
+  setText("expansion-one-copy", copy.expansionOneCopy);
+  setText("expansion-two-title", copy.expansionTwoTitle);
+  setText("expansion-two-copy", copy.expansionTwoCopy);
+  setText("expansion-three-title", copy.expansionThreeTitle);
+  setText("expansion-three-copy", copy.expansionThreeCopy);
+  setText("business-case-heading", copy.businessCaseHeading);
+  setText("business-one-title", copy.businessOneTitle);
+  setText("business-one-copy", copy.businessOneCopy);
+  setText("business-two-title", copy.businessTwoTitle);
+  setText("business-two-copy", copy.businessTwoCopy);
+  setText("business-three-title", copy.businessThreeTitle);
+  setText("business-three-copy", copy.businessThreeCopy);
+  setText("business-four-title", copy.businessFourTitle);
+  setText("business-four-copy", copy.businessFourCopy);
+  setText("project-summary", copy.projectSummary);
+  setText("language-copy", copy.overview);
   const title = document.querySelector("title");
   if (title) {
     title.textContent = `Civic Access Navigator · ${LANGUAGE_LABELS[language] || "English"}`;
