@@ -359,7 +359,7 @@ h1 {
 
 .map-shell {
   position: relative;
-  min-height: 320px;
+  min-height: 420px;
   padding: 22px;
   border-radius: 18px;
   border: 1px solid var(--line);
@@ -382,11 +382,17 @@ h1 {
   pointer-events: none;
 }
 
-.map-zone {
-  position: absolute;
+.map-zones {
   display: grid;
-  gap: 4px;
-  width: 190px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.map-zone {
+  display: grid;
+  gap: 6px;
+  min-height: 124px;
   padding: 16px;
   border-radius: 18px;
   border: 1px solid var(--line);
@@ -406,26 +412,24 @@ h1 {
 }
 
 .map-zone.is-active {
-  transform: translateY(-2px) scale(1.02);
+  transform: translateY(-2px);
   box-shadow: 0 18px 34px rgba(16, 23, 26, 0.16);
 }
 
-.map-zone.kenya {
-  top: 48px;
-  left: 60px;
+.map-zone.swahili {
   border-color: rgba(11, 110, 79, 0.3);
 }
 
-.map-zone.east-africa {
-  top: 120px;
-  left: 285px;
+.map-zone.english {
   border-color: rgba(31, 73, 102, 0.3);
 }
 
-.map-zone.africa {
-  top: 196px;
-  left: 520px;
-  border-color: rgba(203, 155, 49, 0.3);
+.map-zone.french {
+  border-color: rgba(122, 92, 17, 0.3);
+}
+
+.map-zone.arabic {
+  border-color: rgba(139, 61, 98, 0.3);
 }
 
 .zone-dot {
@@ -435,16 +439,51 @@ h1 {
   background: currentColor;
 }
 
-.map-zone.kenya .zone-dot {
+.map-zone.swahili .zone-dot {
   color: #0b6e4f;
 }
 
-.map-zone.east-africa .zone-dot {
+.map-zone.english .zone-dot {
   color: #1f4966;
 }
 
-.map-zone.africa .zone-dot {
-  color: #cb9b31;
+.map-zone.french .zone-dot {
+  color: #7a5c11;
+}
+
+.map-zone.arabic .zone-dot {
+  color: #8b3d62;
+}
+
+.map-country-panel {
+  padding: 18px 0 0;
+}
+
+.country-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.country-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.92);
+  font: inherit;
+  cursor: pointer;
+}
+
+.country-chip.is-active {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+
+.country-chip small {
+  color: var(--muted);
 }
 
 .map-legend {
@@ -475,12 +514,20 @@ h1 {
   background: #0b6e4f;
 }
 
-.legend-swatch.east-africa {
+.legend-swatch.english {
   background: #1f4966;
 }
 
-.legend-swatch.africa {
+.legend-swatch.swahili {
+  background: #0b6e4f;
+}
+
+.legend-swatch.french {
   background: #cb9b31;
+}
+
+.legend-swatch.arabic {
+  background: #8b3d62;
 }
 
 .control-tabs {
@@ -959,28 +1006,6 @@ h1 {
   .map-shell {
     min-height: 380px;
   }
-
-  .map-zone.kenya,
-  .map-zone.east-africa,
-  .map-zone.africa {
-    left: auto;
-    right: auto;
-  }
-
-  .map-zone.kenya {
-    top: 28px;
-    left: 18px;
-  }
-
-  .map-zone.east-africa {
-    top: 130px;
-    left: 28%;
-  }
-
-  .map-zone.africa {
-    top: 232px;
-    left: 8%;
-  }
 }
 
 @media (max-width: 640px) {
@@ -1027,26 +1052,7 @@ h1 {
     padding: 16px;
   }
 
-  .map-zone {
-    width: calc(100% - 32px);
-  }
-
-  .map-zone.kenya,
-  .map-zone.east-africa,
-  .map-zone.africa {
-    left: 16px;
-    right: 16px;
-  }
-
-  .map-zone.kenya {
-    top: 18px;
-  }
-
-  .map-zone.east-africa {
-    top: 138px;
-  }
-
-  .map-zone.africa {
-    top: 258px;
+  .map-zones {
+    grid-template-columns: 1fr 1fr;
   }
 }

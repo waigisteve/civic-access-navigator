@@ -34,6 +34,41 @@ const REGION_MAP = {
   africa: "africa",
 };
 
+const ZONES = {
+  swahili: {
+    language: "sw",
+    label: "Swahili-speaking",
+    noteKey: "mapSwahili",
+    countries: ["Kenya", "Tanzania", "Uganda", "Rwanda", "DR Congo"],
+    accent: "#0b6e4f",
+    accentSoft: "#d9efe6",
+  },
+  english: {
+    language: "en",
+    label: "English-speaking",
+    noteKey: "mapEnglish",
+    countries: ["Kenya", "Uganda", "Nigeria", "Ghana", "South Africa"],
+    accent: "#1f4966",
+    accentSoft: "#dce9f2",
+  },
+  french: {
+    language: "fr",
+    label: "French-speaking",
+    noteKey: "mapFrench",
+    countries: ["DR Congo", "Senegal", "Cote d'Ivoire", "Cameroon", "Benin"],
+    accent: "#7a5c11",
+    accentSoft: "#f5e9c8",
+  },
+  arabic: {
+    language: "ar",
+    label: "Arabic-speaking",
+    noteKey: "mapArabic",
+    countries: ["Sudan", "Egypt", "Morocco", "Algeria", "Somalia"],
+    accent: "#8b3d62",
+    accentSoft: "#f2dce7",
+  },
+};
+
 const LANG = window.CAN_I18N;
 const LANGUAGE_COPY = Object.fromEntries(Object.entries(LANG.copy).map(([key, value]) => [key, value.languageCopy]));
 const LANGUAGE_LABELS = Object.fromEntries(Object.entries(LANG.languages).map(([key, value]) => [key, value.label]));
@@ -46,7 +81,10 @@ const VOICE_SUMMARY = {
 
 let currentRegion = "kenya";
 let currentLanguage = "en";
+let currentZone = "english";
+let currentCountry = "Kenya";
 let speechUtterance = null;
+let resourceCache = [];
 
 async function loadProject() {
   const response = await fetch("/api/project");
@@ -189,10 +227,86 @@ function setLanguage(language) {
   if (title) title.textContent = `Civic Access Navigator · ${LANGUAGE_LABELS[language] || "English"}`;
 }
 
+function renderZoneMap() {
+  const mapZones = document.getElementById("map-zones");
+  mapZones.innerHTML = "";
+  for (const [zoneId, zone] of Object.entries(ZONES)) {
+    const button = document.createElement("button");
+    button.className = `map-zone ${zoneId}${currentZone === zoneId ? " is-active" : ""}`;
+    button.type = "button";
+    button.dataset.zone = zoneId;
+    button.dataset.language = zone.language;
+    button.setAttribute("aria-pressed", currentZone === zoneId ? "true" : "false");
+    button.innerHTML = `
+      <span class="zone-dot"></span>
+      <strong>${zone.label}</strong>
+      <small>${zone.countries.join(", ")}</small>
+    `;
+    button.addEventListener("click", () => setZone(zoneId));
+    mapZones.appendChild(button);
+  }
+}
+
+function renderCountries() {
+  const strip = document.getElementById("country-strip");
+  strip.innerHTML = "";
+  const zone = ZONES[currentZone];
+  for (const country of zone.countries) {
+    const chip = document.createElement("button");
+    chip.className = `country-chip${currentCountry === country ? " is-active" : ""}`;
+    chip.type = "button";
+    chip.dataset.country = country;
+    chip.innerHTML = `<strong>${country}</strong>${country === "Kenya" ? "<small>pilot data</small>" : "<small>dry run</small>"}`;
+    chip.addEventListener("click", () => setCountry(country));
+    strip.appendChild(chip);
+  }
+}
+
+function setZone(zoneId) {
+  currentZone = zoneId;
+  const zone = ZONES[zoneId];
+  currentCountry = zone.countries.includes("Kenya") ? "Kenya" : zone.countries[0];
+  currentLanguage = zone.language;
+  renderZoneMap();
+  renderCountries();
+  setLanguage(zone.language);
+  const mapStatus = document.getElementById("map-status");
+  mapStatus.textContent = LANG.copy[currentLanguage][zone.noteKey];
+  const countryStatus = document.getElementById("country-status");
+  countryStatus.textContent = currentCountry === "Kenya" ? LANG.copy[currentLanguage].mapKenya : `${currentCountry} dry run`;
+  const countryCopy = document.getElementById("country-copy");
+  countryCopy.textContent =
+    currentCountry === "Kenya"
+      ? LANG.copy[currentLanguage].projectSummary
+      : `Dry run only: the app currently has live data for Kenya. ${currentCountry} is shown as a zoning prototype.`;
+}
+
+function setCountry(country) {
+  currentCountry = country;
+  renderCountries();
+  const countryStatus = document.getElementById("country-status");
+  const countryCopy = document.getElementById("country-copy");
+  if (country === "Kenya") {
+    countryStatus.textContent = LANG.copy[currentLanguage].mapKenya;
+    countryCopy.textContent = LANG.copy[currentLanguage].projectSummary;
+  } else {
+    countryStatus.textContent = `${country} dry run`;
+    countryCopy.textContent = `Dry run only: the app currently has live data for Kenya. ${country} is included here to show the full Africa zoning path.`;
+  }
+  loadResources();
+}
+
 function wireLanguageSwitcher() {
   const buttons = document.querySelectorAll(".language-pill, .language-toggle-btn");
   for (const button of buttons) {
-    button.addEventListener("click", () => setLanguage(button.dataset.language));
+    button.addEventListener("click", () => {
+      const zoneId = Object.keys(ZONES).find((key) => ZONES[key].language === button.dataset.language);
+      if (zoneId) {
+        setZone(zoneId);
+      } else {
+        setLanguage(button.dataset.language);
+      }
+    });
   }
 }
 function speakSummary() {
@@ -301,10 +415,22 @@ function wireBusinessCards() {
 }
 
 async function loadResources() {
-  const response = await fetch("/api/resources");
-  const data = await response.json();
   const grid = document.getElementById("resource-grid");
   grid.innerHTML = "";
+  if (currentCountry !== "Kenya") {
+    const card = document.createElement("article");
+    card.className = "card";
+    card.innerHTML = `
+      <h3>${currentCountry} dry run</h3>
+      <div class="meta">${currentZone} · prototype only</div>
+      <p>The Africa zoning works here, but the content layer is only populated for Kenya in this build.</p>
+    `;
+    grid.appendChild(card);
+    return;
+  }
+
+  const response = await fetch("/api/resources");
+  const data = await response.json();
 
   for (const item of data.items) {
     const card = document.createElement("article");
@@ -327,7 +453,7 @@ async function loadResources() {
 }
 
 function wireRegionSelector() {
-  const buttons = document.querySelectorAll(".region-pill, .map-zone");
+  const buttons = document.querySelectorAll(".region-pill");
   const note = document.getElementById("region-note");
   const mapStatus = document.getElementById("map-status");
 
@@ -434,6 +560,9 @@ async function bootstrap() {
   wireDetails();
   wireBusinessCards();
   wireBotPreview();
+  renderZoneMap();
+  renderCountries();
+  setZone(currentZone);
   await Promise.all([loadResources(), loadHealth()]);
   await loadProject();
   setLanguage(currentLanguage);

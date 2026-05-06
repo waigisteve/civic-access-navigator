@@ -62,28 +62,23 @@
       <section class="panel map-panel">
         <div class="panel-head">
           <h2 id="map-title">Regional Map</h2>
-          <span class="status" id="map-status">Pick a color-coded zone</span>
+          <span class="status" id="map-status">Pick a language zone</span>
         </div>
-        <div class="map-shell" aria-label="Interactive region map">
-          <button class="map-zone kenya is-active" type="button" data-region="kenya" data-label="Kenya" aria-pressed="true">
-            <span class="zone-dot"></span>
-            <strong>Kenya</strong>
-            <small>Swahili-ready pilot</small>
-          </button>
-          <button class="map-zone east-africa" type="button" data-region="east-africa" data-label="East Africa" aria-pressed="false">
-            <span class="zone-dot"></span>
-            <strong>East Africa</strong>
-            <small>Regional expansion</small>
-          </button>
-          <button class="map-zone africa" type="button" data-region="africa" data-label="Africa" aria-pressed="false">
-            <span class="zone-dot"></span>
-            <strong>Africa</strong>
-            <small>Continental scale</small>
-          </button>
+        <div class="map-shell" aria-label="Interactive Africa map">
+          <div class="map-zones" id="map-zones"></div>
+          <div class="map-country-panel">
+            <div class="panel-head compact">
+              <h3 id="country-heading">Country pilot</h3>
+              <span class="status status-dark" id="country-status">Select a country</span>
+            </div>
+            <div class="country-strip" id="country-strip"></div>
+            <p class="control-copy" id="country-copy">Kenya is the only data-backed pilot in this dry run.</p>
+          </div>
           <div class="map-legend">
-            <span><i class="legend-swatch kenya"></i> Kenya</span>
-            <span><i class="legend-swatch east-africa"></i> East Africa</span>
-            <span><i class="legend-swatch africa"></i> Africa</span>
+            <span><i class="legend-swatch swahili"></i> Swahili-speaking countries</span>
+            <span><i class="legend-swatch english"></i> English-speaking countries</span>
+            <span><i class="legend-swatch french"></i> French-speaking countries</span>
+            <span><i class="legend-swatch arabic"></i> Arabic-speaking countries</span>
           </div>
         </div>
       </section>
