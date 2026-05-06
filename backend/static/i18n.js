@@ -66,6 +66,15 @@ window.CAN_I18N = {
       feedbackUsefulCopy: "Feels ready for a field pilot",
       feedbackNeedsWorkTitle: "Needs work",
       feedbackNeedsWorkCopy: "Good concept, more polish needed",
+      previewLabel: "Preview",
+      detailFallback:
+        "This detail view shows the expanded pitch context, region focus, and the business rationale behind the selected item.",
+      detailNoMeta: "No extra metadata provided.",
+      botAnswerFallback: "I could not generate a grounded answer.",
+      botServiceFallback: "I could not reach the grounded answer service just now.",
+      botSourcesLabel: "Sources",
+      apiOnline: "API online",
+      apiIssue: "API issue",
       projectSummary:
         "A PeaceTech pilot for field partners and communities that need trusted civic guidance, region-aware explanations, and a public-interest interface that feels practical on the ground.",
       tracks: ["Voice and accountability", "Dignity and opportunity", "Peace and community"],
@@ -171,6 +180,15 @@ window.CAN_I18N = {
       feedbackUsefulCopy: "Inaonekana tayari kwa jaribio la uga",
       feedbackNeedsWorkTitle: "Inahitaji kazi",
       feedbackNeedsWorkCopy: "Dhana ni nzuri, inahitaji kung'arishwa zaidi",
+      previewLabel: "Onyesho",
+      detailFallback:
+        "Dirisha hili linaonyesha muktadha wa toleo, eneo linalolengwa, na sababu ya biashara ya kipengele kilichochaguliwa.",
+      detailNoMeta: "Hakuna taarifa za ziada.",
+      botAnswerFallback: "Sikuweza kutoa jibu lililoegemezwa kwenye vyanzo.",
+      botServiceFallback: "Sikuweza kufikia huduma ya majibu yaliyothibitika kwa sasa.",
+      botSourcesLabel: "Vyanzo",
+      apiOnline: "API ipo mtandaoni",
+      apiIssue: "Tatizo la API",
       projectSummary:
         "Jaribio la PeaceTech kwa washirika wa uga na jamii zinazohitaji mwongozo unaoaminika, maelezo yanayoendana na eneo, na kiolesura cha maslahi ya umma kinachoonekana kufanya kazi uwanjani.",
       tracks: ["Sauti na uwajibikaji", "Heshima na fursa", "Amani na jamii"],
@@ -276,6 +294,15 @@ window.CAN_I18N = {
       feedbackUsefulCopy: "Prêt pour un pilote de terrain",
       feedbackNeedsWorkTitle: "À améliorer",
       feedbackNeedsWorkCopy: "Bonne base, encore à polir",
+      previewLabel: "Aperçu",
+      detailFallback:
+        "Cette vue détaille le contexte de l’offre, la région ciblée et la logique métier derrière l’élément sélectionné.",
+      detailNoMeta: "Aucune métadonnée supplémentaire.",
+      botAnswerFallback: "Je n’ai pas pu générer de réponse fondée.",
+      botServiceFallback: "Je n’ai pas pu joindre le service de réponse fondée pour le moment.",
+      botSourcesLabel: "Sources",
+      apiOnline: "API en ligne",
+      apiIssue: "Problème API",
       projectSummary:
         "Un pilote PeaceTech pour les partenaires de terrain et les communautés qui ont besoin de conseils civiques fiables, d’explications adaptées à la région et d’une interface d’intérêt public utile sur le terrain.",
       tracks: ["Voix et responsabilité", "Dignité et opportunité", "Paix et communauté"],
@@ -381,6 +408,15 @@ window.CAN_I18N = {
       feedbackUsefulCopy: "يبدو جاهزًا لتجربة ميدانية",
       feedbackNeedsWorkTitle: "يحتاج تطويرًا",
       feedbackNeedsWorkCopy: "فكرة جيدة، وتحتاج مزيدًا من الصقل",
+      previewLabel: "معاينة",
+      detailFallback:
+        "تعرض هذه النافذة سياق العرض والمنطقة المستهدفة ومنطق الأعمال وراء العنصر المحدد.",
+      detailNoMeta: "لا توجد بيانات إضافية.",
+      botAnswerFallback: "تعذر إنشاء إجابة موثوقة.",
+      botServiceFallback: "تعذر الوصول إلى خدمة الإجابة الموثوقة الآن.",
+      botSourcesLabel: "المصادر",
+      apiOnline: "واجهة برمجة التطبيقات متصلة",
+      apiIssue: "مشكلة في API",
       projectSummary:
         "تجربة PeaceTech للشركاء الميدانيين والمجتمعات التي تحتاج إلى إرشاد مدني موثوق، وتفسيرات مرتبطة بالمنطقة، وواجهة منفعة عامة مناسبة للعمل الميداني.",
       tracks: ["الصوت والمساءلة", "الكرامة والفرصة", "السلام والمجتمع"],

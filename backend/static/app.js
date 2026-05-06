@@ -196,6 +196,10 @@ function setLanguage(language) {
   setText("feedback-useful-copy", pack.feedbackUsefulCopy);
   setText("feedback-needs-work-title", pack.feedbackNeedsWorkTitle);
   setText("feedback-needs-work-copy", pack.feedbackNeedsWorkCopy);
+  const previewStatus = document.querySelector(".status.status-dark");
+  if (previewStatus && previewStatus.textContent === "Preview") {
+    previewStatus.textContent = pack.previewLabel || previewStatus.textContent;
+  }
   setText("project-summary", pack.projectSummary);
   const missionFocus = document.getElementById("mission-focus");
   if (missionFocus) {
@@ -405,15 +409,15 @@ function wireFeedback() {
 }
 
 function openDetail(title, summary, meta, eyebrow = "Detail view") {
+  const pack = LANG.copy[currentLanguage] || LANG.copy.en;
   const overlay = document.getElementById("detail-overlay");
   document.getElementById("detail-title").textContent = title;
   const summaryNode = document.getElementById("detail-summary");
-  summaryNode.textContent =
-    summary || "This detail view shows the expanded pitch context, region focus, and the business rationale behind the selected item.";
-  document.getElementById("detail-eyebrow").textContent = eyebrow;
+  summaryNode.textContent = summary || pack.detailFallback;
+  document.getElementById("detail-eyebrow").textContent = eyebrow || pack.detailSummary;
   const metaNode = document.getElementById("detail-meta");
   metaNode.innerHTML = "";
-  const details = Array.isArray(meta) && meta.length > 0 ? meta : ["No extra metadata provided."];
+  const details = Array.isArray(meta) && meta.length > 0 ? meta : [pack.detailNoMeta];
   for (const line of details) {
     const row = document.createElement("div");
     row.textContent = line;
@@ -450,17 +454,18 @@ function wireBusinessCards() {
   const cards = document.querySelectorAll(".business-card");
   cards.forEach((card) => {
     card.addEventListener("click", () => {
+      const pack = LANG.copy[currentLanguage] || LANG.copy.en;
       const title = card.querySelector("h3")?.textContent || "Business detail";
       const summary = card.querySelector("p")?.textContent || "";
       openDetail(
         title,
         summary,
         [
-          "Format: sponsor-ready business case",
-          "Use case: pitch, pilot, and decision-making support",
-          "Interaction: click-to-open detail popout",
+          `${pack.businessHeading}: ${pack.businessCaseHeading}`,
+          `${pack.projectPlan}: ${pack.pitch}`,
+          `${pack.controlPilots}: ${pack.pilotStatus}`,
         ],
-        "Business case"
+        pack.businessCaseHeading
       );
     });
   });
@@ -475,7 +480,7 @@ async function loadResources() {
     card.innerHTML = `
       <h3>${currentCountry} dry run</h3>
       <div class="meta">${currentZone} · prototype only</div>
-      <p>The Africa zoning works here, but the content layer is only populated for Kenya in this build.</p>
+      <p>${(LANG.copy[currentLanguage] || LANG.copy.en).countryKenyaPilot}</p>
     `;
     grid.appendChild(card);
     return;
@@ -571,24 +576,26 @@ function wireBotPreview() {
     })
       .then((response) => response.json())
       .then((data) => {
+        const pack = LANG.copy[currentLanguage] || LANG.copy.en;
         const botBubble = document.createElement("div");
         botBubble.className = "chat-bubble bot";
-        botBubble.textContent = `${data.answer || "I could not generate a grounded answer."}\n\nAnswered by: ${data.provider || "local"}`;
+        botBubble.textContent = `${data.answer || pack.botAnswerFallback}\n\nAnswered by: ${data.provider || "local"}`;
         feed.appendChild(botBubble);
 
         if (Array.isArray(data.citations) && data.citations.length > 0) {
           const citationBubble = document.createElement("div");
           citationBubble.className = "chat-bubble bot citation";
-          citationBubble.textContent = `Sources: ${data.citations.join(" | ")}`;
+          citationBubble.textContent = `${pack.botSourcesLabel}: ${data.citations.join(" | ")}`;
           feed.appendChild(citationBubble);
         }
 
         feed.scrollTop = feed.scrollHeight;
       })
       .catch(() => {
+        const pack = LANG.copy[currentLanguage] || LANG.copy.en;
         const botBubble = document.createElement("div");
         botBubble.className = "chat-bubble bot";
-        botBubble.textContent = "I could not reach the grounded answer service just now.";
+        botBubble.textContent = pack.botServiceFallback;
         feed.appendChild(botBubble);
       });
   });
@@ -598,7 +605,8 @@ async function loadHealth() {
   const response = await fetch("/api/health");
   const data = await response.json();
   const badge = document.getElementById("health-status");
-  badge.textContent = data.status === "ok" ? "API online" : "API issue";
+  const pack = LANG.copy[currentLanguage] || LANG.copy.en;
+  badge.textContent = data.status === "ok" ? pack.apiOnline : pack.apiIssue;
 }
 
 async function bootstrap() {
