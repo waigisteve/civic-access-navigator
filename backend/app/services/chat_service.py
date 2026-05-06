@@ -170,7 +170,6 @@ def _openai_answer(query: str, region: str | None, hits: list[SourceHit]) -> dic
             if "search-preview" in model or model.endswith("-search-api"):
                 response = client.chat.completions.create(
                     model=model,
-                    web_search_options={},
                     messages=prompt,
                 )
                 answer = (response.choices[0].message.content or "").strip()
