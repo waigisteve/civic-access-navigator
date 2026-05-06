@@ -34,6 +34,19 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
+  position: relative;
+  isolation: isolate;
+}
+
+.site-header::before {
+  content: "";
+  position: absolute;
+  inset: 0 -8px auto;
+  height: 92px;
+  border-radius: 0 0 22px 22px;
+  background: linear-gradient(135deg, rgba(13, 31, 36, 0.96), rgba(22, 45, 52, 0.9));
+  box-shadow: 0 14px 28px rgba(16, 23, 26, 0.14);
+  z-index: -1;
 }
 
 .brand-lockup {
@@ -52,7 +65,7 @@ body {
 
 .brand-kicker {
   margin: 0;
-  color: var(--accent);
+  color: #d8efe5;
   font-size: 0.82rem;
   text-transform: uppercase;
   letter-spacing: 0.02em;
@@ -61,6 +74,7 @@ body {
 .brand-name {
   display: block;
   font-size: 1rem;
+  color: #fffaf0;
 }
 
 .header-actions {
@@ -73,10 +87,10 @@ body {
   display: inline-flex;
   gap: 6px;
   padding: 6px;
-  border: 1px solid var(--line);
+  border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: 999px;
-  background: rgba(255, 253, 248, 0.9);
-  box-shadow: 0 8px 18px rgba(16, 23, 26, 0.08);
+  background: rgba(10, 20, 24, 0.42);
+  box-shadow: 0 10px 22px rgba(16, 23, 26, 0.18);
 }
 
 .language-toggle-btn {
@@ -87,7 +101,7 @@ body {
   background: transparent;
   font: inherit;
   cursor: pointer;
-  color: var(--ink);
+  color: #f5f7f4;
 }
 
 .language-toggle-btn.is-active {
