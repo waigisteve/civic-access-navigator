@@ -167,6 +167,9 @@ let currentCountry = "Kenya";
 let speechUtterance = null;
 let resourceCache = [];
 let availableVoices = [];
+let chatMessages = [];
+let chatPage = 0;
+const CHAT_PAGE_SIZE = 4;
 
 async function loadProject() {
   const response = await fetch("/api/project");
@@ -230,6 +233,64 @@ function setText(id, value) {
   if (node && typeof value === "string") {
     node.textContent = value;
   }
+}
+
+function getChatPageCount() {
+  return Math.max(1, Math.ceil(chatMessages.length / CHAT_PAGE_SIZE));
+}
+
+function renderChatFeed() {
+  const feed = document.getElementById("chat-feed");
+  const prev = document.getElementById("chat-prev");
+  const next = document.getElementById("chat-next");
+  const status = document.getElementById("chat-page-status");
+  if (!feed) {
+    return;
+  }
+  const pageCount = getChatPageCount();
+  if (chatPage > pageCount - 1) {
+    chatPage = pageCount - 1;
+  }
+  const start = chatPage * CHAT_PAGE_SIZE;
+  const pageItems = chatMessages.slice(start, start + CHAT_PAGE_SIZE);
+  feed.innerHTML = "";
+  for (const item of pageItems) {
+    const bubble = document.createElement("div");
+    bubble.className = `chat-bubble ${item.role}${item.citation ? " citation" : ""}`;
+    bubble.textContent = item.text;
+    feed.appendChild(bubble);
+  }
+  if (prev) {
+    prev.disabled = chatPage === 0;
+  }
+  if (next) {
+    next.disabled = chatPage >= pageCount - 1;
+  }
+  const pack = LANG.copy[currentLanguage] || LANG.copy.en;
+  if (status) {
+    status.textContent = `${pack.chatPage} ${chatPage + 1} ${pack.chatPageOf} ${pageCount}`;
+  }
+  feed.scrollTop = 0;
+}
+
+function appendChatMessage(role, text, citation = false) {
+  chatMessages.push({ role, text, citation });
+  chatPage = getChatPageCount() - 1;
+  renderChatFeed();
+}
+
+function initializeChatFeed() {
+  const feed = document.getElementById("chat-feed");
+  if (!feed) {
+    return;
+  }
+  chatMessages = Array.from(feed.children).map((node) => ({
+    role: node.classList.contains("user") ? "user" : "bot",
+    text: node.textContent?.trim() || "",
+    citation: node.classList.contains("citation"),
+  }));
+  chatPage = getChatPageCount() - 1;
+  renderChatFeed();
 }
 
 function localizeResource(item) {
@@ -356,6 +417,9 @@ function setLanguage(language) {
   setText("detail-context-label", pack.detailContext);
   const botInput = document.getElementById("bot-input");
   if (botInput) botInput.placeholder = pack.botPlaceholder;
+  setText("chat-prev", pack.chatPrev);
+  setText("chat-next", pack.chatNext);
+  renderChatFeed();
   const pilotOneTitle = document.getElementById("pilot-one-title");
   const pilotOneCopy = document.getElementById("pilot-one-copy");
   const pilotTwoTitle = document.getElementById("pilot-two-title");
@@ -665,6 +729,8 @@ function wireChatWidget() {
   const toggle = document.getElementById("chat-toggle");
   const close = document.getElementById("chat-close");
   const windowNode = document.getElementById("chat-window");
+  const prev = document.getElementById("chat-prev");
+  const next = document.getElementById("chat-next");
   if (!toggle || !close || !windowNode) {
     return;
   }
@@ -687,6 +753,22 @@ function wireChatWidget() {
     closeChat();
   });
   close.addEventListener("click", closeChat);
+  if (prev) {
+    prev.addEventListener("click", () => {
+      if (chatPage > 0) {
+        chatPage -= 1;
+        renderChatFeed();
+      }
+    });
+  }
+  if (next) {
+    next.addEventListener("click", () => {
+      if (chatPage < getChatPageCount() - 1) {
+        chatPage += 1;
+        renderChatFeed();
+      }
+    });
+  }
 }
 
 function wireSOSWidget() {
@@ -814,7 +896,6 @@ function wireRegionSelector() {
 function wireBotPreview() {
   const form = document.getElementById("bot-form");
   const input = document.getElementById("bot-input");
-  const feed = document.getElementById("chat-feed");
   const voiceButton = document.getElementById("bot-voice");
   const voiceStatus = document.getElementById("bot-voice-status");
   const recognition = createVoiceRecognition();
@@ -887,13 +968,8 @@ function wireBotPreview() {
       return;
     }
 
-    const userBubble = document.createElement("div");
-    userBubble.className = "chat-bubble user";
-    userBubble.textContent = message;
-    feed.appendChild(userBubble);
-
+    appendChatMessage("user", message);
     input.value = "";
-    feed.scrollTop = feed.scrollHeight;
 
     fetch("/api/chat", {
       method: "POST",
@@ -908,28 +984,17 @@ function wireBotPreview() {
       .then((response) => response.json())
       .then((data) => {
         const pack = LANG.copy[currentLanguage] || LANG.copy.en;
-        const botBubble = document.createElement("div");
-        botBubble.className = "chat-bubble bot";
         const providerLabel = data.provider || "local";
         const modeLabel = data.mode || "fallback";
-        botBubble.textContent = `${data.answer || pack.botAnswerFallback}\n\n${pack.botAnsweredLabel}: ${providerLabel} · ${modeLabel}`;
-        feed.appendChild(botBubble);
+        appendChatMessage("bot", `${data.answer || pack.botAnswerFallback}\n\n${pack.botAnsweredLabel}: ${providerLabel} · ${modeLabel}`);
 
         if (Array.isArray(data.citations) && data.citations.length > 0) {
-          const citationBubble = document.createElement("div");
-          citationBubble.className = "chat-bubble bot citation";
-          citationBubble.textContent = `${pack.botSourcesLabel}: ${data.citations.join(" | ")}`;
-          feed.appendChild(citationBubble);
+          appendChatMessage("bot", `${pack.botSourcesLabel}: ${data.citations.join(" | ")}`, true);
         }
-
-        feed.scrollTop = feed.scrollHeight;
       })
       .catch(() => {
         const pack = LANG.copy[currentLanguage] || LANG.copy.en;
-        const botBubble = document.createElement("div");
-        botBubble.className = "chat-bubble bot";
-        botBubble.textContent = pack.botServiceFallback;
-        feed.appendChild(botBubble);
+        appendChatMessage("bot", pack.botServiceFallback);
       });
   });
 }
@@ -952,6 +1017,7 @@ async function bootstrap() {
   wireFeedback();
   wireDetails();
   wireBusinessCards();
+  initializeChatFeed();
   wireChatWidget();
   wireSOSWidget();
   wireNearbyWidget();
