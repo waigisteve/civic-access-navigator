@@ -164,11 +164,18 @@ function setLanguage(language) {
   setText("hero-eyebrow", pack.heroEyebrow);
   setText("hero-intro", pack.heroIntro);
   setText("region-note", pack.regionNote);
+  setText("osf-link-text", pack.osfLinkText);
+  setText("hero-osf-link", pack.heroOsfLink);
+  setText("hero-sos-open", pack.heroSosOpen);
   setText("map-title", pack.mapTitle);
   setText("map-status", pack.mapStatus);
   setText("country-heading", pack.countryHeading);
   setText("country-status", pack.countrySelectStatus);
   setText("country-copy", currentCountry === "Kenya" ? pack.countryKenyaPilot : `${currentCountry} ${pack.countryPrototype}`);
+  setText("legend-swahili", pack.legendSwahili);
+  setText("legend-english", pack.legendEnglish);
+  setText("legend-french", pack.legendFrench);
+  setText("legend-arabic", pack.legendArabic);
   setText("business-heading", pack.businessHeading);
   setText("pilot-status", pack.pilotStatus);
   setText("project-heading", pack.projectHeading);
@@ -178,6 +185,9 @@ function setLanguage(language) {
   setText("bot-intro", pack.botIntro);
   setText("bot-try", pack.botTry);
   setText("bot-followup", pack.botFollowup);
+  setText("chat-welcome", pack.chatWelcome);
+  setText("chat-label", pack.chatLabel);
+  setText("chat-title", pack.chatTitle);
   setText("expansion-heading", pack.expansionHeading);
   setText("business-case-heading", pack.businessCaseHeading);
   setText("deliverables-heading", pack.deliverablesHeading);
@@ -233,6 +243,14 @@ function setLanguage(language) {
   setText("deliverable-pitch", pack.pitch);
   setText("deliverable-demo-script", pack.demoScript);
   setText("deliverable-proposal", pack.proposal);
+  setText("deliverable-alignment", pack.themeFit);
+  setText("sos-toggle", pack.heroSosOpen);
+  setText("sos-title", pack.sosTitle);
+  setText("sos-intro", pack.sosIntro);
+  setText("sos-email", pack.sosEmail);
+  setText("sos-sms", pack.sosSms);
+  setText("sos-call", pack.sosCall);
+  setText("sos-note", pack.sosNote);
   setText("detail-summary-label", pack.detailSummary);
   setText("detail-context-label", pack.detailContext);
   const botInput = document.getElementById("bot-input");
@@ -379,6 +397,9 @@ function stopVoiceover() {
 function wireVoiceControls() {
   const play = document.getElementById("voice-play");
   const stop = document.getElementById("voice-stop");
+  if (!play || !stop) {
+    return;
+  }
   play.addEventListener("click", speakSummary);
   stop.addEventListener("click", stopVoiceover);
 }
@@ -386,6 +407,9 @@ function wireVoiceControls() {
 function wireFeedback() {
   const cards = document.querySelectorAll(".feedback-card");
   const copy = document.getElementById("feedback-copy");
+  if (!copy || cards.length === 0) {
+    return;
+  }
 
   for (const card of cards) {
     card.addEventListener("click", () => {
@@ -525,6 +549,53 @@ function createVoiceRecognition() {
   recognition.interimResults = false;
   recognition.maxAlternatives = 1;
   return recognition;
+}
+
+function wireChatWidget() {
+  const toggle = document.getElementById("chat-toggle");
+  const close = document.getElementById("chat-close");
+  const windowNode = document.getElementById("chat-window");
+  if (!toggle || !close || !windowNode) {
+    return;
+  }
+
+  const openChat = () => {
+    windowNode.hidden = false;
+    toggle.setAttribute("aria-expanded", "true");
+  };
+
+  const closeChat = () => {
+    windowNode.hidden = true;
+    toggle.setAttribute("aria-expanded", "false");
+  };
+
+  toggle.addEventListener("click", () => {
+    if (windowNode.hidden) {
+      openChat();
+      return;
+    }
+    closeChat();
+  });
+  close.addEventListener("click", closeChat);
+}
+
+function wireSOSWidget() {
+  const toggle = document.getElementById("sos-toggle");
+  const panel = document.getElementById("sos-panel");
+  const heroOpen = document.getElementById("hero-sos-open");
+  if (!toggle || !panel) {
+    return;
+  }
+
+  const setOpen = (open) => {
+    panel.hidden = !open;
+    toggle.setAttribute("aria-expanded", open ? "true" : "false");
+  };
+
+  toggle.addEventListener("click", () => setOpen(panel.hidden));
+  if (heroOpen) {
+    heroOpen.addEventListener("click", () => setOpen(true));
+  }
 }
 
 function wireRegionSelector() {
@@ -703,6 +774,8 @@ async function bootstrap() {
   wireFeedback();
   wireDetails();
   wireBusinessCards();
+  wireChatWidget();
+  wireSOSWidget();
   wireBotPreview();
   if ("speechSynthesis" in window) {
     const refreshVoices = () => {

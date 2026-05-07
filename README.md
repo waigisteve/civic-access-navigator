@@ -2,6 +2,8 @@
 
 Civic Access Navigator is a PeaceTech capstone aligned with the Open Society Foundations mission and the Transformative Peace in Africa initiative.
 
+Business case in one line: Civic Access Navigator helps citizens turn confusing rights and civic information into timely, accountable public action.
+
 The project helps users explore trusted, locally grounded peace and civic information through a simple AI-assisted interface. The initial scope is intentionally practical: a lightweight web application that can organize approved resources, surface key themes, and support plain-language explanations for conflict-affected communities.
 
 ## Working Guidance
@@ -26,7 +28,7 @@ Build an AI-assisted peace and civic information navigator that:
 
 - organizes trusted peace, civic, and accountability resources
 - explains information in plain language
-- highlights themes connected to voice and accountability, dignity and opportunity, and peace and community
+- focuses first on the `Voice & accountability` track
 - provides a simple foundation for later document retrieval, grounded question answering, and regional expansion
 
 ## Why It Fits OSF
@@ -154,27 +156,22 @@ Provider-specific settings:
 - Gemini: `GEMINI_API_KEY`
 - Ollama: `OLLAMA_BASE_URL`, optional `OLLAMA_MODEL`
 
-## PeaceTech Tracks
+## PeaceTech Track
 
-The product is being realigned toward OSF's PeaceTech invitation tracks:
+The product is now intentionally centered on `Voice & accountability`.
 
-- Voice and accountability
-- Dignity and opportunity
-- Peace and community
+Why this is the best fit:
+
+- it helps citizens understand rights and civic options in plain language
+- it reduces the gap between people and the institutions meant to serve them
+- it gives communities a faster path to trusted, accountable public-interest guidance
+- it supports escalation, reporting, and safer next-step decision making
 
 The first prototype zone remains Kenya, with expansion planned across Africa and OSF's conflict-affected regions.
 
 ## Business Case
 
-The winning case for this project is that it is not a one-country chatbot. It is a reusable peace-navigation platform that can localize by region, language, and local meaning while keeping a shared trust layer for citations, curated sources, and accountable answers.
-
-The core value proposition is:
-
-- one interface
-- many countries
-- many languages
-- many doctrines and community definitions of peace
-- one grounded information backbone
+The winning case for this project is that it gives citizens and field partners one reusable accountability workflow that can localize by country and language while keeping a trusted source backbone.
 
 That makes it easier to scale from Kenya into the Sahel, DRC, Sudan, Mozambique, and other OSF contexts without rebuilding the product from scratch.
 

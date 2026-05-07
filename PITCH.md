@@ -6,7 +6,7 @@ Civic Access Navigator
 
 ## Short Pitch
 
-Civic Access Navigator is an OSF-aligned PeaceTech capstone that helps people find and understand trusted peace, civic, and accountability information in plain language. It is designed as a practical AI-assisted tool for supporting conflict-affected communities while showing how prompt-aware development can keep the system grounded and reviewable.
+Civic Access Navigator is an OSF-aligned PeaceTech capstone that helps people find and understand trusted peace, civic, and accountability information in plain language. It is designed first and foremost as a `Voice & accountability` tool for supporting conflict-affected communities while showing how prompt-aware development can keep the system grounded and reviewable.
 
 ## Why It Matters
 
@@ -14,7 +14,20 @@ Important peacebuilding and civic information is often difficult to locate, frag
 
 ## Business Case
 
-The product wins if it becomes a reusable peace-navigation layer that can localize by country, language, and doctrine while keeping one trusted source backbone. That gives OSF and partners a tool they can reuse across contexts instead of rebuilding from zero every time.
+Business case in one line: Civic Access Navigator helps citizens turn confusing rights and civic information into timely, accountable public action.
+
+The product wins if it becomes a reusable accountability layer that can localize by country and language while keeping one trusted source backbone. That gives OSF and partners a tool they can reuse across contexts instead of rebuilding from zero every time.
+
+## Theme Fit
+
+The clearest hackathon fit is `Voice & accountability`.
+
+The tool promotes that theme by:
+
+- helping citizens understand rights and civic processes quickly
+- guiding people toward trusted sources before they approach institutions
+- making escalation and help-seeking easier through chat and SOS actions
+- reducing the distance between communities and public-interest systems
 
 ## What We Are Building
 

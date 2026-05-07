@@ -16,6 +16,9 @@
         </div>
       </div>
         <div class="header-actions">
+          <a href="https://www.opensocietyfoundations.org/what-we-do?#focus-areas" target="_blank" class="header-link" id="osf-link" title="Learn about Open Society Foundations">
+            <span id="osf-link-text">OSF Focus Areas</span>
+          </a>
           <div class="language-toggle" role="tablist" aria-label="Language toggle">
           <button class="language-toggle-btn is-active" type="button" data-language="en" aria-pressed="true">EN</button>
           <button class="language-toggle-btn" type="button" data-language="sw" aria-pressed="false">SW</button>
@@ -29,18 +32,15 @@
       <section class="hero">
         <div class="hero-bg" aria-hidden="true"></div>
         <div class="hero-copy">
-          <p class="eyebrow" id="hero-eyebrow">PeaceTech prototype for Africa</p>
+          <p class="eyebrow" id="hero-eyebrow">Voice &amp; accountability prototype</p>
           <h1>Civic Access Navigator</h1>
           <p class="intro" id="hero-intro">
-            A PeaceTech navigation tool for Kenya and Africa that adds region-aware
-            guidance, curated peace and civic resources, and a lightweight assistant for
-            deeper exploration.
+            A Kenya-first PeaceTech tool that helps citizens understand rights, find trusted civic guidance, and take the next accountable step when public systems feel distant or unclear.
           </p>
-          <p class="hero-note" id="region-note">Start with Kenya, then expand to East Africa and the wider continent.</p>
-          <div class="mode-row" aria-label="Language and peace lens">
-            <div class="mode-chip is-active">Language-aware</div>
-            <div class="mode-chip">Doctrines-aware</div>
-            <div class="mode-chip">Culturally local</div>
+          <p class="hero-note" id="region-note">Business case: turn rights and civic information into faster, safer public action for citizens and local partners.</p>
+          <div class="hero-actions">
+            <a class="hero-action primary" href="https://www.opensocietyfoundations.org/what-we-do?#focus-areas" target="_blank" id="hero-osf-link">Explore OSF focus areas</a>
+            <button class="hero-action secondary" type="button" id="hero-sos-open">SOS Help</button>
           </div>
         </div>
         <dl class="hero-stats">
@@ -49,12 +49,12 @@
             <dd id="impact-partner-value">Open Society Foundations</dd>
           </div>
           <div>
-            <dt id="prototype-zone-label">Prototype zone</dt>
-            <dd id="prototype-zone-value">Kenya and Africa</dd>
+            <dt id="prototype-zone-label">PeaceTech track</dt>
+            <dd id="prototype-zone-value">Voice &amp; accountability</dd>
           </div>
           <div>
-            <dt id="next-build-label">Next build</dt>
-            <dd id="next-build-value">Interactive bot and grounded Q&amp;A</dd>
+            <dt id="next-build-label">Pilot scope</dt>
+            <dd id="next-build-value">Kenya first, Africa expansion next</dd>
           </div>
         </dl>
       </section>
@@ -75,105 +75,21 @@
             <p class="control-copy" id="country-copy">Kenya is the only data-backed pilot in this dry run.</p>
           </div>
           <div class="map-legend">
-            <span><i class="legend-swatch swahili"></i> Swahili-speaking countries</span>
-            <span><i class="legend-swatch english"></i> English-speaking countries</span>
-            <span><i class="legend-swatch french"></i> French-speaking countries</span>
-            <span><i class="legend-swatch arabic"></i> Arabic-speaking countries</span>
-          </div>
-        </div>
-      </section>
-
-      <section class="panel control-panel reveal-after-language">
-        <div class="panel-head">
-          <h2 id="business-heading">Business Demo Controls</h2>
-          <span class="status" id="pilot-status">Interactive pilot</span>
-        </div>
-        <div class="control-tabs" role="tablist" aria-label="Demo controls">
-          <button class="control-tab is-active" type="button" data-control="language" aria-pressed="true" id="control-languages">
-            Languages
-          </button>
-          <button class="control-tab" type="button" data-control="voice" aria-pressed="false" id="control-voice">
-            Voiceover
-          </button>
-          <button class="control-tab" type="button" data-control="feedback" aria-pressed="false" id="control-feedback">
-            Feedback
-          </button>
-          <button class="control-tab" type="button" data-control="pilot" aria-pressed="false" id="control-pilots">
-            Pilot Views
-          </button>
-        </div>
-        <div class="control-panels">
-          <div class="control-pane is-active" data-pane="language">
-            <div class="language-row" role="tablist" aria-label="Language switcher">
-              <button class="language-pill is-active" type="button" data-language="en" id="lang-en">English</button>
-              <button class="language-pill" type="button" data-language="sw" id="lang-sw">Swahili</button>
-              <button class="language-pill" type="button" data-language="fr" id="lang-fr">French</button>
-              <button class="language-pill" type="button" data-language="ar" id="lang-ar">Arabic</button>
-            </div>
-            <p class="control-copy" id="language-copy">
-              Switch the interface for pilots across countries without changing the core product.
-            </p>
-          </div>
-          <div class="control-pane" data-pane="voice">
-            <div class="voice-row">
-              <button class="voice-button" type="button" id="voice-play">Play voiceover</button>
-              <button class="voice-button secondary" type="button" id="voice-stop">Stop</button>
-            </div>
-            <p class="control-copy" id="voice-copy">
-              Hear a sponsor-ready summary of the current region, value proposition, and pilot stage.
-            </p>
-          </div>
-          <div class="control-pane" data-pane="feedback">
-            <div class="feedback-grid" id="feedback-grid">
-              <button class="feedback-card" type="button" data-feedback="clear">
-                <span class="feedback-icon clear"></span>
-                <strong id="feedback-clear-title">Clear</strong>
-                <small id="feedback-clear-copy">Easy to understand at a glance</small>
-              </button>
-              <button class="feedback-card" type="button" data-feedback="useful">
-                <span class="feedback-icon useful"></span>
-                <strong id="feedback-useful-title">Useful</strong>
-                <small id="feedback-useful-copy">Feels ready for a field pilot</small>
-              </button>
-              <button class="feedback-card" type="button" data-feedback="needs-work">
-                <span class="feedback-icon needs-work"></span>
-                <strong id="feedback-needs-work-title">Needs work</strong>
-                <small id="feedback-needs-work-copy">Good concept, more polish needed</small>
-              </button>
-            </div>
-            <p class="control-copy" id="feedback-copy">
-              Pick a pictorial response to capture pilot sentiment quickly.
-            </p>
-          </div>
-          <div class="control-pane" data-pane="pilot">
-            <div class="pilot-strip">
-              <article class="pilot-snapshot">
-                <span class="snapshot-mark"></span>
-                <h3 id="pilot-one-title">Region zoning</h3>
-                <p id="pilot-one-copy">Kenya, East Africa, and Africa views help sponsors see the expansion path.</p>
-              </article>
-              <article class="pilot-snapshot">
-                <span class="snapshot-mark alt"></span>
-                <h3 id="pilot-two-title">Language layers</h3>
-                <p id="pilot-two-copy">Switch the UI to match the audience without rebuilding the product.</p>
-              </article>
-              <article class="pilot-snapshot">
-                <span class="snapshot-mark third"></span>
-                <h3 id="pilot-three-title">Voice and feedback</h3>
-                <p id="pilot-three-copy">Use voiceover plus pictorial feedback to make demos easy to scan and discuss.</p>
-              </article>
-            </div>
+            <span id="legend-swahili"><i class="legend-swatch swahili"></i> Swahili-speaking countries</span>
+            <span id="legend-english"><i class="legend-swatch english"></i> English-speaking countries</span>
+            <span id="legend-french"><i class="legend-swatch french"></i> French-speaking countries</span>
+            <span id="legend-arabic"><i class="legend-swatch arabic"></i> Arabic-speaking countries</span>
           </div>
         </div>
       </section>
 
       <section class="panel project-overview reveal-after-language">
         <div>
-          <h2 id="project-heading">Project Summary</h2>
+          <h2 id="project-heading">Why this fits Voice &amp; accountability</h2>
           <p id="project-summary">Loading project details...</p>
         </div>
         <div>
-          <h2 id="tracks-heading">PeaceTech Tracks</h2>
+          <h2 id="tracks-heading">What citizens can do here</h2>
           <ul id="mission-focus" class="focus-list">
             <li>Loading mission focus...</li>
           </ul>
@@ -188,37 +104,6 @@
           </div>
           <div id="resource-grid" class="grid"></div>
         </div>
-        <aside class="bot-panel" aria-label="Assistant preview">
-          <div class="panel-head compact">
-          <h2 id="bot-heading">Navigator Bot</h2>
-            <span class="status status-dark">Preview</span>
-          </div>
-          <p class="bot-copy" id="bot-intro">
-            Ask for Kenya-specific peace topics, compare regions, or request a plain
-            language summary of a curated source.
-          </p>
-          <div class="chat-feed" id="chat-feed">
-            <div class="chat-bubble bot" id="bot-try">
-              Try: "Show me PeaceTech resources for Kenya."
-            </div>
-            <div class="chat-bubble user" id="bot-followup">
-              How does this expand to the Sahel and the DRC?
-            </div>
-          </div>
-          <div class="voice-query-row">
-            <button class="voice-button voice-query" type="button" id="bot-voice">Voice query</button>
-            <span class="voice-query-status" id="bot-voice-status">Tap to speak your question.</span>
-          </div>
-          <form class="bot-composer" id="bot-form">
-            <input
-              id="bot-input"
-              type="text"
-              placeholder="Ask the navigator..."
-              aria-label="Ask the navigator"
-            />
-            <button type="submit">Send</button>
-          </form>
-        </aside>
       </section>
 
       <section class="panel reveal-after-language">
@@ -243,40 +128,94 @@
 
       <section class="panel business-panel reveal-after-language">
         <div class="panel-head">
-          <h2 id="business-case-heading">Winning Business Case</h2>
+          <h2 id="business-case-heading">One-line business case</h2>
         </div>
         <div class="business-grid">
           <article class="business-card primary">
-            <h3 id="business-one-title">Reusable peace layer</h3>
-            <p id="business-one-copy">One core product can localize across countries, languages, and peace traditions without rebuilding from zero.</p>
+            <h3 id="business-one-title">Fast path to action</h3>
+            <p id="business-one-copy">Civic Access Navigator helps citizens turn confusing rights information into timely, accountable civic action.</p>
           </article>
           <article class="business-card">
-            <h3 id="business-two-title">Trust at the center</h3>
-            <p id="business-two-copy">Citations, curated sources, and region-aware prompting keep the assistant useful and accountable.</p>
+            <h3 id="business-two-title">How the theme shows up</h3>
+            <p id="business-two-copy">The tool helps people understand rights, prepare questions, and reach institutions with clearer, safer information.</p>
           </article>
           <article class="business-card">
-            <h3 id="business-three-title">Visual by design</h3>
-            <p id="business-three-copy">The interface is built to be cinematic, graphic, and mobile-friendly so it can hold attention quickly.</p>
+            <h3 id="business-three-title">Why it matters now</h3>
+            <p id="business-three-copy">Conflict-affected communities often need fast, plain-language guidance before they can report harm or seek remedy.</p>
           </article>
           <article class="business-card">
-            <h3 id="business-four-title">Expansion ready</h3>
-            <p id="business-four-copy">Kenya is the start, but the same structure can expand into the Sahel, DRC, Sudan, Mozambique, and beyond.</p>
+            <h3 id="business-four-title">Scale path</h3>
+            <p id="business-four-copy">Kenya is the pilot, with the same accountability workflow ready to expand into the Sahel, DRC, Sudan, and beyond.</p>
           </article>
         </div>
       </section>
 
-      <section class="panel reveal-after-language">
-        <div class="panel-head">
-          <h2 id="deliverables-heading">Capstone Deliverables</h2>
-        </div>
-        <div class="deliverables">
-          <a href="/files/PROJECT_PLAN.md" class="deliverable" id="deliverable-project-plan">Project Plan</a>
-          <a href="/files/PITCH.md" class="deliverable" id="deliverable-pitch">Pitch</a>
-          <a href="/files/DEMO_SCRIPT.md" class="deliverable" id="deliverable-demo-script">Demo Script</a>
-          <a href="/files/docs/project-proposal.md" class="deliverable" id="deliverable-proposal">Proposal</a>
-        </div>
-      </section>
     </main>
+
+    <div class="chat-widget" id="chat-widget" aria-label="Chat assistant">
+      <button class="chat-toggle" type="button" id="chat-toggle" aria-expanded="false" title="Chat with us">
+        <span class="chat-icon">Chat</span>
+        <span class="chat-label" id="chat-label">Chat with us</span>
+      </button>
+      <div class="chat-window" id="chat-window" hidden>
+        <div class="chat-header">
+          <h3 id="chat-title">Chat with Navigator</h3>
+          <button class="chat-close" type="button" id="chat-close" aria-label="Close chat">×</button>
+        </div>
+        <p class="bot-copy" id="bot-intro">
+          Ask for Kenya-specific peace topics, compare regions, or request a plain language summary of a curated source.
+        </p>
+        <div class="chat-feed chat-messages" id="chat-feed">
+          <div class="chat-bubble bot" id="bot-try">
+            Try: "Show me PeaceTech resources for Kenya."
+          </div>
+          <div class="chat-bubble user" id="bot-followup">
+            How does this expand to the Sahel and the DRC?
+          </div>
+          <div class="chat-message bot">
+            <p id="chat-welcome">Hello! I'm here to help you find peace and civic information. What would you like to know?</p>
+          </div>
+        </div>
+        <div class="voice-query-row">
+          <button class="voice-button voice-query" type="button" id="bot-voice">Voice query</button>
+          <span class="voice-query-status" id="bot-voice-status">Tap to speak your question.</span>
+        </div>
+        <form class="chat-input-form bot-composer" id="bot-form">
+          <input
+            type="text"
+            class="chat-input"
+            id="bot-input"
+            placeholder="Ask the navigator..."
+            aria-label="Chat message input"
+          />
+          <button type="submit" class="chat-send" id="chat-send" aria-label="Send message">
+            Send
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div class="sos-widget" id="sos-widget" aria-label="Emergency help">
+      <button class="sos-toggle" type="button" id="sos-toggle" aria-expanded="false">SOS Help</button>
+      <div class="sos-panel" id="sos-panel" hidden>
+        <h3 id="sos-title">Emergency support</h3>
+        <p id="sos-intro">If you are in danger, use the fastest channel available and contact trusted local responders.</p>
+        <div class="sos-actions">
+          <a class="sos-button" id="sos-email" href="mailto:help@civicaccessnavigator.org?subject=SOS%20Support%20Request">Email for help</a>
+          <a class="sos-button" id="sos-sms" href="sms:+254700000000?body=I%20need%20urgent%20help.">SMS for help</a>
+          <a href="tel:112" class="sos-button sos-call" id="sos-call">Call 112</a>
+        </div>
+        <p class="sos-note" id="sos-note">This prototype opens your device email, SMS, or phone app for quick escalation.</p>
+      </div>
+    </div>
+
+    <nav class="bottom-docs" aria-label="Documentation tabs">
+      <a href="/files/PROJECT_PLAN.md" class="doc-tab-link" id="deliverable-project-plan">Project Plan</a>
+      <a href="/files/PITCH.md" class="doc-tab-link" id="deliverable-pitch">Pitch</a>
+      <a href="/files/DEMO_SCRIPT.md" class="doc-tab-link" id="deliverable-demo-script">Demo Script</a>
+      <a href="/files/docs/project-proposal.md" class="doc-tab-link" id="deliverable-proposal">Proposal</a>
+      <a href="/files/PEACETECH_ALIGNMENT.md" class="doc-tab-link" id="deliverable-alignment">Theme Fit</a>
+    </nav>
 
     <div class="detail-overlay" id="detail-overlay" hidden>
       <div class="detail-modal" role="dialog" aria-modal="true" aria-labelledby="detail-title">
