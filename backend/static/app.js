@@ -69,6 +69,87 @@ const ZONES = {
   },
 };
 
+const RESOURCE_TRANSLATIONS = {
+  "Know Your Civic Rights": {
+    en: {
+      title: "Know Your Civic Rights",
+      theme: "Rights and Dignity",
+      audience: "General public",
+      summary: "A plain-language starter for understanding civic rights and the role of public-interest information.",
+    },
+    sw: {
+      title: "Fahamu haki zako za kiraia",
+      theme: "Haki na hadhi",
+      audience: "Wananchi wote",
+      summary: "Mwongozo wa lugha rahisi wa kuelewa haki za kiraia na nafasi ya taarifa za maslahi ya umma.",
+    },
+    fr: {
+      title: "Comprendre ses droits civiques",
+      theme: "Droits et dignite",
+      audience: "Grand public",
+      summary: "Une introduction en langage simple pour comprendre les droits civiques et le role des informations d'interet public.",
+    },
+    ar: {
+      title: "اعرف حقوقك المدنية",
+      theme: "الحقوق والكرامة",
+      audience: "عموم المواطنين",
+      summary: "مدخل بلغة بسيطة لفهم الحقوق المدنية ودور المعلومات ذات المصلحة العامة.",
+    },
+  },
+  "Community Participation Toolkit": {
+    en: {
+      title: "Community Participation Toolkit",
+      theme: "Democratic Practice",
+      audience: "Community groups",
+      summary: "A guide to understanding participation channels, local engagement, and accountability pathways.",
+    },
+    sw: {
+      title: "Zana ya ushiriki wa jamii",
+      theme: "Utendaji wa kidemokrasia",
+      audience: "Makundi ya jamii",
+      summary: "Mwongozo wa kuelewa njia za ushiriki, ushirikiano wa eneo, na njia za uwajibikaji.",
+    },
+    fr: {
+      title: "Boite a outils de participation communautaire",
+      theme: "Pratique democratique",
+      audience: "Groupes communautaires",
+      summary: "Guide pour comprendre les canaux de participation, l'engagement local et les parcours de redevabilite.",
+    },
+    ar: {
+      title: "أدوات المشاركة المجتمعية",
+      theme: "الممارسة الديمقراطية",
+      audience: "المجموعات المجتمعية",
+      summary: "دليل لفهم قنوات المشاركة والانخراط المحلي ومسارات المساءلة.",
+    },
+  },
+  "Governance Equity Brief": {
+    en: {
+      title: "Governance Equity Brief",
+      theme: "Equity in Governance",
+      audience: "Researchers and advocates",
+      summary: "A concise overview of why equal access to governance information matters for fair public participation.",
+    },
+    sw: {
+      title: "Muhtasari wa usawa katika utawala",
+      theme: "Usawa katika utawala",
+      audience: "Watafiti na watetezi",
+      summary: "Muhtasari mfupi wa kwa nini upatikanaji sawa wa taarifa za utawala ni muhimu kwa ushiriki wa umma wenye haki.",
+    },
+    fr: {
+      title: "Note sur l'equite dans la gouvernance",
+      theme: "Equite dans la gouvernance",
+      audience: "Chercheurs et defenseurs",
+      summary: "Bref apercu de l'importance d'un acces equitable aux informations de gouvernance pour une participation publique juste.",
+    },
+    ar: {
+      title: "موجز الإنصاف في الحوكمة",
+      theme: "الإنصاف في الحوكمة",
+      audience: "الباحثون والمدافعون",
+      summary: "نظرة موجزة على أهمية الوصول المتكافئ إلى معلومات الحوكمة من أجل مشاركة عامة عادلة.",
+    },
+  },
+};
+
 const LANG = window.CAN_I18N;
 const LANGUAGE_COPY = Object.fromEntries(Object.entries(LANG.copy).map(([key, value]) => [key, value.languageCopy]));
 const LANGUAGE_LABELS = Object.fromEntries(Object.entries(LANG.languages).map(([key, value]) => [key, value.label]));
@@ -151,6 +232,11 @@ function setText(id, value) {
   }
 }
 
+function localizeResource(item) {
+  const translated = RESOURCE_TRANSLATIONS[item.title]?.[currentLanguage];
+  return translated ? { ...item, ...translated } : item;
+}
+
 function setLanguage(language) {
   const pack = LANG.copy[language] || LANG.copy.en;
   currentLanguage = language;
@@ -167,6 +253,7 @@ function setLanguage(language) {
   setText("osf-link-text", pack.osfLinkText);
   setText("hero-osf-link", pack.heroOsfLink);
   setText("hero-sos-open", pack.heroSosOpen);
+  setText("hero-nearby-open", pack.nearbyToggle);
   setText("map-title", pack.mapTitle);
   setText("map-status", pack.mapStatus);
   setText("country-heading", pack.countryHeading);
@@ -188,6 +275,10 @@ function setLanguage(language) {
   setText("chat-welcome", pack.chatWelcome);
   setText("chat-label", pack.chatLabel);
   setText("chat-title", pack.chatTitle);
+  const chatToggle = document.getElementById("chat-toggle");
+  if (chatToggle) {
+    chatToggle.title = pack.chatLabel;
+  }
   setText("expansion-heading", pack.expansionHeading);
   setText("business-case-heading", pack.businessCaseHeading);
   setText("deliverables-heading", pack.deliverablesHeading);
@@ -251,6 +342,16 @@ function setLanguage(language) {
   setText("sos-sms", pack.sosSms);
   setText("sos-call", pack.sosCall);
   setText("sos-note", pack.sosNote);
+  setText("nearby-toggle", pack.nearbyToggle);
+  setText("nearby-title", pack.nearbyTitle);
+  setText("nearby-intro", pack.nearbyIntro);
+  setText("nearby-status", pack.nearbyStatus);
+  setText("nearby-locate", pack.nearbyLocate);
+  setText("nearby-police", pack.nearbyPolice);
+  setText("nearby-hospital", pack.nearbyHospital);
+  setText("nearby-school", pack.nearbySchool);
+  setText("nearby-camp", pack.nearbyCamp);
+  setText("nearby-note", pack.nearbyNote);
   setText("detail-summary-label", pack.detailSummary);
   setText("detail-context-label", pack.detailContext);
   const botInput = document.getElementById("bot-input");
@@ -269,6 +370,8 @@ function setLanguage(language) {
   if (pilotThreeCopy) pilotThreeCopy.textContent = pack.pilotThreeCopy;
   const title = document.querySelector("title");
   if (title) title.textContent = `Civic Access Navigator · ${LANGUAGE_LABELS[language] || "English"}`;
+  void loadResources();
+  void loadHealth();
 }
 
 function renderZoneMap() {
@@ -500,13 +603,14 @@ function wireBusinessCards() {
 async function loadResources() {
   const grid = document.getElementById("resource-grid");
   grid.innerHTML = "";
+  const pack = LANG.copy[currentLanguage] || LANG.copy.en;
   if (currentCountry !== "Kenya") {
     const card = document.createElement("article");
     card.className = "card";
     card.innerHTML = `
-      <h3>${currentCountry} dry run</h3>
-      <div class="meta">${currentZone} · prototype only</div>
-      <p>${(LANG.copy[currentLanguage] || LANG.copy.en).countryKenyaPilot}</p>
+      <h3>${currentCountry} ${pack.countryPrototype}</h3>
+      <div class="meta">${pack.mapTitle} · ${pack.countryPrototype}</div>
+      <p>${pack.countryKenyaPilot}</p>
     `;
     grid.appendChild(card);
     return;
@@ -516,19 +620,25 @@ async function loadResources() {
   const data = await response.json();
 
   for (const item of data.items) {
+    const localized = localizeResource(item);
     const card = document.createElement("article");
     card.className = "card";
     card.innerHTML = `
-      <h3>${item.title}</h3>
-      <div class="meta">${item.theme} · ${item.audience}</div>
-      <p>${item.summary}</p>
+      <h3>${localized.title}</h3>
+      <div class="meta">${localized.theme} · ${localized.audience}</div>
+      <p>${localized.summary}</p>
     `;
     card.addEventListener("click", () => {
+      const detailPack = LANG.copy[currentLanguage] || LANG.copy.en;
       openDetail(
-        item.title,
-        item.summary,
-        [`Theme: ${item.theme}`, `Audience: ${item.audience}`, `Region view: ${currentRegion}`],
-        "Resource detail"
+        localized.title,
+        localized.summary,
+        [
+          `${detailPack.detailThemeLabel}: ${localized.theme}`,
+          `${detailPack.detailAudienceLabel}: ${localized.audience}`,
+          `${detailPack.detailRegionLabel}: ${currentRegion}`,
+        ],
+        detailPack.resourceDetail
       );
     });
     grid.appendChild(card);
@@ -595,6 +705,74 @@ function wireSOSWidget() {
   toggle.addEventListener("click", () => setOpen(panel.hidden));
   if (heroOpen) {
     heroOpen.addEventListener("click", () => setOpen(true));
+  }
+}
+
+function wireNearbyWidget() {
+  const toggle = document.getElementById("nearby-toggle");
+  const panel = document.getElementById("nearby-panel");
+  const heroOpen = document.getElementById("hero-nearby-open");
+  const locate = document.getElementById("nearby-locate");
+  const status = document.getElementById("nearby-status");
+  const police = document.getElementById("nearby-police");
+  const hospital = document.getElementById("nearby-hospital");
+  const school = document.getElementById("nearby-school");
+  const camp = document.getElementById("nearby-camp");
+  if (!toggle || !panel) {
+    return;
+  }
+
+  const setOpen = (open) => {
+    panel.hidden = !open;
+    toggle.setAttribute("aria-expanded", open ? "true" : "false");
+  };
+
+  const updateLinks = (latitude, longitude) => {
+    const queries = [
+      [police, "police station near me"],
+      [hospital, "hospital near me"],
+      [school, "school near me"],
+      [camp, "refugee camp near me"],
+    ];
+    for (const [node, query] of queries) {
+      if (node) {
+        node.href = `https://www.google.com/maps/search/${encodeURIComponent(query)}/@${latitude},${longitude},14z`;
+      }
+    }
+  };
+
+  toggle.addEventListener("click", () => setOpen(panel.hidden));
+  if (heroOpen) {
+    heroOpen.addEventListener("click", () => setOpen(true));
+  }
+
+  if (locate) {
+    locate.addEventListener("click", () => {
+      const pack = LANG.copy[currentLanguage] || LANG.copy.en;
+      if (!navigator.geolocation) {
+        if (status) {
+          status.textContent = pack.nearbyUnsupported;
+        }
+        return;
+      }
+      if (status) {
+        status.textContent = pack.nearbyLocating;
+      }
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          updateLinks(position.coords.latitude, position.coords.longitude);
+          if (status) {
+            status.textContent = pack.nearbyReady;
+          }
+        },
+        () => {
+          if (status) {
+            status.textContent = pack.nearbyDenied;
+          }
+        },
+        { enableHighAccuracy: true, timeout: 12000, maximumAge: 60000 }
+      );
+    });
   }
 }
 
@@ -776,6 +954,7 @@ async function bootstrap() {
   wireBusinessCards();
   wireChatWidget();
   wireSOSWidget();
+  wireNearbyWidget();
   wireBotPreview();
   if ("speechSynthesis" in window) {
     const refreshVoices = () => {

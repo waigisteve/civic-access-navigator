@@ -983,9 +983,10 @@ body.ui-ready .reveal-after-language {
 }
 
 .chat-widget,
-.sos-widget {
+.sos-widget,
+.nearby-widget {
   position: fixed;
-  bottom: 92px;
+  bottom: 124px;
   z-index: 48;
 }
 
@@ -997,8 +998,14 @@ body.ui-ready .reveal-after-language {
   left: 18px;
 }
 
+.nearby-widget {
+  right: 18px;
+  bottom: 198px;
+}
+
 .chat-toggle,
-.sos-toggle {
+.sos-toggle,
+.nearby-toggle {
   display: inline-flex;
   align-items: center;
   gap: 10px;
@@ -1020,8 +1027,14 @@ body.ui-ready .reveal-after-language {
   background: linear-gradient(135deg, #8d2c2c, #c24a36);
 }
 
+.nearby-toggle {
+  background: linear-gradient(135deg, #1f4966, #2b6b94);
+  color: #fff;
+}
+
 .chat-window,
-.sos-panel {
+.sos-panel,
+.nearby-panel {
   width: min(360px, calc(100vw - 28px));
   margin-top: 12px;
   padding: 18px;
@@ -1084,6 +1097,26 @@ body.ui-ready .reveal-after-language {
   display: grid;
   gap: 10px;
   margin: 14px 0 10px;
+}
+
+.nearby-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 14px 0 10px;
+}
+
+.nearby-status {
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #edf4fb;
+  color: #2b4f67;
+  line-height: 1.5;
+}
+
+.nearby-locate {
+  grid-column: 1 / -1;
+  background: #f7fbff;
 }
 
 .sos-button {
@@ -1283,7 +1316,8 @@ body.ui-ready .reveal-after-language {
   }
 
   .chat-widget,
-  .sos-widget {
+  .sos-widget,
+  .nearby-widget {
     left: 12px;
     right: 12px;
   }
@@ -1293,12 +1327,21 @@ body.ui-ready .reveal-after-language {
   }
 
   .sos-widget {
+    bottom: 296px;
+  }
+
+  .nearby-widget {
     bottom: 224px;
   }
 
   .chat-window,
-  .sos-panel {
+  .sos-panel,
+  .nearby-panel {
     width: 100%;
+  }
+
+  .nearby-actions {
+    grid-template-columns: 1fr;
   }
 
   .map-shell {
