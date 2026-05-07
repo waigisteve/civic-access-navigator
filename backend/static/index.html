@@ -155,7 +155,7 @@
 
     <div class="chat-widget" id="chat-widget" aria-label="Chat assistant">
       <button class="chat-toggle" type="button" id="chat-toggle" aria-expanded="false" title="Lets Chat">
-        <span class="chat-icon">Chat</span>
+        <span class="chat-icon" aria-hidden="true"></span>
         <span class="chat-label" id="chat-label">Lets Chat</span>
       </button>
       <div class="chat-window" id="chat-window" hidden>
@@ -176,11 +176,6 @@
           <div class="chat-message bot">
             <p id="chat-welcome">Hello! I'm here to help you find peace and civic information. What would you like to know?</p>
           </div>
-        </div>
-        <div class="chat-pagination" id="chat-pagination">
-          <button class="chat-page-btn" type="button" id="chat-prev">Prev</button>
-          <span class="chat-page-status" id="chat-page-status">Page 1 of 1</span>
-          <button class="chat-page-btn" type="button" id="chat-next">Next</button>
         </div>
         <div class="voice-query-row">
           <button class="voice-button voice-query" type="button" id="bot-voice">Voice query</button>

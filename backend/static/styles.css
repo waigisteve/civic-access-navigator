@@ -889,36 +889,6 @@ body.ui-ready .reveal-after-language {
   padding-right: 4px;
 }
 
-.chat-pagination {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: 10px;
-  margin: -2px 0 12px;
-}
-
-.chat-page-btn {
-  min-height: 38px;
-  padding: 0 12px;
-  border-radius: 999px;
-  border: 1px solid var(--line);
-  background: #fff;
-  color: var(--ink);
-  cursor: pointer;
-  font: inherit;
-}
-
-.chat-page-btn:disabled {
-  opacity: 0.45;
-  cursor: default;
-}
-
-.chat-page-status {
-  text-align: center;
-  color: var(--muted);
-  font-size: 0.92rem;
-}
-
 .chat-bubble {
   padding: 12px 14px;
   border-radius: 14px;
@@ -1029,7 +999,7 @@ body.ui-ready .reveal-after-language {
 }
 
 .nearby-widget {
-  right: 18px;
+  left: 18px;
   bottom: 198px;
 }
 
@@ -1051,6 +1021,10 @@ body.ui-ready .reveal-after-language {
 
 .chat-toggle {
   background: linear-gradient(135deg, #0b6e4f, #1c8d67);
+}
+
+.chat-icon {
+  display: none;
 }
 
 .sos-toggle {
@@ -1075,10 +1049,8 @@ body.ui-ready .reveal-after-language {
 }
 
 .chat-window {
-  max-height: min(70vh, 34rem);
+  max-height: min(68vh, 31rem);
   overflow: hidden;
-  display: grid;
-  grid-template-rows: auto auto minmax(0, 1fr) auto auto;
 }
 
 .chat-header {
@@ -1355,30 +1327,33 @@ body.ui-ready .reveal-after-language {
   .chat-widget,
   .sos-widget,
   .nearby-widget {
-    left: 12px;
-    right: 12px;
+    right: auto;
   }
 
   .chat-widget {
+    left: auto;
+    right: 12px;
     bottom: 152px;
   }
 
   .sos-widget {
+    left: 12px;
     bottom: 296px;
   }
 
   .nearby-widget {
-    bottom: 224px;
+    left: 12px;
+    bottom: 368px;
   }
 
   .chat-window,
   .sos-panel,
   .nearby-panel {
-    width: 100%;
+    width: min(340px, calc(100vw - 24px));
   }
 
   .chat-window {
-    max-height: min(62vh, 30rem);
+    max-height: min(58vh, 28rem);
   }
 
   .nearby-actions {
