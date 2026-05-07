@@ -701,6 +701,8 @@ function wireChatWidget() {
     toggle.setAttribute("aria-expanded", "false");
   };
 
+  closeChat();
+
   toggle.addEventListener("click", () => {
     if (windowNode.hidden) {
       openChat();
@@ -856,10 +858,15 @@ function wireRegionSelector() {
 function wireBotPreview() {
   const form = document.getElementById("bot-form");
   const input = document.getElementById("bot-input");
+  const feed = document.getElementById("chat-feed");
   const voiceButton = document.getElementById("bot-voice");
   const voiceStatus = document.getElementById("bot-voice-status");
   const recognition = createVoiceRecognition();
   let listening = false;
+
+  if (!form || !input || !feed) {
+    return;
+  }
 
   const refreshVoiceUI = () => {
     const pack = LANG.copy[currentLanguage] || LANG.copy.en;
@@ -983,6 +990,18 @@ async function loadHealth() {
 }
 
 async function bootstrap() {
+  const chatWindow = document.getElementById("chat-window");
+  const sosPanel = document.getElementById("sos-panel");
+  const nearbyPanel = document.getElementById("nearby-panel");
+  const chatToggle = document.getElementById("chat-toggle");
+  const sosToggle = document.getElementById("sos-toggle");
+  const nearbyToggle = document.getElementById("nearby-toggle");
+  if (chatWindow) chatWindow.hidden = true;
+  if (sosPanel) sosPanel.hidden = true;
+  if (nearbyPanel) nearbyPanel.hidden = true;
+  if (chatToggle) chatToggle.setAttribute("aria-expanded", "false");
+  if (sosToggle) sosToggle.setAttribute("aria-expanded", "false");
+  if (nearbyToggle) nearbyToggle.setAttribute("aria-expanded", "false");
   wireModeChips();
   applyLanguageUI(currentLanguage);
   wireRegionSelector();
