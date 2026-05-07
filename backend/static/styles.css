@@ -883,7 +883,8 @@ body.ui-ready .reveal-after-language {
 .chat-feed {
   display: grid;
   gap: 10px;
-  max-height: 14lh;
+  min-height: 0;
+  max-height: none;
   overflow: auto;
   margin: 14px 0;
   padding-right: 4px;
@@ -916,6 +917,9 @@ body.ui-ready .reveal-after-language {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 10px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(16, 23, 26, 0.08);
+  background: rgba(255, 253, 248, 0.98);
 }
 
 .bot-composer input {
@@ -1051,6 +1055,8 @@ body.ui-ready .reveal-after-language {
 .chat-window {
   max-height: min(68vh, 31rem);
   overflow: hidden;
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr) auto auto;
 }
 
 .chat-header {
@@ -1093,6 +1099,9 @@ body.ui-ready .reveal-after-language {
   display: grid;
   gap: 8px;
   margin: 12px 0;
+  padding-top: 8px;
+  border-top: 1px solid rgba(16, 23, 26, 0.08);
+  background: rgba(255, 253, 248, 0.98);
 }
 
 .voice-query-status,
@@ -1353,7 +1362,7 @@ body.ui-ready .reveal-after-language {
   }
 
   .chat-window {
-    max-height: min(58vh, 28rem);
+    max-height: min(66vh, 32rem);
   }
 
   .nearby-actions {
