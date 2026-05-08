@@ -40,6 +40,8 @@ body {
   gap: 16px;
   position: relative;
   isolation: isolate;
+  z-index: 120;
+  overflow: visible;
 }
 
 .site-header::before {
@@ -87,6 +89,7 @@ body {
   gap: 12px;
   flex-wrap: wrap;
   justify-content: flex-end;
+  overflow: visible;
 }
 
 .header-link {
@@ -142,10 +145,13 @@ body {
   gap: 10px;
   margin-left: auto;
   position: relative;
+  overflow: visible;
+  z-index: 130;
 }
 
 .header-widget {
   position: relative;
+  z-index: 131;
 }
 
 .language-toggle-btn {
@@ -1399,7 +1405,7 @@ body.ui-ready .reveal-after-language {
   background: rgba(255, 253, 248, 0.98);
   border: 1px solid rgba(255, 255, 255, 0.7);
   box-shadow: 0 20px 40px rgba(16, 23, 26, 0.24);
-  z-index: 64;
+  z-index: 200;
 }
 
 .chat-window {
