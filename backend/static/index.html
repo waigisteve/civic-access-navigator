@@ -22,12 +22,88 @@
           <div class="access-toggle-group" aria-label="Access modes">
             <button class="access-toggle-btn" type="button" id="lite-mode-toggle" aria-pressed="false">Lite Mode</button>
             <button class="access-toggle-btn" type="button" id="safe-mode-toggle" aria-pressed="false">Safe Mode</button>
+            <button class="access-toggle-btn quick-exit-btn" type="button" id="quick-exit-toggle">Quick Exit</button>
           </div>
           <div class="language-toggle" role="tablist" aria-label="Language toggle">
           <button class="language-toggle-btn is-active" type="button" data-language="en" aria-pressed="true">EN</button>
           <button class="language-toggle-btn" type="button" data-language="sw" aria-pressed="false">SW</button>
           <button class="language-toggle-btn" type="button" data-language="fr" aria-pressed="false">FR</button>
           <button class="language-toggle-btn" type="button" data-language="ar" aria-pressed="false">AR</button>
+        </div>
+        <div class="header-service-tabs" aria-label="Support tools">
+          <div class="chat-widget header-widget" id="chat-widget" aria-label="Chat assistant">
+            <button class="chat-toggle" type="button" id="chat-toggle" aria-expanded="false" title="Lets Chat">
+              <span class="chat-icon" aria-hidden="true"></span>
+              <span class="chat-label" id="chat-label">Lets Chat</span>
+            </button>
+            <div class="chat-window" id="chat-window" hidden>
+              <div class="chat-header">
+                <h3 id="chat-title">Chat with Navigator</h3>
+                <button class="chat-close" type="button" id="chat-close" aria-label="Close chat">×</button>
+              </div>
+              <p class="bot-copy" id="bot-intro">
+                Ask for Kenya-specific peace topics, compare regions, or request a plain language summary of a curated source.
+              </p>
+              <div class="chat-feed chat-messages" id="chat-feed">
+                <div class="chat-bubble bot" id="bot-try">
+                  Try: "Show me PeaceTech resources for Kenya."
+                </div>
+                <div class="chat-bubble user" id="bot-followup">
+                  How does this expand to the Sahel and the DRC?
+                </div>
+                <div class="chat-message bot">
+                  <p id="chat-welcome">Hello! I'm here to help you find peace and civic information. What would you like to know?</p>
+                </div>
+              </div>
+              <div class="voice-query-row">
+                <button class="voice-button voice-query" type="button" id="bot-voice">Voice query</button>
+                <span class="voice-query-status" id="bot-voice-status">Tap to speak your question.</span>
+              </div>
+              <form class="chat-input-form bot-composer" id="bot-form">
+                <input
+                  type="text"
+                  class="chat-input"
+                  id="bot-input"
+                  placeholder="Ask the navigator..."
+                  aria-label="Chat message input"
+                />
+                <button type="submit" class="chat-send" id="chat-send" aria-label="Send message">
+                  Send
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <div class="sos-widget header-widget" id="sos-widget" aria-label="Emergency help">
+            <button class="sos-toggle" type="button" id="sos-toggle" aria-expanded="false">SOS Help</button>
+            <div class="sos-panel" id="sos-panel" hidden>
+              <h3 id="sos-title">Emergency support</h3>
+              <p id="sos-intro">If you are in danger, use the fastest channel available and contact trusted local responders.</p>
+              <div class="sos-actions">
+                <a class="sos-button" id="sos-email" href="mailto:help@civicaccessnavigator.org?subject=SOS%20Support%20Request">Email for help</a>
+                <a class="sos-button" id="sos-sms" href="sms:+254700000000?body=I%20need%20urgent%20help.">SMS for help</a>
+                <a href="tel:112" class="sos-button sos-call" id="sos-call">Call 112</a>
+              </div>
+              <p class="sos-note" id="sos-note">This prototype opens your device email, SMS, or phone app for quick escalation.</p>
+            </div>
+          </div>
+
+          <div class="nearby-widget header-widget" id="nearby-widget" aria-label="Nearby help">
+            <button class="nearby-toggle" type="button" id="nearby-toggle" aria-expanded="false">Nearby Help</button>
+            <div class="nearby-panel" id="nearby-panel" hidden>
+              <h3 id="nearby-title">Nearby help</h3>
+              <p id="nearby-intro">Use your current location to open nearby police stations, hospitals, schools, and refugee support points on a map.</p>
+              <div class="nearby-status" id="nearby-status">Location access is needed to map the nearest support options.</div>
+              <div class="nearby-actions">
+                <button class="sos-button nearby-locate" type="button" id="nearby-locate">Use my location</button>
+                <a class="sos-button" id="nearby-police" href="#" target="_blank" rel="noreferrer">Police station</a>
+                <a class="sos-button" id="nearby-hospital" href="#" target="_blank" rel="noreferrer">Hospital</a>
+                <a class="sos-button" id="nearby-school" href="#" target="_blank" rel="noreferrer">School</a>
+                <a class="sos-button" id="nearby-camp" href="#" target="_blank" rel="noreferrer">Refugee camp</a>
+              </div>
+              <p class="sos-note" id="nearby-note">This prototype uses your device location and opens a GIS map search in a new tab.</p>
+            </div>
+          </div>
         </div>
       </div>
     </header>
@@ -44,8 +120,6 @@
           <p class="hero-note" id="region-note">Business case: turn rights and civic information into faster, safer public action for citizens and local partners.</p>
           <div class="hero-actions">
             <a class="hero-action primary" href="https://www.opensocietyfoundations.org/what-we-do?#focus-areas" target="_blank" id="hero-osf-link">Explore OSF focus areas</a>
-            <button class="hero-action secondary" type="button" id="hero-sos-open">SOS Help</button>
-            <button class="hero-action secondary" type="button" id="hero-nearby-open">Nearby Help</button>
           </div>
         </div>
         <dl class="hero-stats">
@@ -62,6 +136,39 @@
             <dd id="next-build-value">Kenya first, Africa expansion next</dd>
           </div>
         </dl>
+      </section>
+
+      <section class="panel workflow-panel reveal-after-language">
+        <div class="panel-head">
+          <h2 id="workflow-heading">Incident workflows</h2>
+          <span class="status" id="workflow-status">Choose what is happening now</span>
+        </div>
+        <div class="workflow-grid">
+          <div>
+            <p class="workflow-copy" id="workflow-copy">
+              Pick the incident that best matches the situation. The navigator will reduce administrative fog into the safest next actions.
+            </p>
+            <div class="incident-grid" id="incident-grid"></div>
+          </div>
+          <div class="cta-panel">
+            <h3 id="cta-heading">Next accountable actions</h3>
+            <p class="cta-copy" id="cta-copy">
+              Dynamic CTA tabs appear here after an incident is selected.
+            </p>
+            <div class="cta-grid" id="cta-grid"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel queue-panel reveal-after-language">
+        <div class="panel-head">
+          <h2 id="queue-heading">Asynchronous accountability track</h2>
+          <span class="status" id="queue-status">Send when connected</span>
+        </div>
+        <p class="queue-copy" id="queue-copy">
+          Save incident actions locally now. The prototype keeps a lightweight queue so requests can be routed later when connectivity returns.
+        </p>
+        <div class="queue-list" id="queue-list"></div>
       </section>
 
       <section class="panel context-panel reveal-after-language">
@@ -196,81 +303,6 @@
       </section>
 
     </main>
-
-    <div class="chat-widget" id="chat-widget" aria-label="Chat assistant">
-      <button class="chat-toggle" type="button" id="chat-toggle" aria-expanded="false" title="Lets Chat">
-        <span class="chat-icon" aria-hidden="true"></span>
-        <span class="chat-label" id="chat-label">Lets Chat</span>
-      </button>
-      <div class="chat-window" id="chat-window" hidden>
-        <div class="chat-header">
-          <h3 id="chat-title">Chat with Navigator</h3>
-          <button class="chat-close" type="button" id="chat-close" aria-label="Close chat">×</button>
-        </div>
-        <p class="bot-copy" id="bot-intro">
-          Ask for Kenya-specific peace topics, compare regions, or request a plain language summary of a curated source.
-        </p>
-        <div class="chat-feed chat-messages" id="chat-feed">
-          <div class="chat-bubble bot" id="bot-try">
-            Try: "Show me PeaceTech resources for Kenya."
-          </div>
-          <div class="chat-bubble user" id="bot-followup">
-            How does this expand to the Sahel and the DRC?
-          </div>
-          <div class="chat-message bot">
-            <p id="chat-welcome">Hello! I'm here to help you find peace and civic information. What would you like to know?</p>
-          </div>
-        </div>
-        <div class="voice-query-row">
-          <button class="voice-button voice-query" type="button" id="bot-voice">Voice query</button>
-          <span class="voice-query-status" id="bot-voice-status">Tap to speak your question.</span>
-        </div>
-        <form class="chat-input-form bot-composer" id="bot-form">
-          <input
-            type="text"
-            class="chat-input"
-            id="bot-input"
-            placeholder="Ask the navigator..."
-            aria-label="Chat message input"
-          />
-          <button type="submit" class="chat-send" id="chat-send" aria-label="Send message">
-            Send
-          </button>
-        </form>
-      </div>
-    </div>
-
-    <div class="sos-widget" id="sos-widget" aria-label="Emergency help">
-      <button class="sos-toggle" type="button" id="sos-toggle" aria-expanded="false">SOS Help</button>
-      <div class="sos-panel" id="sos-panel" hidden>
-        <h3 id="sos-title">Emergency support</h3>
-        <p id="sos-intro">If you are in danger, use the fastest channel available and contact trusted local responders.</p>
-        <div class="sos-actions">
-          <a class="sos-button" id="sos-email" href="mailto:help@civicaccessnavigator.org?subject=SOS%20Support%20Request">Email for help</a>
-          <a class="sos-button" id="sos-sms" href="sms:+254700000000?body=I%20need%20urgent%20help.">SMS for help</a>
-          <a href="tel:112" class="sos-button sos-call" id="sos-call">Call 112</a>
-        </div>
-        <p class="sos-note" id="sos-note">This prototype opens your device email, SMS, or phone app for quick escalation.</p>
-      </div>
-    </div>
-
-    <div class="nearby-widget" id="nearby-widget" aria-label="Nearby help">
-      <button class="nearby-toggle" type="button" id="nearby-toggle" aria-expanded="false">Nearby Help</button>
-      <div class="nearby-panel" id="nearby-panel" hidden>
-        <h3 id="nearby-title">Nearby help</h3>
-        <p id="nearby-intro">Use your current location to open nearby police stations, hospitals, schools, and refugee support points on a map.</p>
-        <div class="nearby-status" id="nearby-status">Location access is needed to map the nearest support options.</div>
-        <div class="nearby-actions">
-          <button class="sos-button nearby-locate" type="button" id="nearby-locate">Use my location</button>
-          <a class="sos-button" id="nearby-police" href="#" target="_blank" rel="noreferrer">Police station</a>
-          <a class="sos-button" id="nearby-hospital" href="#" target="_blank" rel="noreferrer">Hospital</a>
-          <a class="sos-button" id="nearby-school" href="#" target="_blank" rel="noreferrer">School</a>
-          <a class="sos-button" id="nearby-camp" href="#" target="_blank" rel="noreferrer">Refugee camp</a>
-        </div>
-        <p class="sos-note" id="nearby-note">This prototype uses your device location and opens a GIS map search in a new tab.</p>
-      </div>
-    </div>
-
     <nav class="bottom-docs" aria-label="Documentation tabs">
       <a href="/files/PROJECT_PLAN.md" class="doc-tab-link" id="deliverable-project-plan">Project Plan</a>
       <a href="/files/PITCH.md" class="doc-tab-link" id="deliverable-pitch">Pitch</a>

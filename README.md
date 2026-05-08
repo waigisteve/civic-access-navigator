@@ -2,9 +2,9 @@
 
 Civic Access Navigator is a PeaceTech capstone aligned with the Open Society Foundations mission and the Transformative Peace in Africa initiative.
 
-Business case in one line: Civic Access Navigator helps citizens turn confusing rights and civic information into timely, accountable public action.
+Business case in one line: Civic Access Navigator lowers the cost and risk of civic participation by turning rights information into safe, incident-specific accountability actions.
 
-The project helps users explore trusted, locally grounded peace and civic information through a simple AI-assisted interface. The initial scope is intentionally practical: a lightweight web application that can organize approved resources, surface key themes, and support plain-language explanations for conflict-affected communities.
+The project helps users move from a crisis incident to a safer next step through a simple AI-assisted interface. The initial scope is intentionally practical: a lightweight web application that turns approved civic data into incident-specific workflows, optional accountability actions, and low-friction help for conflict-affected communities.
 
 ## Working Guidance
 
@@ -24,12 +24,13 @@ Peacebuilding information is often fragmented, technical, and disconnected from 
 
 ## Proposed Solution
 
-Build an AI-assisted peace and civic information navigator that:
+Build an AI-assisted peace and civic action navigator that:
 
-- organizes trusted peace, civic, and accountability resources
-- explains information in plain language
+- guides users through incident-specific workflows such as checkpoint delays, denied aid, or abuse reporting
+- turns rights information into plain-language next actions
 - focuses first on the `Voice & accountability` track
 - includes a `Lite Mode`, `Safe Mode`, and displaced-user scenario selector for hackathon constraint handling
+- includes a lightweight asynchronous queue for `send-when-connected` accountability actions
 - provides a simple foundation for later document retrieval, grounded question answering, and regional expansion
 
 ## Why It Fits OSF

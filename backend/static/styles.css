@@ -86,6 +86,7 @@ body {
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .header-link {
@@ -133,6 +134,18 @@ body {
   border-radius: 999px;
   background: rgba(10, 20, 24, 0.42);
   box-shadow: 0 10px 22px rgba(16, 23, 26, 0.18);
+}
+
+.header-service-tabs {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-left: auto;
+  position: relative;
+}
+
+.header-widget {
+  position: relative;
 }
 
 .language-toggle-btn {
@@ -247,6 +260,96 @@ body {
 
 .context-panel {
   background: rgba(255, 253, 248, 0.92);
+}
+
+.quick-exit-btn {
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(141, 44, 44, 0.18);
+}
+
+.workflow-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.workflow-copy,
+.queue-copy {
+  margin: 0 0 16px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.incident-grid,
+.cta-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.incident-card,
+.cta-card {
+  display: grid;
+  gap: 6px;
+  width: 100%;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.86);
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.incident-card:hover,
+.cta-card:hover,
+.incident-card.is-active {
+  transform: translateY(-1px);
+  border-color: rgba(11, 110, 79, 0.28);
+  box-shadow: 0 12px 24px rgba(16, 23, 26, 0.1);
+}
+
+.incident-card strong,
+.cta-card strong {
+  font-size: 1rem;
+}
+
+.incident-card span,
+.cta-card span,
+.cta-copy,
+.cta-empty,
+.queue-empty,
+.queue-item span,
+.queue-item small {
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.cta-panel {
+  padding: 18px;
+  border-radius: 18px;
+  background: rgba(237, 244, 251, 0.8);
+  border: 1px solid rgba(31, 73, 102, 0.12);
+}
+
+.cta-panel h3,
+.queue-item strong {
+  margin: 0 0 8px;
+}
+
+.queue-list {
+  display: grid;
+  gap: 12px;
+}
+
+.queue-item,
+.queue-empty {
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid var(--line);
 }
 
 .scenario-layout {
@@ -1121,22 +1224,8 @@ body.ui-ready .reveal-after-language {
 .chat-widget,
 .sos-widget,
 .nearby-widget {
-  position: fixed;
-  bottom: 124px;
+  position: relative;
   z-index: 48;
-}
-
-.chat-widget {
-  right: 18px;
-}
-
-.sos-widget {
-  left: 18px;
-}
-
-.nearby-widget {
-  left: 18px;
-  bottom: 198px;
 }
 
 .chat-toggle,
@@ -1175,13 +1264,16 @@ body.ui-ready .reveal-after-language {
 .chat-window,
 .sos-panel,
 .nearby-panel {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
   width: min(360px, calc(100vw - 28px));
-  margin-top: 12px;
   padding: 18px;
   border-radius: 18px;
   background: rgba(255, 253, 248, 0.98);
   border: 1px solid rgba(255, 255, 255, 0.7);
   box-shadow: 0 20px 40px rgba(16, 23, 26, 0.24);
+  z-index: 64;
 }
 
 .chat-window {
@@ -1254,6 +1346,11 @@ body.ui-ready .reveal-after-language {
   grid-template-columns: 1fr 1fr;
   gap: 10px;
   margin: 14px 0 10px;
+}
+
+.sos-panel,
+.nearby-panel {
+  min-width: min(320px, calc(100vw - 28px));
 }
 
 .nearby-status {
@@ -1416,7 +1513,20 @@ body.ui-ready .reveal-after-language {
     align-items: flex-start;
   }
 
+  .header-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .header-service-tabs {
+    width: 100%;
+    margin-left: 0;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
   .scenario-layout,
+  .workflow-grid,
   .context-grid {
     grid-template-columns: 1fr;
   }
@@ -1470,31 +1580,11 @@ body.ui-ready .reveal-after-language {
     grid-template-columns: 1fr;
   }
 
-  .chat-widget,
-  .sos-widget,
-  .nearby-widget {
-    right: auto;
-  }
-
-  .chat-widget {
-    left: auto;
-    right: 12px;
-    bottom: 152px;
-  }
-
-  .sos-widget {
-    left: 12px;
-    bottom: 296px;
-  }
-
-  .nearby-widget {
-    left: 12px;
-    bottom: 368px;
-  }
-
   .chat-window,
   .sos-panel,
   .nearby-panel {
+    left: 0;
+    right: auto;
     width: min(340px, calc(100vw - 24px));
   }
 

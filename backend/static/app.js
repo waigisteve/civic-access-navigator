@@ -154,6 +154,23 @@ const LANG = window.CAN_I18N;
 const LANGUAGE_COPY = Object.fromEntries(Object.entries(LANG.copy).map(([key, value]) => [key, value.languageCopy]));
 const LANGUAGE_LABELS = Object.fromEntries(Object.entries(LANG.languages).map(([key, value]) => [key, value.label]));
 const RESOURCE_CACHE_KEY = "can_resource_cache_v1";
+const ACCOUNTABILITY_QUEUE_KEY = "can_accountability_queue_v1";
+
+const INCIDENT_WORKFLOWS = {
+  resident: ["checkpoint", "denied_aid", "report_abuse", "nearest_help"],
+  idp: ["denied_aid", "movement_risk", "lost_documents", "nearest_help"],
+  refugee: ["border_delay", "lost_documents", "report_abuse", "nearest_help"],
+};
+
+const INCIDENT_CTA_MAP = {
+  checkpoint: ["rights_note", "anonymous_report", "legal_observer"],
+  denied_aid: ["aid_report", "rights_note", "queue_case"],
+  report_abuse: ["anonymous_report", "legal_observer", "queue_case"],
+  nearest_help: ["open_nearby_help", "queue_case", "safe_exit"],
+  movement_risk: ["safe_route_note", "queue_case", "safe_exit"],
+  lost_documents: ["document_note", "queue_case", "legal_observer"],
+  border_delay: ["border_note", "anonymous_report", "queue_case"],
+};
 
 const VOICE_SUMMARY = {
   kenya: "Kenya pilot. Civic Access Navigator helps users find trusted peace and civic guidance, with grounded answers, business-ready controls, and a region-aware interface.",
@@ -166,6 +183,7 @@ let currentLanguage = "en";
 let currentZone = "english";
 let currentCountry = "Kenya";
 let currentScenario = "resident";
+let currentIncident = null;
 let liteModeEnabled = false;
 let safeModeEnabled = false;
 let speechUtterance = null;
@@ -306,6 +324,129 @@ function updateContextPanel() {
   setText("context-safety-value", getSafetyLabel(pack));
 }
 
+function renderIncidentWorkflows() {
+  const grid = document.getElementById("incident-grid");
+  if (!grid) {
+    return;
+  }
+  const pack = LANG.copy[currentLanguage] || LANG.copy.en;
+  const incidents = INCIDENT_WORKFLOWS[currentScenario] || INCIDENT_WORKFLOWS.resident;
+  grid.innerHTML = "";
+  for (const incidentId of incidents) {
+    const incident = getIncidentDefinition(pack, incidentId);
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = `incident-card${currentIncident === incidentId ? " is-active" : ""}`;
+    button.dataset.incident = incidentId;
+    button.innerHTML = `<strong>${incident.title}</strong><span>${incident.copy}</span>`;
+    button.addEventListener("click", () => {
+      currentIncident = incidentId;
+      renderIncidentWorkflows();
+      renderCtaPanel();
+    });
+    grid.appendChild(button);
+  }
+}
+
+function renderCtaPanel() {
+  const grid = document.getElementById("cta-grid");
+  if (!grid) {
+    return;
+  }
+  const pack = LANG.copy[currentLanguage] || LANG.copy.en;
+  setText("workflow-status", currentIncident ? getIncidentDefinition(pack, currentIncident).title : pack.workflowStatus);
+  setText("cta-copy", currentIncident ? pack.ctaCopyReady : pack.ctaCopyIdle);
+  grid.innerHTML = "";
+  if (!currentIncident) {
+    const empty = document.createElement("div");
+    empty.className = "cta-empty";
+    empty.textContent = pack.ctaEmpty;
+    grid.appendChild(empty);
+    return;
+  }
+
+  const ctas = INCIDENT_CTA_MAP[currentIncident] || [];
+  for (const ctaId of ctas) {
+    const cta = getCtaDefinition(pack, ctaId);
+    const card = document.createElement("button");
+    card.type = "button";
+    card.className = "cta-card";
+    card.innerHTML = `<strong>${cta.title}</strong><span>${cta.copy}</span>`;
+    card.addEventListener("click", () => handleCtaAction(ctaId, cta, pack));
+    grid.appendChild(card);
+  }
+}
+
+function renderQueue() {
+  const list = document.getElementById("queue-list");
+  if (!list) {
+    return;
+  }
+  const pack = LANG.copy[currentLanguage] || LANG.copy.en;
+  const queue = readAccountabilityQueue();
+  list.innerHTML = "";
+  if (queue.length === 0) {
+    const empty = document.createElement("div");
+    empty.className = "queue-empty";
+    empty.textContent = pack.queueEmpty;
+    list.appendChild(empty);
+    return;
+  }
+  for (const entry of queue.slice().reverse()) {
+    const row = document.createElement("article");
+    row.className = "queue-item";
+    row.innerHTML = `
+      <strong>${entry.title}</strong>
+      <span>${entry.note}</span>
+      <small>${entry.status}</small>
+    `;
+    list.appendChild(row);
+  }
+}
+
+function enqueueAccountabilityAction(title, note) {
+  const pack = LANG.copy[currentLanguage] || LANG.copy.en;
+  const queue = readAccountabilityQueue();
+  queue.push({
+    title,
+    note,
+    status: pack.queuePendingStatus,
+    created_at: new Date().toISOString(),
+  });
+  writeAccountabilityQueue(queue);
+  renderQueue();
+}
+
+function handleCtaAction(ctaId, cta, pack) {
+  if (ctaId === "open_nearby_help") {
+    const nearbyToggle = document.getElementById("nearby-toggle");
+    if (nearbyToggle && !safeModeEnabled) {
+      nearbyToggle.click();
+    }
+    return;
+  }
+
+  if (ctaId === "safe_exit") {
+    const quickExit = document.getElementById("quick-exit-toggle");
+    if (quickExit) {
+      quickExit.click();
+    }
+    return;
+  }
+
+  enqueueAccountabilityAction(cta.title, cta.copy);
+  openDetail(
+    cta.title,
+    cta.copy,
+    [
+      `${pack.contextScenarioLabel}: ${getScenarioPack(pack).label}`,
+      `${pack.queueHeading}: ${pack.queuePendingStatus}`,
+      `${pack.detailRegionLabel}: ${currentCountry}`,
+    ],
+    pack.ctaHeading
+  );
+}
+
 function localizeResource(item) {
   const translated = RESOURCE_TRANSLATIONS[item.title]?.[currentLanguage];
   return translated ? { ...item, ...translated } : item;
@@ -328,6 +469,52 @@ function writeResourceCache(items) {
   }
 }
 
+function readAccountabilityQueue() {
+  try {
+    const raw = window.localStorage.getItem(ACCOUNTABILITY_QUEUE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeAccountabilityQueue(items) {
+  try {
+    window.localStorage.setItem(ACCOUNTABILITY_QUEUE_KEY, JSON.stringify(items));
+  } catch {
+    // Ignore storage failures.
+  }
+}
+
+function getIncidentDefinition(pack, id) {
+  const lookup = {
+    checkpoint: { title: pack.incidentCheckpointTitle, copy: pack.incidentCheckpointCopy },
+    denied_aid: { title: pack.incidentDeniedAidTitle, copy: pack.incidentDeniedAidCopy },
+    report_abuse: { title: pack.incidentReportAbuseTitle, copy: pack.incidentReportAbuseCopy },
+    nearest_help: { title: pack.incidentNearestHelpTitle, copy: pack.incidentNearestHelpCopy },
+    movement_risk: { title: pack.incidentMovementRiskTitle, copy: pack.incidentMovementRiskCopy },
+    lost_documents: { title: pack.incidentLostDocumentsTitle, copy: pack.incidentLostDocumentsCopy },
+    border_delay: { title: pack.incidentBorderDelayTitle, copy: pack.incidentBorderDelayCopy },
+  };
+  return lookup[id] || { title: id, copy: "" };
+}
+
+function getCtaDefinition(pack, id) {
+  const lookup = {
+    rights_note: { title: pack.ctaRightsNoteTitle, copy: pack.ctaRightsNoteCopy },
+    anonymous_report: { title: pack.ctaAnonymousReportTitle, copy: pack.ctaAnonymousReportCopy },
+    legal_observer: { title: pack.ctaLegalObserverTitle, copy: pack.ctaLegalObserverCopy },
+    aid_report: { title: pack.ctaAidReportTitle, copy: pack.ctaAidReportCopy },
+    queue_case: { title: pack.ctaQueueCaseTitle, copy: pack.ctaQueueCaseCopy },
+    open_nearby_help: { title: pack.ctaNearbyHelpTitle, copy: pack.ctaNearbyHelpCopy },
+    safe_exit: { title: pack.ctaSafeExitTitle, copy: pack.ctaSafeExitCopy },
+    safe_route_note: { title: pack.ctaSafeRouteTitle, copy: pack.ctaSafeRouteCopy },
+    document_note: { title: pack.ctaDocumentNoteTitle, copy: pack.ctaDocumentNoteCopy },
+    border_note: { title: pack.ctaBorderNoteTitle, copy: pack.ctaBorderNoteCopy },
+  };
+  return lookup[id] || { title: id, copy: "" };
+}
+
 function setLanguage(language) {
   const pack = LANG.copy[language] || LANG.copy.en;
   currentLanguage = language;
@@ -343,10 +530,17 @@ function setLanguage(language) {
   setText("region-note", pack.regionNote);
   setText("osf-link-text", pack.osfLinkText);
   setText("hero-osf-link", pack.heroOsfLink);
-  setText("hero-sos-open", pack.heroSosOpen);
-  setText("hero-nearby-open", pack.nearbyToggle);
   setText("lite-mode-toggle", pack.liteModeToggle);
   setText("safe-mode-toggle", pack.safeModeToggle);
+  setText("quick-exit-toggle", pack.quickExit);
+  setText("workflow-heading", pack.workflowHeading);
+  setText("workflow-status", pack.workflowStatus);
+  setText("workflow-copy", pack.workflowCopy);
+  setText("cta-heading", pack.ctaHeading);
+  setText("cta-copy", currentIncident ? pack.ctaCopyReady : pack.ctaCopyIdle);
+  setText("queue-heading", pack.queueHeading);
+  setText("queue-status", pack.queueStatus);
+  setText("queue-copy", pack.queueCopy);
   setText("map-title", pack.mapTitle);
   setText("map-status", pack.mapStatus);
   setText("country-heading", pack.countryHeading);
@@ -468,6 +662,9 @@ function setLanguage(language) {
   setText("scenario-refugee", pack.scenarioRefugee);
   updateContextPanel();
   applyAccessModes();
+  renderIncidentWorkflows();
+  renderCtaPanel();
+  renderQueue();
   void loadResources();
   void loadHealth();
 }
@@ -574,12 +771,25 @@ function wireScenarioSelector() {
   for (const button of buttons) {
     button.addEventListener("click", () => {
       currentScenario = button.dataset.scenario || "resident";
+      currentIncident = null;
       for (const other of buttons) {
         setPressed(other, other === button);
       }
       updateContextPanel();
+      renderIncidentWorkflows();
+      renderCtaPanel();
     });
   }
+}
+
+function wireQuickExit() {
+  const button = document.getElementById("quick-exit-toggle");
+  if (!button) {
+    return;
+  }
+  button.addEventListener("click", () => {
+    window.location.replace("https://www.google.com");
+  });
 }
 
 function wireLanguageSwitcher() {
@@ -1174,6 +1384,7 @@ async function bootstrap() {
   wireRegionSelector();
   wireControlTabs();
   wireLanguageSwitcher();
+  wireQuickExit();
   wireVoiceControls();
   wireFeedback();
   wireDetails();
@@ -1182,6 +1393,9 @@ async function bootstrap() {
   wireSOSWidget();
   wireNearbyWidget();
   wireBotPreview();
+  renderIncidentWorkflows();
+  renderCtaPanel();
+  renderQueue();
   if ("speechSynthesis" in window) {
     const refreshVoices = () => {
       availableVoices = window.speechSynthesis.getVoices();
