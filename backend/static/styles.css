@@ -1637,11 +1637,34 @@ body.ui-ready .reveal-after-language {
   }
 
   .map-shell {
-    min-height: 440px;
+    min-height: auto;
     padding: 16px;
   }
 
   .map-zones {
     grid-template-columns: 1fr 1fr;
+  }
+
+  .map-country-panel {
+    padding-top: 14px;
+  }
+
+  .country-strip {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .country-chip {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .map-legend {
+    position: static;
+    right: auto;
+    bottom: auto;
+    margin-top: 16px;
+    display: grid;
+    gap: 10px;
   }
 }
