@@ -153,6 +153,7 @@ const RESOURCE_TRANSLATIONS = {
 const LANG = window.CAN_I18N;
 const LANGUAGE_COPY = Object.fromEntries(Object.entries(LANG.copy).map(([key, value]) => [key, value.languageCopy]));
 const LANGUAGE_LABELS = Object.fromEntries(Object.entries(LANG.languages).map(([key, value]) => [key, value.label]));
+const RESOURCE_CACHE_KEY = "can_resource_cache_v1";
 
 const VOICE_SUMMARY = {
   kenya: "Kenya pilot. Civic Access Navigator helps users find trusted peace and civic guidance, with grounded answers, business-ready controls, and a region-aware interface.",
@@ -164,6 +165,9 @@ let currentRegion = "kenya";
 let currentLanguage = "en";
 let currentZone = "english";
 let currentCountry = "Kenya";
+let currentScenario = "resident";
+let liteModeEnabled = false;
+let safeModeEnabled = false;
 let speechUtterance = null;
 let resourceCache = [];
 let availableVoices = [];
@@ -232,9 +236,96 @@ function setText(id, value) {
   }
 }
 
+function setPressed(node, pressed) {
+  if (node) {
+    node.setAttribute("aria-pressed", pressed ? "true" : "false");
+    node.classList.toggle("is-active", pressed);
+  }
+}
+
+function getScenarioPack(pack) {
+  return currentScenario === "idp"
+    ? { label: pack.scenarioIdp, copy: pack.scenarioIdpCopy }
+    : currentScenario === "refugee"
+      ? { label: pack.scenarioRefugee, copy: pack.scenarioRefugeeCopy }
+      : { label: pack.scenarioResident, copy: pack.scenarioResidentCopy };
+}
+
+function getConnectivityLabel(pack) {
+  return liteModeEnabled ? pack.contextConnectivityLite : pack.contextConnectivityStandard;
+}
+
+function getSafetyLabel(pack) {
+  return safeModeEnabled ? pack.contextSafetySafe : pack.contextSafetyStandard;
+}
+
+function applyAccessModes() {
+  document.body.classList.toggle("lite-mode", liteModeEnabled);
+  document.body.classList.toggle("safe-mode", safeModeEnabled);
+  const liteToggle = document.getElementById("lite-mode-toggle");
+  const safeToggle = document.getElementById("safe-mode-toggle");
+  setPressed(liteToggle, liteModeEnabled);
+  setPressed(safeToggle, safeModeEnabled);
+
+  const nearbyHero = document.getElementById("hero-nearby-open");
+  const nearbyToggle = document.getElementById("nearby-toggle");
+  if (nearbyHero) {
+    nearbyHero.hidden = safeModeEnabled;
+  }
+  if (nearbyToggle) {
+    nearbyToggle.hidden = safeModeEnabled;
+  }
+
+  const pack = LANG.copy[currentLanguage] || LANG.copy.en;
+  const status = document.getElementById("nearby-status");
+  if (safeModeEnabled && status) {
+    status.textContent = pack.nearbySafeMode;
+  } else if (status) {
+    status.textContent = pack.nearbyStatus;
+  }
+
+  updateContextPanel();
+}
+
+function updateContextPanel() {
+  const pack = LANG.copy[currentLanguage] || LANG.copy.en;
+  const scenario = getScenarioPack(pack);
+  setText("scenario-heading", pack.scenarioHeading);
+  setText("scenario-status", scenario.label);
+  setText("scenario-copy", scenario.copy);
+  setText("safe-mode-note", pack.safeModeNote);
+  setText("context-country-label", pack.contextCountryLabel);
+  setText("context-country-value", currentCountry);
+  setText("context-language-label", pack.contextLanguageLabel);
+  setText("context-language-value", LANGUAGE_LABELS[currentLanguage] || pack.contextLanguageFallback);
+  setText("context-scenario-label", pack.contextScenarioLabel);
+  setText("context-scenario-value", scenario.label);
+  setText("context-connectivity-label", pack.contextConnectivityLabel);
+  setText("context-connectivity-value", getConnectivityLabel(pack));
+  setText("context-safety-label", pack.contextSafetyLabel);
+  setText("context-safety-value", getSafetyLabel(pack));
+}
+
 function localizeResource(item) {
   const translated = RESOURCE_TRANSLATIONS[item.title]?.[currentLanguage];
   return translated ? { ...item, ...translated } : item;
+}
+
+function readResourceCache() {
+  try {
+    const raw = window.localStorage.getItem(RESOURCE_CACHE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeResourceCache(items) {
+  try {
+    window.localStorage.setItem(RESOURCE_CACHE_KEY, JSON.stringify(items));
+  } catch {
+    // Ignore storage failures in locked-down browsers.
+  }
 }
 
 function setLanguage(language) {
@@ -254,6 +345,8 @@ function setLanguage(language) {
   setText("hero-osf-link", pack.heroOsfLink);
   setText("hero-sos-open", pack.heroSosOpen);
   setText("hero-nearby-open", pack.nearbyToggle);
+  setText("lite-mode-toggle", pack.liteModeToggle);
+  setText("safe-mode-toggle", pack.safeModeToggle);
   setText("map-title", pack.mapTitle);
   setText("map-status", pack.mapStatus);
   setText("country-heading", pack.countryHeading);
@@ -370,6 +463,11 @@ function setLanguage(language) {
   if (pilotThreeCopy) pilotThreeCopy.textContent = pack.pilotThreeCopy;
   const title = document.querySelector("title");
   if (title) title.textContent = `Civic Access Navigator · ${LANGUAGE_LABELS[language] || "English"}`;
+  setText("scenario-resident", pack.scenarioResident);
+  setText("scenario-idp", pack.scenarioIdp);
+  setText("scenario-refugee", pack.scenarioRefugee);
+  updateContextPanel();
+  applyAccessModes();
   void loadResources();
   void loadHealth();
 }
@@ -442,7 +540,46 @@ function setCountry(country) {
     countryStatus.textContent = `${country} ${LANG.copy[currentLanguage].countryPrototype}`;
     countryCopy.textContent = `${country}: ${LANG.copy[currentLanguage].countryPrototype}`;
   }
+  updateContextPanel();
   loadResources();
+}
+
+function wireAccessModes() {
+  const liteToggle = document.getElementById("lite-mode-toggle");
+  const safeToggle = document.getElementById("safe-mode-toggle");
+  if (liteToggle) {
+    liteToggle.addEventListener("click", () => {
+      liteModeEnabled = !liteModeEnabled;
+      applyAccessModes();
+    });
+  }
+  if (safeToggle) {
+    safeToggle.addEventListener("click", () => {
+      safeModeEnabled = !safeModeEnabled;
+      const chatFeed = document.getElementById("chat-feed");
+      if (safeModeEnabled && chatFeed) {
+        chatFeed.innerHTML = "";
+        const hint = document.createElement("div");
+        hint.className = "chat-bubble bot";
+        hint.textContent = (LANG.copy[currentLanguage] || LANG.copy.en).safeModeChatReset;
+        chatFeed.appendChild(hint);
+      }
+      applyAccessModes();
+    });
+  }
+}
+
+function wireScenarioSelector() {
+  const buttons = document.querySelectorAll(".scenario-toggle-btn");
+  for (const button of buttons) {
+    button.addEventListener("click", () => {
+      currentScenario = button.dataset.scenario || "resident";
+      for (const other of buttons) {
+        setPressed(other, other === button);
+      }
+      updateContextPanel();
+    });
+  }
 }
 
 function wireLanguageSwitcher() {
@@ -616,10 +753,31 @@ async function loadResources() {
     return;
   }
 
-  const response = await fetch("/api/resources");
-  const data = await response.json();
+  let items = [];
+  try {
+    const response = await fetch("/api/resources");
+    const data = await response.json();
+    items = Array.isArray(data.items) ? data.items : [];
+    if (items.length > 0) {
+      writeResourceCache(items);
+    }
+  } catch {
+    items = readResourceCache();
+  }
 
-  for (const item of data.items) {
+  if (items.length === 0) {
+    const card = document.createElement("article");
+    card.className = "card";
+    card.innerHTML = `
+      <h3>${pack.resourcesHeading}</h3>
+      <div class="meta">${getConnectivityLabel(pack)}</div>
+      <p>${pack.botServiceFallback}</p>
+    `;
+    grid.appendChild(card);
+    return;
+  }
+
+  for (const item of items) {
     const localized = localizeResource(item);
     const card = document.createElement("article");
     card.className = "card";
@@ -793,6 +951,12 @@ function wireNearbyWidget() {
   if (locate) {
     locate.addEventListener("click", () => {
       const pack = LANG.copy[currentLanguage] || LANG.copy.en;
+      if (safeModeEnabled) {
+        if (status) {
+          status.textContent = pack.nearbySafeMode;
+        }
+        return;
+      }
       if (!navigator.geolocation) {
         if (status) {
           status.textContent = pack.nearbyUnsupported;
@@ -950,6 +1114,7 @@ function wireBotPreview() {
       body: JSON.stringify({
         message,
         region: currentRegion,
+        scenario: currentScenario,
       }),
     })
       .then((response) => response.json())
@@ -1004,6 +1169,8 @@ async function bootstrap() {
   if (nearbyToggle) nearbyToggle.setAttribute("aria-expanded", "false");
   wireModeChips();
   applyLanguageUI(currentLanguage);
+  wireAccessModes();
+  wireScenarioSelector();
   wireRegionSelector();
   wireControlTabs();
   wireLanguageSwitcher();

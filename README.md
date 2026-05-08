@@ -29,6 +29,7 @@ Build an AI-assisted peace and civic information navigator that:
 - organizes trusted peace, civic, and accountability resources
 - explains information in plain language
 - focuses first on the `Voice & accountability` track
+- includes a `Lite Mode`, `Safe Mode`, and displaced-user scenario selector for hackathon constraint handling
 - provides a simple foundation for later document retrieval, grounded question answering, and regional expansion
 
 ## Why It Fits OSF
@@ -47,6 +48,8 @@ The project is designed to stay within a clear set of principles:
 - keep the core product grounded in curated, trusted sources
 - prefer local context over generic summaries
 - support multiple countries, languages, and community definitions of peace
+- support low-bandwidth use through a lighter UI mode and cached resource fallback
+- support anonymous participation through a safe mode that suppresses location-first actions
 - cite sources when the bot answers
 - avoid legal advice, political prediction, or unverified claims
 - keep Codex as a workflow and onboarding aid, not as the product itself

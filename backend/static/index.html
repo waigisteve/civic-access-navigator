@@ -19,6 +19,10 @@
           <a href="https://www.opensocietyfoundations.org/what-we-do?#focus-areas" target="_blank" class="header-link" id="osf-link" title="Learn about Open Society Foundations">
             <span id="osf-link-text">OSF Focus Areas</span>
           </a>
+          <div class="access-toggle-group" aria-label="Access modes">
+            <button class="access-toggle-btn" type="button" id="lite-mode-toggle" aria-pressed="false">Lite Mode</button>
+            <button class="access-toggle-btn" type="button" id="safe-mode-toggle" aria-pressed="false">Safe Mode</button>
+          </div>
           <div class="language-toggle" role="tablist" aria-label="Language toggle">
           <button class="language-toggle-btn is-active" type="button" data-language="en" aria-pressed="true">EN</button>
           <button class="language-toggle-btn" type="button" data-language="sw" aria-pressed="false">SW</button>
@@ -58,6 +62,46 @@
             <dd id="next-build-value">Kenya first, Africa expansion next</dd>
           </div>
         </dl>
+      </section>
+
+      <section class="panel context-panel reveal-after-language">
+        <div class="panel-head">
+          <h2 id="scenario-heading">Operating context</h2>
+          <span class="status" id="scenario-status">Choose the user situation</span>
+        </div>
+        <div class="scenario-layout">
+          <div>
+            <div class="scenario-toggle-row" role="tablist" aria-label="User scenario">
+              <button class="scenario-toggle-btn is-active" type="button" data-scenario="resident" aria-pressed="true" id="scenario-resident">Citizen in home area</button>
+              <button class="scenario-toggle-btn" type="button" data-scenario="idp" aria-pressed="false" id="scenario-idp">Displaced in-country</button>
+              <button class="scenario-toggle-btn" type="button" data-scenario="refugee" aria-pressed="false" id="scenario-refugee">Cross-border refugee</button>
+            </div>
+            <p class="scenario-copy" id="scenario-copy">Use the base Kenya pilot flow for citizens seeking rights guidance, accountable escalation, and nearby support.</p>
+            <p class="scenario-note" id="safe-mode-note">Safe Mode hides location-first actions and reminds users not to share names, numbers, or exact places.</p>
+          </div>
+          <dl class="context-grid">
+            <div class="context-card">
+              <dt id="context-country-label">Country</dt>
+              <dd id="context-country-value">Kenya</dd>
+            </div>
+            <div class="context-card">
+              <dt id="context-language-label">Language</dt>
+              <dd id="context-language-value">English</dd>
+            </div>
+            <div class="context-card">
+              <dt id="context-scenario-label">User scenario</dt>
+              <dd id="context-scenario-value">Citizen in home area</dd>
+            </div>
+            <div class="context-card">
+              <dt id="context-connectivity-label">Connectivity</dt>
+              <dd id="context-connectivity-value">Standard mode</dd>
+            </div>
+            <div class="context-card">
+              <dt id="context-safety-label">Safety</dt>
+              <dd id="context-safety-value">Standard mode</dd>
+            </div>
+          </dl>
+        </div>
       </section>
 
       <section class="panel map-panel reveal-after-language">
