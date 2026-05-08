@@ -29,6 +29,15 @@ The tool promotes that theme by:
 - making escalation and help-seeking easier through chat and SOS actions
 - reducing the distance between communities and public-interest systems
 
+It also maps clearly onto OSF's focus areas:
+
+- **Democratic Practice:** it supports free and open civic engagement that holds power accountable
+- **Rights and Dignity:** it helps people understand and invoke rights in plain language
+- **Equity in Governance:** it reduces information asymmetry for people most exposed to exclusion and instability
+- **Justice:** it creates a traceable accountability path through incident workflows, queued reporting, and escalation logic
+
+The prototype is strongest in `Democratic Practice` and `Rights and Dignity`, with `Equity in Governance` and `Justice` present as supporting layers of the same accountability workflow.
+
 ## What We Are Building
 
 - a lightweight incident-workflow interface for crisis and accountability scenarios

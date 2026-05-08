@@ -37,10 +37,12 @@ Build an AI-assisted peace and civic action navigator that:
 
 This project supports:
 
-- transformative peace through easier access to trusted local information
-- rights and dignity through clearer explanations of public-interest resources
-- equitable opportunity by lowering information barriers for affected communities
-- community-led peacebuilding through responsible use of AI tools
+- **Democratic Practice** by helping citizens ask better questions, document incidents, and approach institutions with clearer accountability signals
+- **Rights and Dignity** by turning rights information into plain-language next steps that protect individual well-being under pressure
+- **Equity in Governance** by reducing information asymmetry for people who are most exposed to exclusion, displacement, and institutional opacity
+- **Justice** by creating a low-friction path toward traceable accountability actions, escalation, and future remedy-seeking
+
+The current prototype is strongest in `Democratic Practice` and `Rights and Dignity`, while also contributing to `Equity in Governance` through access and to `Justice` through a lightweight accountability trail.
 
 ## Guardrails
 
@@ -170,6 +172,8 @@ Why this is the best fit:
 - it reduces the gap between people and the institutions meant to serve them
 - it gives communities a faster path to trusted, accountable public-interest guidance
 - it supports escalation, reporting, and safer next-step decision making
+
+This makes the product a direct fit for OSF's democratic practice work, while also reinforcing rights and dignity, improving equity in governance for excluded users, and supporting justice-oriented accountability flows.
 
 The first prototype zone remains Kenya, with expansion planned across Africa and OSF's conflict-affected regions.
 

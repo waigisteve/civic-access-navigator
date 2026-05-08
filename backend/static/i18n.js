@@ -746,6 +746,17 @@ window.CAN_I18N = {
 };
 
 Object.assign(window.CAN_I18N.copy.en, {
+  projectHeading: "Why this fits OSF and Voice & accountability",
+  projectSummary: "This prototype aligns most strongly with OSF's Democratic Practice and Rights and Dignity focus areas. It also contributes to Equity in Governance by reducing information asymmetry for excluded users, and to Justice by creating a traceable accountability path from incident to action.",
+  tracks: [
+    "Strengthen democratic practice through clearer citizen-to-institution accountability steps.",
+    "Protect rights and dignity through plain-language, incident-specific guidance.",
+    "Support equity in governance and justice through low-friction reporting and follow-up paths.",
+  ],
+  businessTwoTitle: "OSF focus-area fit",
+  businessTwoCopy: "The workflow is strongest in Democratic Practice and Rights and Dignity, with Equity in Governance and Justice reinforced through safer escalation paths.",
+  businessThreeTitle: "Why this matters to OSF",
+  businessThreeCopy: "The product lowers the cost of being heard in fragile environments where accountability is often weakened by administrative fog and risk.",
   heroIntro: "A Kenya-first PeaceTech tool that helps citizens in fragile environments move from understanding a right to invoking that right through safer next steps.",
   regionNote: "Business case: lower the cost and risk of civic participation by turning rights information into incident-specific accountability actions.",
   projectSummary: "This prototype fits Voice & accountability because it guides citizens from a live incident into a safer accountability action instead of leaving them inside a static information library.",
@@ -811,6 +822,17 @@ Object.assign(window.CAN_I18N.copy.en, {
 });
 
 Object.assign(window.CAN_I18N.copy.sw, {
+  projectHeading: "Kwa nini hii inafaa OSF na Voice & accountability",
+  projectSummary: "Mfumo huu unaendana kwa nguvu zaidi na maeneo ya OSF ya Democratic Practice na Rights and Dignity. Pia unachangia Equity in Governance kwa kupunguza pengo la taarifa kwa watumiaji waliotengwa, na Justice kwa kuunda njia inayoonekana ya uwajibikaji kutoka tukio hadi hatua.",
+  tracks: [
+    "Imarisha democratic practice kupitia hatua wazi za uwajibikaji kati ya mwananchi na taasisi.",
+    "Linda haki na hadhi kupitia mwongozo wa tukio kwa lugha rahisi.",
+    "Saidia equity in governance na justice kupitia njia nyepesi za kuripoti na kufuatilia.",
+  ],
+  businessTwoTitle: "Ulinganifu na maeneo ya OSF",
+  businessTwoCopy: "Mtiririko huu una nguvu zaidi katika Democratic Practice na Rights and Dignity, huku Equity in Governance na Justice zikitiwa nguvu na njia salama za kupaza sauti.",
+  businessThreeTitle: "Kwa nini hili linafaa OSF",
+  businessThreeCopy: "Bidhaa inapunguza gharama ya kusikika katika mazingira hatarishi ambapo uwajibikaji hudhoofishwa na ukungu wa kiutawala na hatari.",
   heroIntro: "Zana ya PeaceTech ya kuanzia Kenya inayosaidia wananchi katika mazingira hatarishi kutoka kujua haki hadi kuitumia kupitia hatua salama zinazofuata.",
   regionNote: "Kesi ya biashara: punguza gharama na hatari ya ushiriki wa kiraia kwa kubadili taarifa za haki kuwa hatua za uwajibikaji zinazolingana na tukio.",
   botIntro: "Eleza tukio, uliza haki inayotumika, au omba hatua salama inayofuata ya uwajibikaji.",
@@ -866,6 +888,17 @@ Object.assign(window.CAN_I18N.copy.sw, {
 });
 
 Object.assign(window.CAN_I18N.copy.fr, {
+  projectHeading: "Pourquoi cela correspond a OSF et a Voice & accountability",
+  projectSummary: "Ce prototype s'aligne surtout sur Democratic Practice et Rights and Dignity chez OSF. Il contribue aussi a Equity in Governance en reduisant l'asymetrie d'information pour les publics exclus, et a Justice en creant un chemin de redevabilite traçable entre l'incident et l'action.",
+  tracks: [
+    "Renforcer la democratic practice par des etapes plus claires entre citoyens et institutions.",
+    "Proteger les droits et la dignite par un guidage en langage simple lie a l'incident.",
+    "Soutenir equity in governance et justice par des voies de signalement et de suivi a faible friction.",
+  ],
+  businessTwoTitle: "Correspondance avec les axes OSF",
+  businessTwoCopy: "Le workflow est le plus fort dans Democratic Practice et Rights and Dignity, avec Equity in Governance et Justice renforcees par des voies d'escalade plus sures.",
+  businessThreeTitle: "Pourquoi cela compte pour OSF",
+  businessThreeCopy: "Le produit reduit le cout de la prise de parole dans des contextes fragiles ou la redevabilite est affaiblie par le brouillard administratif et le risque.",
   heroIntro: "Un outil PeaceTech pilote au Kenya qui aide les citoyens en contexte fragile a passer de la comprehension d'un droit a son invocation par des etapes plus sures.",
   regionNote: "Cas d'usage: reduire le cout et le risque de la participation civique en transformant les droits en actions de redevabilite liees a l'incident.",
   botIntro: "Decrivez l'incident, demandez quel droit s'applique ou quelle est l'etape de redevabilite la plus sure.",
@@ -921,6 +954,17 @@ Object.assign(window.CAN_I18N.copy.fr, {
 });
 
 Object.assign(window.CAN_I18N.copy.ar, {
+  projectHeading: "لماذا يناسب هذا OSF و Voice & accountability",
+  projectSummary: "يتوافق هذا النموذج بقوة مع مجالي Democratic Practice و Rights and Dignity لدى OSF. كما يساهم في Equity in Governance عبر تقليل فجوة المعلومات للمستخدمين المستبعدين، وفي Justice عبر إنشاء مسار مساءلة واضح من الحادثة إلى الإجراء.",
+  tracks: [
+    "تعزيز democratic practice عبر خطوات أوضح للمساءلة بين المواطن والمؤسسة.",
+    "حماية الحقوق والكرامة عبر إرشاد مرتبط بالحادثة بلغة بسيطة.",
+    "دعم equity in governance و justice عبر مسارات إبلاغ ومتابعة منخفضة الاحتكاك.",
+  ],
+  businessTwoTitle: "الارتباط بمجالات OSF",
+  businessTwoCopy: "هذا المسار هو الأقوى في Democratic Practice و Rights and Dignity، مع دعم Equity in Governance و Justice عبر مسارات تصعيد أكثر أمانًا.",
+  businessThreeTitle: "لماذا يهم هذا OSF",
+  businessThreeCopy: "يخفض المنتج كلفة أن يُسمع صوت المواطن في البيئات الهشة حيث تضعف المساءلة بسبب الضباب الإداري والمخاطر.",
   heroIntro: "أداة PeaceTech تجريبية تبدأ من كينيا وتساعد المواطنين في البيئات الهشة على الانتقال من فهم الحق إلى استخدامه عبر خطوات أكثر أمانًا.",
   regionNote: "حالة العمل: خفض كلفة ومخاطر المشاركة المدنية بتحويل معلومات الحقوق إلى إجراءات مساءلة مرتبطة بالحادثة.",
   botIntro: "صف الحادثة، واسأل عن الحق المناسب، أو اطلب الخطوة الأكثر أمانًا للمساءلة.",
