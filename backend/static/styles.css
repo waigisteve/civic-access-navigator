@@ -1604,6 +1604,17 @@ body.ui-ready .reveal-after-language {
     word-break: break-word;
   }
 
+  .bottom-docs {
+    position: static;
+    left: auto;
+    bottom: auto;
+    transform: none;
+    width: 100%;
+    margin-top: 18px;
+    grid-template-columns: 1fr 1fr;
+    border-radius: 16px;
+  }
+
   .grid,
   .deliverables {
     grid-template-columns: 1fr;
