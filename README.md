@@ -178,6 +178,29 @@ Provider-specific settings:
 - Gemini: `GEMINI_API_KEY`
 - Ollama: `OLLAMA_BASE_URL`, optional `OLLAMA_MODEL`
 
+## Chat Knowledge Path
+
+The `Lets Chat` assistant is designed to answer from internal project knowledge before it falls back to any public model.
+
+Current answer order:
+
+1. internal FAQ entries in [docs/chat-faq.md](/mnt/c/Users/Hp/codex-demo/capstone/docs/chat-faq.md)
+2. curated OSF and peace-support knowledge notes in `data/curated/`
+3. optional live ingestion from an allowlist of public source websites already represented in the knowledge base
+4. optional public LLM synthesis over those retrieved internal sources and live snippets
+
+This keeps the chatbot grounded in project-controlled material rather than relying on open-ended generation first.
+
+To enable live website ingestion at runtime:
+
+- set `LIVE_SOURCE_INGESTION=1`
+
+The current allowlist is intentionally narrow:
+
+- `opensocietyfoundations.org`
+- `unhcr.org`
+- `icrc.org`
+
 ## PeaceTech Track
 
 The product is now intentionally centered on `Voice & accountability`.

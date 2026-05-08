@@ -2,17 +2,33 @@ from __future__ import annotations
 
 import json
 import os
+import re
+import time
 import urllib.error
-import urllib.parse
 import urllib.request
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from openai import OpenAI
+try:
+    from openai import OpenAI
+except Exception:  # pragma: no cover - optional dependency at runtime
+    OpenAI = None
 
 
-CURATED_PATH = Path(__file__).resolve().parents[3] / "data" / "curated" / "osf_kenya_africa_sources.json"
+CURATED_SOURCES_PATH = Path(__file__).resolve().parents[3] / "data" / "curated" / "osf_kenya_africa_sources.json"
+KNOWLEDGE_BASE_PATH = Path(__file__).resolve().parents[3] / "data" / "curated" / "can_knowledge_base.json"
+FAQ_PATH = Path(__file__).resolve().parents[3] / "data" / "curated" / "can_faq.json"
+LIVE_CACHE_DIR = Path(__file__).resolve().parents[3] / ".cache" / "live_sources"
+LIVE_CACHE_TTL_SECONDS = 60 * 30
+ALLOWED_LIVE_DOMAINS = {
+    "opensocietyfoundations.org",
+    "www.opensocietyfoundations.org",
+    "unhcr.org",
+    "www.unhcr.org",
+    "icrc.org",
+    "www.icrc.org",
+}
 
 
 @dataclass(frozen=True)
@@ -23,288 +39,320 @@ class SourceHit:
     source_type: str
     url: str
     summary: str
+    body: str
+    score: int
 
 
-def load_sources() -> list[dict[str, Any]]:
-    with CURATED_PATH.open("r", encoding="utf-8") as handle:
+@dataclass(frozen=True)
+class LiveSnippet:
+    title: str
+    url: str
+    snippet: str
+
+
+def _load_json(path: Path) -> list[dict[str, Any]]:
+    with path.open("r", encoding="utf-8") as handle:
         return json.load(handle)
 
 
-def score_source(query: str, source: dict[str, Any]) -> int:
+def _live_ingestion_enabled() -> bool:
+    return os.getenv("LIVE_SOURCE_INGESTION", "0").strip() == "1"
+
+
+def _strip_html(html: str) -> str:
+    html = re.sub(r"(?is)<script.*?>.*?</script>", " ", html)
+    html = re.sub(r"(?is)<style.*?>.*?</style>", " ", html)
+    html = re.sub(r"(?s)<[^>]+>", " ", html)
+    html = re.sub(r"\s+", " ", html)
+    return html.strip()
+
+
+def _cache_path_for_url(url: str) -> Path:
+    slug = re.sub(r"[^a-zA-Z0-9]+", "_", url).strip("_").lower()
+    LIVE_CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    return LIVE_CACHE_DIR / f"{slug}.json"
+
+
+def _fetch_live_text(url: str) -> str:
+    cache_path = _cache_path_for_url(url)
+    if cache_path.exists():
+        age = time.time() - cache_path.stat().st_mtime
+        if age <= LIVE_CACHE_TTL_SECONDS:
+            try:
+                return json.loads(cache_path.read_text(encoding="utf-8")).get("text", "")
+            except Exception:
+                pass
+
+    request = urllib.request.Request(
+        url,
+        headers={
+            "User-Agent": "CivicAccessNavigator/0.1 (+https://github.com/waigisteve/codex)"
+        },
+    )
+    with urllib.request.urlopen(request, timeout=12) as response:
+        html = response.read().decode("utf-8", errors="ignore")
+    text = _strip_html(html)
+    try:
+        cache_path.write_text(json.dumps({"text": text}), encoding="utf-8")
+    except Exception:
+        pass
+    return text
+
+
+def retrieve_live_snippets(hits: list[SourceHit], query: str) -> list[LiveSnippet]:
+    if not _live_ingestion_enabled():
+        return []
+
+    snippets: list[LiveSnippet] = []
+    query_tokens = set(_tokenize(query))
+    for hit in hits:
+        if not hit.url.startswith("http"):
+            continue
+        domain = hit.url.split("/")[2].lower() if "//" in hit.url else ""
+        if domain not in ALLOWED_LIVE_DOMAINS:
+            continue
+        try:
+            text = _fetch_live_text(hit.url)
+        except (urllib.error.URLError, TimeoutError, ValueError):
+            continue
+        if not text:
+            continue
+        sentences = re.split(r"(?<=[.!?])\s+", text)
+        selected = []
+        for sentence in sentences:
+            lowered = sentence.lower()
+            if any(token in lowered for token in query_tokens):
+                selected.append(sentence.strip())
+            if len(" ".join(selected)) > 500:
+                break
+        snippet = " ".join(selected).strip() or text[:500]
+        snippets.append(LiveSnippet(title=hit.title, url=hit.url, snippet=snippet[:700]))
+    return snippets[:3]
+
+
+def load_curated_sources() -> list[dict[str, Any]]:
+    return _load_json(CURATED_SOURCES_PATH)
+
+
+def load_knowledge_base() -> list[dict[str, Any]]:
+    return _load_json(KNOWLEDGE_BASE_PATH)
+
+
+def load_faq() -> list[dict[str, Any]]:
+    return _load_json(FAQ_PATH)
+
+
+def _tokenize(text: str) -> list[str]:
+    return [token.strip(".,:;!?()[]{}\"'").lower() for token in text.split() if token.strip()]
+
+
+def _score_text(query: str, text: str) -> int:
+    q_tokens = _tokenize(query)
+    haystack = text.lower()
     score = 0
-    q = query.lower()
-    haystack = " ".join([source["title"], source["summary"], " ".join(source.get("keywords", []))]).lower()
-    for token in q.split():
-        if token in haystack:
+    for token in q_tokens:
+        if token and token in haystack:
             score += 1
-    if source["region"] in q:
-        score += 3
+    return score
+
+
+def _score_source(query: str, source: dict[str, Any], region: str | None = None) -> int:
+    score = _score_text(
+        query,
+        " ".join(
+            [
+                source.get("title", ""),
+                source.get("summary", ""),
+                source.get("body", ""),
+                " ".join(source.get("keywords", [])),
+            ]
+        ),
+    )
+    q = query.lower()
+    if region and source.get("region") in {region, "africa"}:
+        score += 2
+    if source.get("region", "") in q:
+        score += 2
+    if source.get("source_type") == "internal-doc":
+        score += 1
+    return score
+
+
+def _score_faq(query: str, item: dict[str, Any], region: str | None = None) -> int:
+    score = _score_text(
+        query,
+        " ".join(
+            [
+                item.get("question", ""),
+                item.get("answer", ""),
+                " ".join(item.get("keywords", [])),
+            ]
+        ),
+    )
+    if region and item.get("region") in {region, "africa"}:
+        score += 2
     return score
 
 
 def retrieve_sources(query: str, region: str | None = None) -> list[SourceHit]:
-    sources = load_sources()
+    combined = load_curated_sources() + load_knowledge_base()
     hits: list[SourceHit] = []
-    for source in sources:
-        if region and source["region"] not in {region, "africa"}:
+    for source in combined:
+        score = _score_source(query, source, region=region)
+        if score <= 0:
             continue
-        if score_source(query, source) > 0:
-            hits.append(
-                SourceHit(
-                    id=source["id"],
-                    title=source["title"],
-                    region=source["region"],
-                    source_type=source["source_type"],
-                    url=source["url"],
-                    summary=source["summary"],
-                )
+        hits.append(
+            SourceHit(
+                id=source["id"],
+                title=source["title"],
+                region=source.get("region", "africa"),
+                source_type=source.get("source_type", "curated-note"),
+                url=source["url"],
+                summary=source.get("summary", ""),
+                body=source.get("body", source.get("summary", "")),
+                score=score,
             )
-    return hits[:3]
+        )
+    hits.sort(key=lambda item: item.score, reverse=True)
+    return hits[:5]
 
 
-def _format_response(answer: str, hits: list[SourceHit], mode: str, provider: str) -> dict[str, Any]:
+def retrieve_faq(query: str, region: str | None = None) -> dict[str, Any] | None:
+    ranked = []
+    for item in load_faq():
+        score = _score_faq(query, item, region=region)
+        if score > 0:
+            ranked.append((score, item))
+    ranked.sort(key=lambda item: item[0], reverse=True)
+    return ranked[0][1] if ranked else None
+
+
+def _format_response(answer: str, citations: list[str], mode: str, provider: str) -> dict[str, Any]:
     return {
         "answer": answer,
-        "citations": [f"{hit.title} ({hit.url})" for hit in hits],
+        "citations": citations,
         "mode": mode,
         "provider": provider,
     }
 
 
-def build_kenya_rights_answer() -> dict[str, Any]:
-    hits = retrieve_sources("bill of rights kenya rights", region="kenya")
-    answer = (
-        "The basic human rights of a Kenyan are protected by the Bill of Rights in the Constitution of Kenya (2010). "
-        "In plain language, the core rights include:\n"
-        "- Right to life\n"
-        "- Equality and freedom from discrimination\n"
-        "- Human dignity\n"
-        "- Freedom and security of the person\n"
-        "- Privacy\n"
-        "- Freedom of expression, information, and media\n"
-        "- Freedom of religion, belief, and opinion\n"
-        "- Freedom of association, assembly, and movement\n"
-        "- Political rights and participation\n"
-        "- Access to justice\n\n"
-        "Those rights belong to every person in Kenya, and some apply to all persons rather than only citizens."
-    )
-    return _format_response(answer, hits, "rights-template", "local")
+def _citations_from_hits(hits: list[SourceHit]) -> list[str]:
+    return [f"{hit.title} ({hit.url})" for hit in hits]
+
+
+def _faq_citations(item: dict[str, Any], hits: list[SourceHit]) -> list[str]:
+    ids = set(item.get("source_ids", []))
+    if not ids:
+      return _citations_from_hits(hits)
+    return [f"{hit.title} ({hit.url})" for hit in hits if hit.id in ids] or _citations_from_hits(hits)
 
 
 def local_answer(query: str, region: str | None = None) -> dict[str, Any]:
-    normalized = query.lower()
-    if region == "kenya" and any(
-        phrase in normalized
-        for phrase in [
-            "human rights",
-            "basic rights",
-            "rights of a kenyan",
-            "bill of rights",
-            "constitution of kenya",
-        ]
-    ):
-        return build_kenya_rights_answer()
-
+    faq = retrieve_faq(query, region=region)
     hits = retrieve_sources(query, region=region)
+    live_snippets = retrieve_live_snippets(hits, query)
+
+    if faq:
+        citations = _faq_citations(faq, hits)
+        if live_snippets:
+            citations = citations + [f"{item.title} ({item.url})" for item in live_snippets]
+        return _format_response(faq["answer"], citations, "faq", "local")
+
     if not hits:
         return _format_response(
-            "I could not find a grounded match in the curated Kenya/Africa sources yet. Try asking about rights, participation, governance, or a specific region.",
+            "I could not find a grounded match in the internal OSF and peace-support documents yet. Try asking about rights, accountability, displacement, aid denial, or a specific incident.",
             [],
             "fallback",
             "local",
         )
 
     answer = (
-        "Based on the curated sources, the strongest match is:\n"
-        + "\n".join([f"- {hit.summary}" for hit in hits])
-        + "\n\nThese sources are the current ground truth for the Kenya-first prototype."
+        "Based on the internal documentation and curated source set, the strongest answer is:\n"
+        + "\n".join([f"- {hit.summary}" for hit in hits[:3]])
+        + (
+            "\n"
+            + "\n".join([f"- Live website note: {item.snippet}" for item in live_snippets])
+            if live_snippets
+            else ""
+        )
+        + "\n\nThis answer is grounded in the current OSF-aligned and peace-support documents available inside the prototype."
     )
-    return _format_response(answer, hits, "retrieval", "local")
+    citations = _citations_from_hits(hits) + [f"{item.title} ({item.url})" for item in live_snippets]
+    return _format_response(answer, citations, "knowledge+live" if live_snippets else "knowledge", "local")
 
 
-def _http_json(method: str, url: str, payload: dict[str, Any], headers: dict[str, str] | None = None) -> dict[str, Any]:
-    request = urllib.request.Request(
-        url,
-        data=json.dumps(payload).encode("utf-8"),
-        headers={"Content-Type": "application/json", **(headers or {})},
-        method=method,
-    )
-    with urllib.request.urlopen(request, timeout=90) as response:
-        return json.loads(response.read().decode("utf-8"))
-
-
-def _openai_answer(query: str, region: str | None, hits: list[SourceHit]) -> dict[str, Any]:
+def _openai_answer(query: str, region: str | None = None) -> dict[str, Any]:
     api_key = os.getenv("OPENAI_API_KEY", "").strip()
-    if not api_key:
+    if not api_key or OpenAI is None:
         return local_answer(query, region=region)
 
-    client = OpenAI(api_key=api_key)
-    source_block = "\n".join([f"- {hit.title}: {hit.summary} ({hit.url})" for hit in hits]) or "- No direct match found in curated sources."
+    faq = retrieve_faq(query, region=region)
+    hits = retrieve_sources(query, region=region)
+    live_snippets = retrieve_live_snippets(hits, query)
+    if not faq and not hits:
+        return local_answer(query, region=region)
+
+    source_block = "\n\n".join(
+        [f"{hit.title}\nSummary: {hit.summary}\nDetail: {hit.body}\nURL: {hit.url}" for hit in hits]
+    )
+    faq_block = ""
+    citations = _citations_from_hits(hits)
+    if faq:
+        faq_block = f"FAQ match\nQuestion: {faq['question']}\nAnswer: {faq['answer']}\n"
+        citations = _faq_citations(faq, hits)
+    if live_snippets:
+        citations = citations + [f"{item.title} ({item.url})" for item in live_snippets]
+
+    live_block = ""
+    if live_snippets:
+        live_block = "Live website snippets:\n" + "\n\n".join(
+            [f"{item.title}\nURL: {item.url}\nSnippet: {item.snippet}" for item in live_snippets]
+        )
+
     prompt = [
         {
             "role": "system",
             "content": (
-                "You are Civic Access Navigator, a Kenya-first PeaceTech assistant. "
-                "Answer the user's question naturally and directly. "
-                "Prefer official, legal, and rights-focused sources. "
-                "Use the provided curated context, but do not invent facts. "
-                "If the evidence is weak, say so plainly."
+                "You are Civic Access Navigator. "
+                "Answer only from the provided internal documentation, FAQ entries, and curated source notes. "
+                "Do not invent facts. If the sources are weak or partial, say so plainly. "
+                "Keep the answer concise and useful."
             ),
         },
         {
             "role": "user",
             "content": (
                 f"Question: {query}\n"
-                f"Region: {region or 'kenya'}\n"
-                f"Curated sources:\n{source_block}"
+                f"Region: {region or 'kenya'}\n\n"
+                f"{faq_block}\n"
+                f"Internal documentation:\n{source_block}\n\n"
+                f"{live_block}"
             ),
         },
     ]
 
-    configured_model = os.getenv("OPENAI_MODEL", "gpt-5.5").strip()
-    models_to_try = [configured_model, "gpt-4o-mini-search-preview"]
-
-    last_error = None
-    for model in models_to_try:
-        try:
-            if "search-preview" in model or model.endswith("-search-api"):
-                response = client.chat.completions.create(
-                    model=model,
-                    messages=prompt,
-                )
-                answer = (response.choices[0].message.content or "").strip()
-            else:
-                response = client.responses.create(
-                    model=model,
-                    tools=[{"type": "web_search"}],
-                    input=prompt,
-                )
-                answer = getattr(response, "output_text", "").strip()
-            if answer:
-                return _format_response(answer, hits, f"openai-web:{model}", "openai")
-        except Exception as exc:
-            last_error = exc
-
-    if last_error is not None:
+    client = OpenAI(api_key=api_key)
+    model = os.getenv("OPENAI_MODEL", "gpt-4o-mini").strip()
+    try:
+        response = client.chat.completions.create(model=model, messages=prompt)
+        answer = (response.choices[0].message.content or "").strip()
+        if answer:
+            return _format_response(answer, citations, "grounded-docs+live" if live_snippets else "grounded-docs", "openai")
+    except Exception as exc:
         return _format_response(
-            f"OpenAI was configured, but the live response could not be generated just now: {last_error}. The app fell back to local grounding.",
-            hits,
+            f"OpenAI was configured, but the grounded answer could not be generated just now: {exc}. The app fell back to internal documentation.",
+            citations,
             "openai-error",
             "openai",
         )
+
     return local_answer(query, region=region)
-
-
-def _gemini_answer(query: str, region: str | None, hits: list[SourceHit]) -> dict[str, Any]:
-    api_key = os.getenv("GEMINI_API_KEY", "").strip()
-    if not api_key:
-        return local_answer(query, region=region)
-
-    try:
-        source_block = "\n".join([f"- {hit.title}: {hit.summary} ({hit.url})" for hit in hits]) or "- No direct match found in curated sources."
-        payload = {
-            "contents": [
-                {
-                    "parts": [
-                        {
-                            "text": (
-                                "You are Civic Access Navigator, a Kenya-first civic information assistant. "
-                                "Answer only from web-grounded evidence and the curated sources provided. "
-                                "Prefer rights-oriented official sources. If the evidence is weak, say so.\n\n"
-                                f"Question: {query}\n"
-                                f"Region: {region or 'kenya'}\n"
-                                f"Curated sources:\n{source_block}"
-                            )
-                        }
-                    ]
-                }
-            ],
-            "tools": [{"google_search": {}}],
-        }
-        data = _http_json(
-            "POST",
-            "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key="
-            + urllib.parse.quote(api_key),
-            payload,
-        )
-        candidate = data["candidates"][0]
-        answer = candidate["content"]["parts"][0]["text"]
-        return _format_response(answer, hits, "gemini-web", "gemini")
-    except Exception:
-        return local_answer(query, region=region)
-
-
-def _ollama_answer(query: str, region: str | None, hits: list[SourceHit]) -> dict[str, Any]:
-    base_url = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434").rstrip("/")
-    model = os.getenv("OLLAMA_MODEL", "llama3.1")
-    source_block = "\n".join([f"- {hit.title}: {hit.summary} ({hit.url})" for hit in hits]) or "- No direct match found in curated sources."
-
-    try:
-        search_payload = {"query": query, "max_results": 5}
-        search_data = _http_json("POST", f"{base_url}/api/web_search", search_payload)
-        results = search_data.get("results", [])
-        web_block = "\n".join([f"- {item.get('title', 'Source')} ({item.get('url', '')})" for item in results]) or "- No web results."
-    except Exception:
-        web_block = "- Web search unavailable."
-
-    prompt = (
-        "You are Civic Access Navigator, a Kenya-first civic information assistant.\n"
-        "Answer only from the curated sources and the web search results provided.\n"
-        "Prefer official or rights-focused sources. If the evidence is weak, say so.\n\n"
-        f"Question: {query}\n"
-        f"Region: {region or 'kenya'}\n"
-        f"Curated sources:\n{source_block}\n\n"
-        f"Web search results:\n{web_block}"
-    )
-
-    payload = {"model": model, "prompt": prompt, "stream": False}
-    try:
-        data = _http_json("POST", f"{base_url}/api/generate", payload)
-        return _format_response(data.get("response", "I could not generate a grounded answer."), hits, "ollama-web", "ollama")
-    except Exception:
-        return local_answer(query, region=region)
 
 
 def chat_answer(query: str, region: str | None = None) -> dict[str, Any]:
     provider = os.getenv("CHAT_PROVIDER", "auto").strip().lower()
-    hits = retrieve_sources(query, region=region)
-
-    if region == "kenya" and any(
-        phrase in query.lower()
-        for phrase in [
-            "human rights",
-            "basic rights",
-            "rights of a kenyan",
-            "bill of rights",
-            "constitution of kenya",
-        ]
-    ):
-        base = build_kenya_rights_answer()
-        if provider == "auto":
-            provider = "openai" if os.getenv("OPENAI_API_KEY") else "gemini" if os.getenv("GEMINI_API_KEY") else "ollama"
-        if provider == "openai":
-            return _openai_answer(query, region, hits) if os.getenv("OPENAI_API_KEY") else base
-        if provider == "gemini":
-            return _gemini_answer(query, region, hits) if os.getenv("GEMINI_API_KEY") else base
-        if provider == "ollama":
-            return _ollama_answer(query, region, hits)
-        return base
-
     if provider == "auto":
-        provider = (
-            "openai"
-            if os.getenv("OPENAI_API_KEY")
-            else "gemini"
-            if os.getenv("GEMINI_API_KEY")
-            else "ollama"
-            if os.getenv("OLLAMA_BASE_URL")
-            else "local"
-        )
-
+        provider = "openai" if os.getenv("OPENAI_API_KEY") else "local"
     if provider == "openai":
-        return _openai_answer(query, region, hits)
-    if provider == "gemini":
-        return _gemini_answer(query, region, hits)
-    if provider == "ollama":
-        return _ollama_answer(query, region, hits)
+        return _openai_answer(query, region=region)
     return local_answer(query, region=region)

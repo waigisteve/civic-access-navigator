@@ -746,6 +746,14 @@ window.CAN_I18N = {
 };
 
 Object.assign(window.CAN_I18N.copy.en, {
+  modeLiteTitle: "Lite Mode",
+  modeLiteCopy: "For low bandwidth and older devices. It simplifies visuals, keeps cached resources available, and prioritizes readability over effects.",
+  modeSafeTitle: "Safe Mode",
+  modeSafeCopy: "For physical-risk situations. It suppresses location-first actions, resets visible chat, and favors privacy-preserving interaction.",
+  modeSummaryDefault: "Standard mode is active. Turn on Lite Mode for constrained connectivity, or Safe Mode for privacy-first use.",
+  modeSummaryLite: "Lite Mode is active. Visual weight is reduced to support low bandwidth, older devices, and cached reading.",
+  modeSummarySafe: "Safe Mode is active. Location-first actions are suppressed and the interface favors privacy and quick exit.",
+  modeSummaryBoth: "Lite Mode and Safe Mode are active. The interface is reduced for low bandwidth and tuned for privacy-preserving use.",
   projectHeading: "Why this fits OSF and Voice & accountability",
   projectSummary: "This prototype aligns most strongly with OSF's Democratic Practice and Rights and Dignity focus areas. It also contributes to Equity in Governance by reducing information asymmetry for excluded users, and to Justice by creating a traceable accountability path from incident to action.",
   tracks: [
@@ -769,8 +777,8 @@ Object.assign(window.CAN_I18N.copy.en, {
   businessTwoCopy: "The tool helps a citizen move from reading a right to invoking a right with minimal friction.",
   businessThreeCopy: "In fragile environments, the barrier is often the risk of asking for help, not just the lack of information.",
   businessFourCopy: "The same workflow can be re-skinned across African geographies by swapping in a localized rights database.",
-  botIntro: "Describe the incident, ask what right applies, or request the safest next accountability step.",
-  botTry: 'Try: "I am at a checkpoint. What can I do safely?"',
+  botIntro: "Describe the incident, ask what right applies, or request the safest next accountability step. Answers are grounded first in internal FAQ and curated OSF-aligned notes, with live source snippets used when allowed.",
+  botTry: 'Try: "What does OSF mean by democratic practice?"',
   botFollowup: "How can I save this report and send it when connected?",
   quickExit: "Quick Exit",
   workflowHeading: "Incident workflows",
@@ -822,6 +830,14 @@ Object.assign(window.CAN_I18N.copy.en, {
 });
 
 Object.assign(window.CAN_I18N.copy.sw, {
+  modeLiteTitle: "Hali nyepesi",
+  modeLiteCopy: "Kwa mtandao mdogo na vifaa vya zamani. Hupunguza mwonekano mzito, huacha rasilimali zilizohifadhiwa zipatikane, na huweka usomaji mbele ya athari za kuona.",
+  modeSafeTitle: "Hali salama",
+  modeSafeCopy: "Kwa mazingira ya hatari ya kimwili. Huficha vitendo vinavyotumia eneo, husafisha mazungumzo yanayoonekana, na hupendelea matumizi yanayolinda faragha.",
+  modeSummaryDefault: "Hali ya kawaida imewashwa. Tumia Hali nyepesi kwa mtandao mdogo, au Hali salama kwa matumizi yanayolinda faragha.",
+  modeSummaryLite: "Hali nyepesi imewashwa. Uzito wa mwonekano umepunguzwa kusaidia mtandao mdogo, vifaa vya zamani, na usomaji wa yaliyohifadhiwa.",
+  modeSummarySafe: "Hali salama imewashwa. Vitendo vinavyotegemea eneo vimefichwa na kiolesura kinapendelea faragha pamoja na kutoka haraka.",
+  modeSummaryBoth: "Hali nyepesi na Hali salama zimewashwa. Kiolesura kimepunguzwa kwa mtandao mdogo na kuboreshwa kwa matumizi yanayolinda faragha.",
   projectHeading: "Kwa nini hii inafaa OSF na Voice & accountability",
   projectSummary: "Mfumo huu unaendana kwa nguvu zaidi na maeneo ya OSF ya Democratic Practice na Rights and Dignity. Pia unachangia Equity in Governance kwa kupunguza pengo la taarifa kwa watumiaji waliotengwa, na Justice kwa kuunda njia inayoonekana ya uwajibikaji kutoka tukio hadi hatua.",
   tracks: [
@@ -835,8 +851,8 @@ Object.assign(window.CAN_I18N.copy.sw, {
   businessThreeCopy: "Bidhaa inapunguza gharama ya kusikika katika mazingira hatarishi ambapo uwajibikaji hudhoofishwa na ukungu wa kiutawala na hatari.",
   heroIntro: "Zana ya PeaceTech ya kuanzia Kenya inayosaidia wananchi katika mazingira hatarishi kutoka kujua haki hadi kuitumia kupitia hatua salama zinazofuata.",
   regionNote: "Kesi ya biashara: punguza gharama na hatari ya ushiriki wa kiraia kwa kubadili taarifa za haki kuwa hatua za uwajibikaji zinazolingana na tukio.",
-  botIntro: "Eleza tukio, uliza haki inayotumika, au omba hatua salama inayofuata ya uwajibikaji.",
-  botTry: 'Jaribu: "Niko kwenye kizuizi. Ninaweza kufanya nini kwa usalama?"',
+  botIntro: "Eleza tukio, uliza haki inayotumika, au omba hatua salama inayofuata ya uwajibikaji. Majibu huanza na FAQ ya ndani na maelezo yaliyochaguliwa ya OSF, kisha hutumia dondoo za moja kwa moja za vyanzo vinavyoruhusiwa pale inapowezekana.",
+  botTry: 'Jaribu: "OSF ina maana gani kwa democratic practice?"',
   botFollowup: "Ninawezaje kuhifadhi ripoti hii na kuituma mtandao ukirudi?",
   quickExit: "Toka haraka",
   workflowHeading: "Mtiririko wa matukio",
@@ -888,6 +904,14 @@ Object.assign(window.CAN_I18N.copy.sw, {
 });
 
 Object.assign(window.CAN_I18N.copy.fr, {
+  modeLiteTitle: "Mode leger",
+  modeLiteCopy: "Pour les faibles debits et les appareils plus anciens. Il simplifie les visuels, conserve les ressources en cache et privilegie la lisibilite.",
+  modeSafeTitle: "Mode sur",
+  modeSafeCopy: "Pour les situations de risque physique. Il masque les actions basees sur la localisation, reinitialise le chat visible et privilegie l'interaction preservee.",
+  modeSummaryDefault: "Le mode standard est actif. Activez le Mode leger pour une connectivite contrainte, ou le Mode sur pour un usage axe sur la confidentialite.",
+  modeSummaryLite: "Le Mode leger est actif. La charge visuelle est reduite pour les faibles debits, les appareils anciens et la lecture en cache.",
+  modeSummarySafe: "Le Mode sur est actif. Les actions liees a la localisation sont masquees et l'interface favorise la confidentialite et la sortie rapide.",
+  modeSummaryBoth: "Le Mode leger et le Mode sur sont actifs. L'interface est reduite pour les faibles debits et ajustee pour un usage protecteur.",
   projectHeading: "Pourquoi cela correspond a OSF et a Voice & accountability",
   projectSummary: "Ce prototype s'aligne surtout sur Democratic Practice et Rights and Dignity chez OSF. Il contribue aussi a Equity in Governance en reduisant l'asymetrie d'information pour les publics exclus, et a Justice en creant un chemin de redevabilite traçable entre l'incident et l'action.",
   tracks: [
@@ -901,8 +925,8 @@ Object.assign(window.CAN_I18N.copy.fr, {
   businessThreeCopy: "Le produit reduit le cout de la prise de parole dans des contextes fragiles ou la redevabilite est affaiblie par le brouillard administratif et le risque.",
   heroIntro: "Un outil PeaceTech pilote au Kenya qui aide les citoyens en contexte fragile a passer de la comprehension d'un droit a son invocation par des etapes plus sures.",
   regionNote: "Cas d'usage: reduire le cout et le risque de la participation civique en transformant les droits en actions de redevabilite liees a l'incident.",
-  botIntro: "Decrivez l'incident, demandez quel droit s'applique ou quelle est l'etape de redevabilite la plus sure.",
-  botTry: 'Essayez : "Je suis a un checkpoint. Que puis-je faire en securite ?" ',
+  botIntro: "Decrivez l'incident, demandez quel droit s'applique ou quelle est l'etape de redevabilite la plus sure. Les reponses s'appuient d'abord sur la FAQ interne et les notes OSF alignees, puis sur des extraits en direct de sources autorisees lorsque c'est possible.",
+  botTry: 'Essayez : "Que signifie Democratic Practice pour OSF ?" ',
   botFollowup: "Comment enregistrer ce signalement et l'envoyer quand la connexion revient ?",
   quickExit: "Sortie rapide",
   workflowHeading: "Parcours d'incident",
@@ -954,6 +978,14 @@ Object.assign(window.CAN_I18N.copy.fr, {
 });
 
 Object.assign(window.CAN_I18N.copy.ar, {
+  modeLiteTitle: "الوضع الخفيف",
+  modeLiteCopy: "للشبكات الضعيفة والأجهزة الأقدم. يقلل المؤثرات البصرية، ويحافظ على الموارد المخزنة، ويعطي الأولوية للقراءة الواضحة.",
+  modeSafeTitle: "الوضع الآمن",
+  modeSafeCopy: "للمواقف ذات الخطر الجسدي. يخفي الإجراءات المعتمدة على الموقع، ويعيد ضبط المحادثة الظاهرة، ويفضل التفاعل المحافظ على الخصوصية.",
+  modeSummaryDefault: "الوضع القياسي نشط. فعّل الوضع الخفيف للاتصال المحدود، أو الوضع الآمن للاستخدام المعتمد على الخصوصية.",
+  modeSummaryLite: "الوضع الخفيف نشط. تم تقليل الثقل البصري لدعم الشبكات الضعيفة والأجهزة القديمة والقراءة من الذاكرة المؤقتة.",
+  modeSummarySafe: "الوضع الآمن نشط. تم إخفاء الإجراءات المعتمدة على الموقع وتفضّل الواجهة الخصوصية والخروج السريع.",
+  modeSummaryBoth: "الوضع الخفيف والوضع الآمن نشطان. تم تبسيط الواجهة للشبكات الضعيفة وتهيئتها لاستخدام يحافظ على الخصوصية.",
   projectHeading: "لماذا يناسب هذا OSF و Voice & accountability",
   projectSummary: "يتوافق هذا النموذج بقوة مع مجالي Democratic Practice و Rights and Dignity لدى OSF. كما يساهم في Equity in Governance عبر تقليل فجوة المعلومات للمستخدمين المستبعدين، وفي Justice عبر إنشاء مسار مساءلة واضح من الحادثة إلى الإجراء.",
   tracks: [
@@ -967,8 +999,8 @@ Object.assign(window.CAN_I18N.copy.ar, {
   businessThreeCopy: "يخفض المنتج كلفة أن يُسمع صوت المواطن في البيئات الهشة حيث تضعف المساءلة بسبب الضباب الإداري والمخاطر.",
   heroIntro: "أداة PeaceTech تجريبية تبدأ من كينيا وتساعد المواطنين في البيئات الهشة على الانتقال من فهم الحق إلى استخدامه عبر خطوات أكثر أمانًا.",
   regionNote: "حالة العمل: خفض كلفة ومخاطر المشاركة المدنية بتحويل معلومات الحقوق إلى إجراءات مساءلة مرتبطة بالحادثة.",
-  botIntro: "صف الحادثة، واسأل عن الحق المناسب، أو اطلب الخطوة الأكثر أمانًا للمساءلة.",
-  botTry: 'جرّب: "أنا عند نقطة تفتيش. ماذا يمكنني أن أفعل بأمان؟"',
+  botIntro: "صف الحادثة، واسأل عن الحق المناسب، أو اطلب الخطوة الأكثر أمانًا للمساءلة. تبدأ الإجابات من الأسئلة الشائعة الداخلية وملاحظات OSF المنسقة، ثم تستخدم مقتطفات حية من المصادر المسموح بها عند توفرها.",
+  botTry: 'جرّب: "ماذا تقصد OSF بالممارسة الديمقراطية؟"',
   botFollowup: "كيف أحفظ هذا البلاغ وأرسله عند عودة الاتصال؟",
   quickExit: "خروج سريع",
   workflowHeading: "مسارات الحوادث",

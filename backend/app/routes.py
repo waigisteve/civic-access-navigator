@@ -31,4 +31,5 @@ def register_routes(app) -> None:
             "gemini_configured": bool(gemini_key),
             "ollama_configured": bool(ollama_base),
             "fallback_mode": provider != "openai",
+            "live_source_ingestion": os.getenv("LIVE_SOURCE_INGESTION", "0").strip() == "1",
         }

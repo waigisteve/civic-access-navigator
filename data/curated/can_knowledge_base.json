@@ -1,0 +1,62 @@
+[
+  {
+    "id": "osf-democratic-practice",
+    "title": "OSF focus area: Democratic Practice",
+    "region": "africa",
+    "source_type": "internal-doc",
+    "url": "https://www.opensocietyfoundations.org/what-we-do",
+    "summary": "Open Society promotes free and open debate that holds those in power accountable for their actions.",
+    "body": "Democratic Practice is an OSF focus area. It is concerned with free and open debate, stronger civic participation, and accountability for those in power. This aligns with products that help citizens ask better questions, document incidents, and approach institutions with clearer public-interest demands.",
+    "keywords": ["osf", "democratic practice", "accountability", "debate", "citizens", "power", "institutions"]
+  },
+  {
+    "id": "osf-rights-dignity",
+    "title": "OSF focus area: Rights and Dignity",
+    "region": "africa",
+    "source_type": "internal-doc",
+    "url": "https://www.opensocietyfoundations.org/what-we-do",
+    "summary": "Open Society supports a broad vision of human rights that protects freedoms, fairness, dignity, and well-being.",
+    "body": "Rights and Dignity is an OSF focus area. It supports human rights, individual freedoms, fairness, and the dignity and well-being of all people. This aligns with products that translate rights into plain-language next steps and reduce the risk of seeking help.",
+    "keywords": ["osf", "rights", "dignity", "fairness", "human rights", "well-being", "freedoms"]
+  },
+  {
+    "id": "osf-equity-governance",
+    "title": "OSF focus area: Equity in Governance",
+    "region": "africa",
+    "source_type": "internal-doc",
+    "url": "https://www.opensocietyfoundations.org/what-we-do",
+    "summary": "Open Society supports efforts to counter imbalances of power that perpetuate injustice and fuel division and conflict.",
+    "body": "Equity in Governance is an OSF focus area. It addresses imbalances of power in national and global systems that perpetuate injustice, exclusion, division, and conflict. This aligns with tools that reduce information asymmetry for people who face exclusion, displacement, or institutional opacity.",
+    "keywords": ["osf", "equity", "governance", "power imbalance", "injustice", "exclusion", "conflict"]
+  },
+  {
+    "id": "osf-transformative-peace-africa",
+    "title": "OSF initiative: Transformative Peace in Africa",
+    "region": "africa",
+    "source_type": "internal-doc",
+    "url": "internal://osf-transformative-peace-africa",
+    "summary": "OSF's initiative centers locally led solutions, women and youth leadership, and reparative justice in conflict-affected communities.",
+    "body": "The Transformative Peace in Africa framing emphasizes locally led solutions, women and youth leadership, reparative justice, and addressing the root causes of conflict. It is relevant to tools that lower the cost and risk of civic participation for conflict-affected communities.",
+    "keywords": ["transformative peace", "africa", "local leadership", "women", "youth", "reparative justice", "conflict"]
+  },
+  {
+    "id": "unhcr-displacement-support",
+    "title": "UNHCR displacement support note",
+    "region": "africa",
+    "source_type": "internal-doc",
+    "url": "https://www.unhcr.org/",
+    "summary": "UNHCR's work is relevant when a user is displaced, seeking protection, documentation support, or refugee-oriented guidance.",
+    "body": "UNHCR is a relevant source for refugee and displacement contexts. In this prototype, UNHCR-oriented guidance is useful when a user is cross-border, needs protection-oriented next steps, or is asking where refugee support may be found.",
+    "keywords": ["unhcr", "refugee", "displacement", "protection", "asylum", "camp", "documentation"]
+  },
+  {
+    "id": "icrc-conflict-protection",
+    "title": "ICRC conflict protection note",
+    "region": "africa",
+    "source_type": "internal-doc",
+    "url": "https://www.icrc.org/",
+    "summary": "ICRC's work is relevant for conflict-affected civilians, protection concerns, and harm-reduction guidance in insecure settings.",
+    "body": "The International Committee of the Red Cross is a relevant reference point for civilians affected by armed conflict and for harm-reduction guidance in insecure settings. In this prototype it helps frame practical protection-oriented responses when the user faces acute insecurity or abuse.",
+    "keywords": ["icrc", "conflict", "civilian", "protection", "harm", "abuse", "security"]
+  }
+]
