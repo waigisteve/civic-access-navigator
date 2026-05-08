@@ -1575,6 +1575,35 @@ body.ui-ready .reveal-after-language {
     grid-template-columns: 1fr;
   }
 
+  .hero-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    width: 100%;
+    max-width: 100%;
+    padding: 12px;
+    border-radius: 16px;
+    box-shadow: none;
+    background: rgba(255, 253, 248, 0.94);
+  }
+
+  .hero-stats div + div {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .hero-stats dt {
+    font-size: 0.72rem;
+    line-height: 1.2;
+  }
+
+  .hero-stats dd {
+    font-size: 0.88rem;
+    line-height: 1.35;
+    word-break: break-word;
+  }
+
   .grid,
   .deliverables {
     grid-template-columns: 1fr;
