@@ -61,6 +61,22 @@ The project is designed to stay within a clear set of principles:
 - keep the user-facing product distinct from the scaffolding used to build and review it
 - make every answer traceable, especially when the bot touches rights, peace, or public-interest guidance
 
+## Mode Behavior
+
+The prototype uses two distinct operating modes with different goals:
+
+- `Lite Mode`
+  - intended for low bandwidth, weak devices, or unstable browsing conditions
+  - reduces visual weight, removes most decorative effects, and leans on cached content
+  - keeps the interface readable and functional when network conditions are constrained
+
+- `Safe Mode`
+  - intended for physical-risk or privacy-sensitive situations
+  - suppresses location-first actions, resets visible chat history, and highlights quick-exit behavior
+  - shifts the UI into a darker, lower-profile presentation to signal privacy-first use
+
+These modes are intentionally different both in function and appearance. `Lite Mode` is about resilience and performance. `Safe Mode` is about privacy, exposure reduction, and risk-aware interaction.
+
 ## How Codex Helps
 
 Codex supports the project by:

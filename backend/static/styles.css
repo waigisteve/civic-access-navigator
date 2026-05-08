@@ -420,13 +420,13 @@ body {
 }
 
 body.lite-mode {
-  background: #f6f2eb;
+  background: #f3f0ea;
 }
 
 body.lite-mode .hero-bg,
 body.lite-mode .site-header::before {
   filter: none;
-  opacity: 0.12;
+  opacity: 0.06;
 }
 
 body.lite-mode .hero,
@@ -441,8 +441,134 @@ body.lite-mode .nearby-panel {
   backdrop-filter: none;
 }
 
+body.lite-mode .site-header::before,
+body.lite-mode .bottom-docs {
+  background: #e9e3d8;
+  box-shadow: none;
+}
+
+body.lite-mode .header-link,
+body.lite-mode .access-toggle-group,
+body.lite-mode .language-toggle,
+body.lite-mode .chat-toggle,
+body.lite-mode .sos-toggle,
+body.lite-mode .nearby-toggle {
+  background: #f8f5ef;
+  color: var(--ink);
+  border-color: rgba(31, 49, 57, 0.12);
+  box-shadow: none;
+}
+
+body.lite-mode .doc-tab-link {
+  background: rgba(22, 34, 38, 0.06);
+  color: var(--ink);
+}
+
+body.lite-mode .map-zone,
+body.lite-mode .incident-card,
+body.lite-mode .cta-card,
+body.lite-mode .context-card,
+body.lite-mode .queue-item,
+body.lite-mode .queue-empty {
+  border-radius: 10px;
+  box-shadow: none;
+}
+
 body.lite-mode .map-shell {
   min-height: auto;
+}
+
+body.safe-mode {
+  background:
+    linear-gradient(180deg, rgba(18, 20, 24, 0.98), rgba(26, 29, 34, 0.98));
+  color: #f4efe6;
+}
+
+body.safe-mode .site-header::before,
+body.safe-mode .bottom-docs {
+  background: linear-gradient(135deg, rgba(25, 18, 20, 0.98), rgba(35, 24, 28, 0.96));
+  box-shadow: none;
+}
+
+body.safe-mode .hero-bg {
+  opacity: 0.04;
+  filter: grayscale(1);
+}
+
+body.safe-mode .hero,
+body.safe-mode .panel,
+body.safe-mode .card,
+body.safe-mode .business-card,
+body.safe-mode .expansion-card,
+body.safe-mode .chat-window,
+body.safe-mode .sos-panel,
+body.safe-mode .nearby-panel,
+body.safe-mode .detail-modal,
+body.safe-mode .map-zone,
+body.safe-mode .context-card,
+body.safe-mode .queue-item,
+body.safe-mode .queue-empty,
+body.safe-mode .cta-panel {
+  background: rgba(28, 32, 38, 0.96);
+  border-color: rgba(255, 255, 255, 0.08);
+  color: #f4efe6;
+  box-shadow: none;
+}
+
+body.safe-mode .hero-note,
+body.safe-mode .scenario-copy,
+body.safe-mode .scenario-note,
+body.safe-mode .cta-copy,
+body.safe-mode .queue-copy,
+body.safe-mode .voice-query-status,
+body.safe-mode .sos-note,
+body.safe-mode .map-zone small,
+body.safe-mode .country-chip small,
+body.safe-mode .detail-meta,
+body.safe-mode .queue-item span,
+body.safe-mode .queue-item small,
+body.safe-mode .cta-card span,
+body.safe-mode .incident-card span,
+body.safe-mode .nearby-status,
+body.safe-mode .hero-stats dt {
+  color: #c6c3bc;
+}
+
+body.safe-mode .header-link,
+body.safe-mode .access-toggle-group,
+body.safe-mode .language-toggle {
+  background: rgba(48, 35, 39, 0.9);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+body.safe-mode .quick-exit-btn,
+body.safe-mode .sos-toggle {
+  background: linear-gradient(135deg, #6f1f28, #8a2630);
+}
+
+body.safe-mode .chat-toggle,
+body.safe-mode .nearby-toggle,
+body.safe-mode .hero-action.primary,
+body.safe-mode .access-toggle-btn.is-active,
+body.safe-mode .scenario-toggle-btn.is-active,
+body.safe-mode .country-chip.is-active {
+  background: #8a2630;
+  border-color: #8a2630;
+  color: #fff;
+}
+
+body.safe-mode .chat-input,
+body.safe-mode .chat-close,
+body.safe-mode .chat-send,
+body.safe-mode .sos-button,
+body.safe-mode .country-chip,
+body.safe-mode .hero-action,
+body.safe-mode .access-toggle-btn,
+body.safe-mode .scenario-toggle-btn,
+body.safe-mode .voice-button {
+  background: rgba(40, 44, 50, 0.96);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #f4efe6;
 }
 
 body.safe-mode .nearby-widget,
