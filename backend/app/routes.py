@@ -24,6 +24,12 @@ from backend.app.services.sms_service import (
     parse_form_body,
     send_africastalking_sms_reply,
 )
+from backend.app.services.workflow_db_service import (
+    get_workflow_incident,
+    list_workflow_scenarios,
+    seed_workflow_catalog,
+    workflow_database_ready,
+)
 
 
 class ChatRequest(BaseModel):
@@ -103,6 +109,20 @@ def register_routes(app) -> None:
     def chat(payload: ChatRequest) -> dict[str, object]:
         return chat_answer(payload.message, region=payload.region)
 
+    @app.get("/api/workflows")
+    def workflow_scenarios() -> dict[str, object]:
+        return {
+            "database_ready": workflow_database_ready(),
+            "scenarios": list_workflow_scenarios(),
+        }
+
+    @app.get("/api/workflows/{scenario_code}/{incident_code}")
+    def workflow_incident(scenario_code: str, incident_code: str) -> dict[str, object]:
+        item = get_workflow_incident(scenario_code, incident_code)
+        if not item:
+            raise HTTPException(status_code=404, detail="Workflow incident not found")
+        return item
+
     @app.get("/api/admin/resources")
     def admin_resources(request: Request) -> dict[str, object]:
         _require_admin_token(request)
@@ -133,6 +153,14 @@ def register_routes(app) -> None:
             region=payload.region,
         )
         return result
+
+    @app.post("/api/admin/workflows/bootstrap")
+    def admin_bootstrap_workflows(request: Request) -> dict[str, object]:
+        _require_admin_token(request)
+        if not workflow_database_ready():
+            raise HTTPException(status_code=503, detail="Workflow database is not configured")
+        seed_workflow_catalog()
+        return {"status": "ok"}
 
     @app.get("/api/admin/sms/inbox")
     def sms_inbox(request: Request) -> dict[str, object]:

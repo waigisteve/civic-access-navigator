@@ -242,6 +242,38 @@ It returns:
   - citation quality
   - safety
 
+## Workflow Database
+
+Incident workflow paths can now be persisted in PostgreSQL through `DATABASE_URL`.
+
+Required environment variable:
+
+- `DATABASE_URL=postgresql+psycopg://user:password@host:5432/database`
+
+Tables created on startup when `DATABASE_URL` is set:
+
+- `workflow_scenarios`
+- `workflow_incidents`
+- `workflow_source_links`
+- `workflow_action_points`
+
+Seed catalog:
+
+- `data/curated/incident_workflow_catalog.json`
+
+Workflow API:
+
+- `GET /api/workflows`
+- `GET /api/workflows/{scenario_code}/{incident_code}`
+- `POST /api/admin/workflows/bootstrap`
+
+What is stored:
+
+- scenario definitions
+- incident-specific workflow records
+- source links for each incident
+- action points for each incident
+
 To enable live website ingestion at runtime:
 
 - set `LIVE_SOURCE_INGESTION=1`

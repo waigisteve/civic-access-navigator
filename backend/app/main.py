@@ -9,6 +9,7 @@ from fastapi.staticfiles import StaticFiles
 from backend.app.config import settings
 from backend.app.routes import register_routes
 from backend.app.services.resource_service import ResourceItem, get_resource_items
+from backend.app.services.workflow_db_service import initialize_workflow_database
 
 
 BASE_DIR = Path(__file__).resolve().parents[1]
@@ -24,6 +25,11 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.on_event("startup")
+def startup() -> None:
+    initialize_workflow_database()
 
 
 @app.get("/api/health")

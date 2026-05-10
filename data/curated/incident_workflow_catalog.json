@@ -1,0 +1,127 @@
+{
+  "scenarios": [
+    {
+      "code": "resident",
+      "title": "Citizen in home area",
+      "summary": "Rights invocation and incident-specific accountability steps for citizens working inside their usual local context.",
+      "incidents": [
+        {
+          "code": "checkpoint",
+          "title": "Stopped at a checkpoint",
+          "summary": "Reduce friction, identify the right in question, record the incident, and preserve a later accountability trail.",
+          "risk_level": "medium",
+          "region": "kenya",
+          "sources": [
+            {"source_id": "kenya-bill-of-rights", "title": "Kenya Bill of Rights summary", "url": "internal://kenya-bill-of-rights", "rationale": "Supports rights, dignity, privacy, movement, and access to justice."},
+            {"source_id": "osf-democratic-practice", "title": "OSF focus area: Democratic Practice", "url": "https://www.opensocietyfoundations.org/what-we-do", "rationale": "Supports accountable public interaction and challenge to opaque power."},
+            {"source_id": "va-checkpoint-rights", "title": "Checkpoint interaction guidance", "url": "internal://voice-accountability/checkpoint-guidance", "rationale": "Provides low-risk handling guidance and delayed accountability logic."}
+          ],
+          "actions": [
+            {"code": "note_incident", "title": "Record what happened", "description": "Capture the place, time, agency, and what was demanded or refused without escalating on-site.", "channel": "local-note", "priority": 1},
+            {"code": "queue_report", "title": "Queue an accountability report", "description": "Save a delayed report to be sent when it is safer or when connectivity returns.", "channel": "queue", "priority": 2},
+            {"code": "rights_prompt", "title": "Invoke the relevant right", "description": "Identify whether movement, dignity, privacy, or access to justice is the strongest right in the incident.", "channel": "guided", "priority": 3}
+          ]
+        },
+        {
+          "code": "denied_aid",
+          "title": "Being denied aid or service",
+          "summary": "Document the refusal, assess immediate safety, and prepare the safest escalation path.",
+          "risk_level": "high",
+          "region": "kenya",
+          "sources": [
+            {"source_id": "va-aid-denial", "title": "Aid denial escalation path", "url": "internal://voice-accountability/aid-denial", "rationale": "Defines the minimum incident facts required for later remedy-seeking."},
+            {"source_id": "osf-rights-dignity", "title": "OSF focus area: Rights and Dignity", "url": "https://www.opensocietyfoundations.org/what-we-do", "rationale": "Frames access and dignity as a rights issue rather than a service inconvenience."},
+            {"source_id": "kenya-civic-rights", "title": "Kenya civic rights starter note", "url": "internal://kenya-civic-rights", "rationale": "Provides Kenya-first framing for public-interest and civic escalation."}
+          ],
+          "actions": [
+            {"code": "capture_refusal", "title": "Capture the refusal details", "description": "Note what was denied, who denied it, and whether documents or registration were referenced.", "channel": "local-note", "priority": 1},
+            {"code": "safety_triage", "title": "Check immediate safety risk", "description": "Separate urgent protection needs from slower institutional follow-up.", "channel": "guided", "priority": 2},
+            {"code": "queue_aid_case", "title": "Queue a delayed aid complaint", "description": "Prepare a complaint packet for later delivery to a verified observer or institution.", "channel": "queue", "priority": 3}
+          ]
+        },
+        {
+          "code": "report_abuse",
+          "title": "Need to report abuse safely",
+          "summary": "Preserve evidence in low-risk form, minimize identifying exposure, and choose a safer reporting path.",
+          "risk_level": "high",
+          "region": "kenya",
+          "sources": [
+            {"source_id": "icrc-conflict-protection", "title": "ICRC conflict protection note", "url": "https://www.icrc.org/", "rationale": "Supports harm-reduction logic in insecure settings."},
+            {"source_id": "va-safety-standard", "title": "Safety standard for peace queries", "url": "internal://voice-accountability/safety-standard", "rationale": "Defines what safe answers should avoid encouraging."},
+            {"source_id": "osf-rights-dignity", "title": "OSF focus area: Rights and Dignity", "url": "https://www.opensocietyfoundations.org/what-we-do", "rationale": "Frames abuse reporting as a dignity and rights issue."}
+          ],
+          "actions": [
+            {"code": "minimize_exposure", "title": "Minimize identifying detail", "description": "Avoid names, exact locations, and contacts unless a trusted emergency responder requires them.", "channel": "guided", "priority": 1},
+            {"code": "preserve_evidence", "title": "Preserve a low-risk record", "description": "Save a short, factual account for later secure escalation.", "channel": "local-note", "priority": 2},
+            {"code": "send_safe_report", "title": "Choose a safer reporting path", "description": "Use queue, SMS intake, or a verified observer path depending on the current risk level.", "channel": "queue", "priority": 3}
+          ]
+        }
+      ]
+    },
+    {
+      "code": "idp",
+      "title": "Displaced in-country",
+      "summary": "Low-friction accountability steps for people displaced within the country and facing unstable connectivity, mobility, and documentation.",
+      "incidents": [
+        {
+          "code": "movement_risk",
+          "title": "Movement or access risk",
+          "summary": "Reduce exposure, identify safe routing choices, and log the incident for later remedy-seeking.",
+          "risk_level": "high",
+          "region": "africa",
+          "sources": [
+            {"source_id": "va-displacement-safe-reporting", "title": "Displacement-safe reporting", "url": "internal://voice-accountability/displacement-safe-reporting", "rationale": "Supports low-risk, delayed accountability for displaced users."},
+            {"source_id": "icrc-conflict-protection", "title": "ICRC conflict protection note", "url": "https://www.icrc.org/", "rationale": "Supports civilian safety choices in insecure conditions."},
+            {"source_id": "osf-transformative-peace-africa", "title": "OSF initiative: Transformative Peace in Africa", "url": "internal://osf-transformative-peace-africa", "rationale": "Aligns with local, conflict-affected, community-centered response logic."}
+          ],
+          "actions": [
+            {"code": "safe_route_note", "title": "Mark the access barrier", "description": "Document what movement or checkpoint barrier is preventing safe access.", "channel": "local-note", "priority": 1},
+            {"code": "queue_route_issue", "title": "Queue a delayed movement complaint", "description": "Prepare the case for later delivery if direct complaint is unsafe.", "channel": "queue", "priority": 2},
+            {"code": "nearby_help", "title": "Find nearby support", "description": "Use the nearby-help path if location sharing is safe and necessary.", "channel": "support", "priority": 3}
+          ]
+        },
+        {
+          "code": "lost_documents",
+          "title": "Lost or missing documents",
+          "summary": "Identify the missing document, the immediate service risk, and the lowest-friction next step to restore access.",
+          "risk_level": "medium",
+          "region": "africa",
+          "sources": [
+            {"source_id": "unhcr-displacement-support", "title": "UNHCR displacement support note", "url": "https://www.unhcr.org/", "rationale": "Relevant for displacement documentation and protection support."},
+            {"source_id": "va-displacement-safe-reporting", "title": "Displacement-safe reporting", "url": "internal://voice-accountability/displacement-safe-reporting", "rationale": "Supports low-risk disclosure for displaced users."},
+            {"source_id": "osf-equity-governance", "title": "OSF focus area: Equity in Governance", "url": "https://www.opensocietyfoundations.org/what-we-do", "rationale": "Frames documentation barriers as governance-access issues."}
+          ],
+          "actions": [
+            {"code": "identify_missing_doc", "title": "Identify the missing document", "description": "Specify what is missing and which service or protection access is blocked by it.", "channel": "guided", "priority": 1},
+            {"code": "capture_last_known", "title": "Capture last known details", "description": "Record the last place, date, and agency linked to the document without unsafe over-disclosure.", "channel": "local-note", "priority": 2},
+            {"code": "queue_document_help", "title": "Queue a documentation help request", "description": "Prepare a request for later routing to a support organization or authority.", "channel": "queue", "priority": 3}
+          ]
+        }
+      ]
+    },
+    {
+      "code": "refugee",
+      "title": "Cross-border refugee",
+      "summary": "Low-risk accountability and support actions for cross-border users navigating protection, identity, and border-related constraints.",
+      "incidents": [
+        {
+          "code": "border_delay",
+          "title": "Delayed or blocked at a border",
+          "summary": "Reduce identifying exposure, document the restriction, and prepare a safe protection-oriented escalation path.",
+          "risk_level": "high",
+          "region": "africa",
+          "sources": [
+            {"source_id": "unhcr-displacement-support", "title": "UNHCR displacement support note", "url": "https://www.unhcr.org/", "rationale": "Relevant for refugee protection and border-support context."},
+            {"source_id": "va-displacement-safe-reporting", "title": "Displacement-safe reporting", "url": "internal://voice-accountability/displacement-safe-reporting", "rationale": "Supports identity-safe reporting under risk."},
+            {"source_id": "va-safety-standard", "title": "Safety standard for peace queries", "url": "internal://voice-accountability/safety-standard", "rationale": "Prevents unsafe disclosure of exact identity and movement details."}
+          ],
+          "actions": [
+            {"code": "note_border_issue", "title": "Note the border restriction", "description": "Capture what was delayed or denied and whether protection status was discussed.", "channel": "local-note", "priority": 1},
+            {"code": "protect_identity", "title": "Protect identity details", "description": "Avoid disclosing names or exact locations unless a trusted protection actor requires them.", "channel": "guided", "priority": 2},
+            {"code": "queue_border_support", "title": "Queue refugee support request", "description": "Prepare a delayed message for a support organization or observer when sending becomes safe.", "channel": "queue", "priority": 3}
+          ]
+        }
+      ]
+    }
+  ]
+}

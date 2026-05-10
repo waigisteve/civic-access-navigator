@@ -16,6 +16,7 @@ class Settings:
     host: str = os.getenv("APP_HOST", "0.0.0.0")
     port: int = int(os.getenv("PORT", os.getenv("APP_PORT", "8000")))
     reload: bool = os.getenv("APP_RELOAD", "1") == "1"
+    database_url: str = os.getenv("DATABASE_URL", "").strip()
 
 
 settings = Settings()
