@@ -11,6 +11,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from backend.app.services.resource_admin_service import list_approved_resources
+
 try:
     from openai import OpenAI
 except Exception:  # pragma: no cover - optional dependency at runtime
@@ -20,6 +22,7 @@ except Exception:  # pragma: no cover - optional dependency at runtime
 CURATED_SOURCES_PATH = Path(__file__).resolve().parents[3] / "data" / "curated" / "osf_kenya_africa_sources.json"
 KNOWLEDGE_BASE_PATH = Path(__file__).resolve().parents[3] / "data" / "curated" / "can_knowledge_base.json"
 FAQ_PATH = Path(__file__).resolve().parents[3] / "data" / "curated" / "can_faq.json"
+VOICE_ACCOUNTABILITY_PATH = Path(__file__).resolve().parents[3] / "data" / "curated" / "voice_accountability_documents.json"
 LIVE_CACHE_DIR = Path(__file__).resolve().parents[3] / ".cache" / "live_sources"
 LIVE_CACHE_TTL_SECONDS = 60 * 30
 ALLOWED_LIVE_DOMAINS = {
@@ -143,6 +146,14 @@ def load_faq() -> list[dict[str, Any]]:
     return _load_json(FAQ_PATH)
 
 
+def load_voice_accountability_docs() -> list[dict[str, Any]]:
+    return _load_json(VOICE_ACCOUNTABILITY_PATH)
+
+
+def load_retrieval_corpus() -> list[dict[str, Any]]:
+    return load_curated_sources() + load_knowledge_base() + load_voice_accountability_docs() + list_approved_resources()
+
+
 def _tokenize(text: str) -> list[str]:
     return [token.strip(".,:;!?()[]{}\"'").lower() for token in text.split() if token.strip()]
 
@@ -196,7 +207,7 @@ def _score_faq(query: str, item: dict[str, Any], region: str | None = None) -> i
 
 
 def retrieve_sources(query: str, region: str | None = None) -> list[SourceHit]:
-    combined = load_curated_sources() + load_knowledge_base()
+    combined = load_retrieval_corpus()
     hits: list[SourceHit] = []
     for source in combined:
         score = _score_source(query, source, region=region)

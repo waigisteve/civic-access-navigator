@@ -191,6 +191,57 @@ Current answer order:
 
 This keeps the chatbot grounded in project-controlled material rather than relying on open-ended generation first.
 
+Additional curated retrieval set:
+
+- `data/curated/voice_accountability_documents.json`
+
+This adds a focused document set for the chosen civic theme, including:
+
+- administrative fog
+- checkpoint guidance
+- aid-denial escalation
+- displacement-safe reporting
+- citation quality standards
+- safety standards for peace queries
+
+## Admin Resource Workflow
+
+Admin-only resource workflow:
+
+- `GET /admin/resources`
+- `GET /api/admin/resources`
+- `POST /api/admin/resources`
+- `POST /api/admin/resources/import`
+
+This flow is protected by:
+
+- `CAN_ADMIN_TOKEN`
+
+Approved resources are stored in:
+
+- `data/runtime/approved_resources.json`
+
+Approved resources immediately enter:
+
+- the starter resource library
+- the retrieval corpus used by `Lets Chat`
+
+## Answer Evaluation
+
+Admin-only answer evaluation endpoint:
+
+- `POST /api/admin/evaluate-chat`
+
+It returns:
+
+- grounded answer
+- citations
+- provider/mode
+- evaluation block for:
+  - clarity
+  - citation quality
+  - safety
+
 To enable live website ingestion at runtime:
 
 - set `LIVE_SOURCE_INGESTION=1`

@@ -11,6 +11,12 @@ from fastapi import HTTPException, Request
 from fastapi.responses import PlainTextResponse, Response
 
 from backend.app.services.chat_service import chat_answer
+from backend.app.services.evaluation_service import evaluate_answer
+from backend.app.services.resource_admin_service import (
+    create_approved_resource,
+    import_approved_resources,
+    list_approved_resources,
+)
 from backend.app.services.sms_service import (
     attach_africastalking_reply,
     handle_inbound_sms,
@@ -22,6 +28,27 @@ from backend.app.services.sms_service import (
 
 class ChatRequest(BaseModel):
     message: str = Field(min_length=1)
+    region: str | None = None
+
+
+class ApprovedResourceRequest(BaseModel):
+    title: str = Field(min_length=3)
+    summary: str = Field(min_length=10)
+    body: str | None = None
+    region: str = "africa"
+    source_type: str = "approved-admin-upload"
+    url: str = "internal://approved-resource"
+    keywords: list[str] = Field(default_factory=list)
+    approved_by: str = "admin"
+
+
+class ApprovedResourceImportRequest(BaseModel):
+    items: list[ApprovedResourceRequest]
+    approved_by: str = "admin"
+
+
+class EvaluateChatRequest(BaseModel):
+    message: str = Field(min_length=3)
     region: str | None = None
 
 
@@ -75,6 +102,37 @@ def register_routes(app) -> None:
     @app.post("/api/chat")
     def chat(payload: ChatRequest) -> dict[str, object]:
         return chat_answer(payload.message, region=payload.region)
+
+    @app.get("/api/admin/resources")
+    def admin_resources(request: Request) -> dict[str, object]:
+        _require_admin_token(request)
+        return {"items": list_approved_resources()}
+
+    @app.post("/api/admin/resources")
+    def admin_resource_create(payload: ApprovedResourceRequest, request: Request) -> dict[str, object]:
+        _require_admin_token(request)
+        item = create_approved_resource(payload.model_dump())
+        return {"item": item}
+
+    @app.post("/api/admin/resources/import")
+    def admin_resource_import(payload: ApprovedResourceImportRequest, request: Request) -> dict[str, object]:
+        _require_admin_token(request)
+        items = import_approved_resources(
+            [item.model_dump() for item in payload.items],
+            approved_by=payload.approved_by,
+        )
+        return {"items": items, "count": len(items)}
+
+    @app.post("/api/admin/evaluate-chat")
+    def admin_evaluate_chat(payload: EvaluateChatRequest, request: Request) -> dict[str, object]:
+        _require_admin_token(request)
+        result = chat_answer(payload.message, region=payload.region)
+        result["evaluation"] = evaluate_answer(
+            answer=str(result.get("answer", "")),
+            citations=list(result.get("citations", [])),
+            region=payload.region,
+        )
+        return result
 
     @app.get("/api/admin/sms/inbox")
     def sms_inbox(request: Request) -> dict[str, object]:

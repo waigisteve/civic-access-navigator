@@ -4,6 +4,8 @@ import json
 from pathlib import Path
 from typing import TypedDict
 
+from backend.app.services.resource_admin_service import list_approved_resources
+
 
 class ResourceItem(TypedDict):
     title: str
@@ -19,4 +21,14 @@ def get_resource_items() -> list[ResourceItem]:
     with DATA_PATH.open("r", encoding="utf-8") as file_handle:
         items = json.load(file_handle)
 
-    return [ResourceItem(**item) for item in items]
+    approved = [
+        {
+            "title": item["title"],
+            "theme": item.get("source_type", "approved resource"),
+            "audience": item.get("region", "africa"),
+            "summary": item["summary"],
+        }
+        for item in list_approved_resources()
+    ]
+
+    return [ResourceItem(**item) for item in items + approved]

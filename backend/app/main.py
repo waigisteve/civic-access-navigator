@@ -68,6 +68,11 @@ def admin_sms() -> FileResponse:
     return FileResponse(STATIC_DIR / "admin-sms.html")
 
 
+@app.get("/admin/resources")
+def admin_resources() -> FileResponse:
+    return FileResponse(STATIC_DIR / "admin-resources.html")
+
+
 register_routes(app)
 app.mount("/", StaticFiles(directory=STATIC_DIR), name="static")
 

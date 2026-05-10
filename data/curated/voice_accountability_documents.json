@@ -1,0 +1,62 @@
+[
+  {
+    "id": "va-admin-fog",
+    "title": "Administrative fog and civic harm",
+    "region": "africa",
+    "source_type": "internal-doc",
+    "url": "internal://voice-accountability/administrative-fog",
+    "summary": "Administrative fog describes the way unclear procedures, missing explanations, and opaque institutions raise the cost and risk of civic participation.",
+    "body": "In fragile settings, citizens often face administrative fog: unclear procedures, inconsistent enforcement, and missing explanations that make rights difficult to invoke. A useful accountability tool should reduce this friction by turning dense civic information into incident-specific next steps.",
+    "keywords": ["administrative fog", "accountability", "rights", "institutions", "civic participation", "incident workflow"]
+  },
+  {
+    "id": "va-checkpoint-rights",
+    "title": "Checkpoint interaction guidance",
+    "region": "kenya",
+    "source_type": "internal-doc",
+    "url": "internal://voice-accountability/checkpoint-guidance",
+    "summary": "Checkpoint scenarios require calm documentation, clear statement of purpose, and low-risk ways to record what happened for later accountability.",
+    "body": "When a user is stopped at a checkpoint, the safest baseline is to identify the incident, avoid escalating confrontation, and record enough detail for later accountability if direct challenge is unsafe. The tool should help the user identify the right, note the incident, and queue a follow-up action when safe.",
+    "keywords": ["checkpoint", "police", "security", "record incident", "safe escalation", "queue action"]
+  },
+  {
+    "id": "va-aid-denial",
+    "title": "Aid denial escalation path",
+    "region": "kenya",
+    "source_type": "internal-doc",
+    "url": "internal://voice-accountability/aid-denial",
+    "summary": "Aid denial queries should distinguish immediate protection risk from later institutional follow-up and document what service was refused, by whom, and under what circumstances.",
+    "body": "When aid, registration, food, shelter, or protection services are denied, a useful navigator should help the user document what was refused, who refused it, when it happened, and whether there is an immediate safety concern. It should then suggest the safest next accountability path and, where possible, a later queue for escalation.",
+    "keywords": ["aid denial", "service refusal", "documentation", "protection", "accountability", "escalation"]
+  },
+  {
+    "id": "va-displacement-safe-reporting",
+    "title": "Displacement-safe reporting",
+    "region": "africa",
+    "source_type": "internal-doc",
+    "url": "internal://voice-accountability/displacement-safe-reporting",
+    "summary": "Displaced users need incident reporting that minimizes identifying detail and prioritizes safety, continuity, and later delivery.",
+    "body": "For IDPs and refugees, direct reporting may increase risk. The tool should prefer partial reporting, non-identifying language, delayed sending where needed, and clear separation between immediate safety actions and formal accountability actions.",
+    "keywords": ["displacement", "refugee", "idp", "safe reporting", "anonymous", "low bandwidth", "delay send"]
+  },
+  {
+    "id": "va-citation-standard",
+    "title": "Citation standard for civic answers",
+    "region": "africa",
+    "source_type": "internal-doc",
+    "url": "internal://voice-accountability/citation-standard",
+    "summary": "Grounded answers should cite at least one specific approved source and should avoid broad claims when the available evidence is partial.",
+    "body": "A strong answer for this prototype is concise, plain-language, incident-relevant, and source-grounded. It should cite at least one approved source and should explicitly say when the available material is incomplete or region-limited.",
+    "keywords": ["citations", "grounding", "source quality", "evaluation", "clarity", "safety"]
+  },
+  {
+    "id": "va-safety-standard",
+    "title": "Safety standard for peace queries",
+    "region": "africa",
+    "source_type": "internal-doc",
+    "url": "internal://voice-accountability/safety-standard",
+    "summary": "Peace-support answers should avoid naming specific people, pushing risky confrontation, or encouraging unsafe disclosure of location and identity.",
+    "body": "A safe peace-support answer should avoid operational security risks. It should not encourage the user to share names, exact locations, or identifying details unless a trusted emergency response context makes that necessary. It should prefer calm, reversible, low-risk next steps.",
+    "keywords": ["safety", "peace", "harm reduction", "privacy", "identity", "location", "de-escalation"]
+  }
+]

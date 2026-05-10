@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Civic Access Navigator · Resource Admin</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="page">
+      <section class="panel">
+        <div class="panel-head">
+          <h1 style="font-size:2rem;margin-bottom:0;">Approved Resources Admin</h1>
+          <span class="status">Admin only</span>
+        </div>
+        <p class="queue-copy">Upload approved resources, import a curated JSON batch, and evaluate grounded answers before exposing them operationally.</p>
+
+        <form id="admin-token-form" class="bot-composer" style="margin-bottom:16px;">
+          <input id="admin-token" class="chat-input" type="password" placeholder="Admin token" aria-label="Admin token" />
+          <button type="submit" class="chat-send">Set Token</button>
+        </form>
+
+        <div class="project-overview" style="margin-top:20px;">
+          <section class="panel" style="margin-top:0;">
+            <div class="panel-head">
+              <h2 style="margin-bottom:0;">Create approved resource</h2>
+            </div>
+            <form id="resource-form" class="incident-grid">
+              <input id="resource-title" class="chat-input" type="text" placeholder="Title" />
+              <input id="resource-region" class="chat-input" type="text" placeholder="Region e.g. kenya" value="kenya" />
+              <input id="resource-url" class="chat-input" type="text" placeholder="Source URL or internal://..." />
+              <input id="resource-keywords" class="chat-input" type="text" placeholder="Keywords comma separated" />
+              <textarea id="resource-summary" class="chat-input" placeholder="Summary" style="min-height:90px;border-radius:18px;"></textarea>
+              <textarea id="resource-body" class="chat-input" placeholder="Body" style="min-height:140px;border-radius:18px;"></textarea>
+              <button type="submit" class="chat-send">Save resource</button>
+            </form>
+          </section>
+
+          <section class="panel" style="margin-top:0;">
+            <div class="panel-head">
+              <h2 style="margin-bottom:0;">Import JSON batch</h2>
+            </div>
+            <textarea id="resource-import" class="chat-input" placeholder='{"items":[...]}' style="width:100%;min-height:220px;border-radius:18px;"></textarea>
+            <div style="margin-top:12px;">
+              <button id="resource-import-submit" type="button" class="chat-send">Import batch</button>
+            </div>
+          </section>
+        </div>
+
+        <section class="panel" style="margin-top:20px;">
+          <div class="panel-head">
+            <h2 style="margin-bottom:0;">Evaluate answer quality</h2>
+          </div>
+          <form id="evaluate-form" class="incident-grid">
+            <input id="evaluate-region" class="chat-input" type="text" placeholder="Region e.g. kenya" value="kenya" />
+            <textarea id="evaluate-message" class="chat-input" placeholder="Question to evaluate" style="min-height:110px;border-radius:18px;"></textarea>
+            <button type="submit" class="chat-send">Evaluate</button>
+          </form>
+          <pre id="evaluate-output" class="queue-empty" style="white-space:pre-wrap;margin-top:16px;"></pre>
+        </section>
+
+        <section class="panel" style="margin-top:20px;">
+          <div class="panel-head">
+            <h2 style="margin-bottom:0;">Approved resource list</h2>
+            <button id="resource-refresh" type="button" class="mini-action">Refresh</button>
+          </div>
+          <div id="resource-list" class="sms-list"></div>
+        </section>
+      </section>
+    </main>
+    <script>
+      const tokenInput = document.getElementById("admin-token");
+      const tokenForm = document.getElementById("admin-token-form");
+      const resourceForm = document.getElementById("resource-form");
+      const importBox = document.getElementById("resource-import");
+      const importSubmit = document.getElementById("resource-import-submit");
+      const resourceList = document.getElementById("resource-list");
+      const resourceRefresh = document.getElementById("resource-refresh");
+      const evalForm = document.getElementById("evaluate-form");
+      const evalOutput = document.getElementById("evaluate-output");
+
+      function token() {
+        return tokenInput.value.trim();
+      }
+
+      function adminFetch(url, options = {}) {
+        return fetch(url, {
+          ...options,
+          headers: {
+            "Content-Type": "application/json",
+            "X-CAN-ADMIN-TOKEN": token(),
+            ...(options.headers || {})
+          }
+        });
+      }
+
+      function renderResources(items) {
+        resourceList.innerHTML = "";
+        if (!items.length) {
+          const empty = document.createElement("div");
+          empty.className = "queue-empty";
+          empty.textContent = "No approved resources yet.";
+          resourceList.appendChild(empty);
+          return;
+        }
+        for (const item of items) {
+          const row = document.createElement("article");
+          row.className = "sms-item";
+          row.innerHTML = `
+            <div class="sms-item-top">
+              <strong>${item.title}</strong>
+              <span class="sms-badge">${item.region}</span>
+            </div>
+            <p>${item.summary}</p>
+            <div class="sms-item-meta">
+              <span>${item.url}</span>
+              <span>${item.source_type}</span>
+            </div>
+          `;
+          resourceList.appendChild(row);
+        }
+      }
+
+      async function loadResources() {
+        const response = await adminFetch("/api/admin/resources");
+        if (!response.ok) {
+          renderResources([]);
+          return;
+        }
+        const data = await response.json();
+        renderResources(Array.isArray(data.items) ? data.items : []);
+      }
+
+      tokenForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        void loadResources();
+      });
+
+      resourceForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const payload = {
+          title: document.getElementById("resource-title").value,
+          region: document.getElementById("resource-region").value,
+          url: document.getElementById("resource-url").value,
+          summary: document.getElementById("resource-summary").value,
+          body: document.getElementById("resource-body").value,
+          keywords: document.getElementById("resource-keywords").value.split(",").map(v => v.trim()).filter(Boolean)
+        };
+        const response = await adminFetch("/api/admin/resources", {
+          method: "POST",
+          body: JSON.stringify(payload)
+        });
+        if (response.ok) {
+          resourceForm.reset();
+          document.getElementById("resource-region").value = "kenya";
+          void loadResources();
+        }
+      });
+
+      importSubmit.addEventListener("click", async () => {
+        const response = await adminFetch("/api/admin/resources/import", {
+          method: "POST",
+          body: importBox.value
+        });
+        if (response.ok) {
+          importBox.value = "";
+          void loadResources();
+        }
+      });
+
+      resourceRefresh.addEventListener("click", () => void loadResources());
+
+      evalForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const response = await adminFetch("/api/admin/evaluate-chat", {
+          method: "POST",
+          body: JSON.stringify({
+            message: document.getElementById("evaluate-message").value,
+            region: document.getElementById("evaluate-region").value
+          })
+        });
+        const data = await response.json();
+        evalOutput.textContent = JSON.stringify(data, null, 2);
+      });
+    </script>
+  </body>
+</html>
