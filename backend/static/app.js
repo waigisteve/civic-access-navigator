@@ -1073,6 +1073,11 @@ function wireChatWidget() {
     return;
   }
 
+  if (windowNode.parentElement !== document.body) {
+    document.body.appendChild(windowNode);
+    windowNode.classList.add("chat-window-portal");
+  }
+
   const closeFloatingPanels = (except) => {
     const panels = [
       ["chat-window", "chat-toggle"],
@@ -1094,11 +1099,30 @@ function wireChatWidget() {
     }
   };
 
+  const positionChat = () => {
+    if (windowNode.hidden) {
+      return;
+    }
+    const rect = toggle.getBoundingClientRect();
+    const gutter = window.innerWidth <= 640 ? 12 : 16;
+    const width = Math.min(window.innerWidth <= 640 ? 340 : 360, window.innerWidth - gutter * 2);
+    const top = Math.round(rect.bottom + 12);
+    const left = Math.max(gutter, Math.min(Math.round(rect.right - width), window.innerWidth - width - gutter));
+    const maxHeight = Math.max(260, window.innerHeight - top - gutter);
+
+    windowNode.style.left = `${left}px`;
+    windowNode.style.top = `${top}px`;
+    windowNode.style.right = "auto";
+    windowNode.style.width = `${width}px`;
+    windowNode.style.maxHeight = `${maxHeight}px`;
+  };
+
   const openChat = () => {
     closeFloatingPanels("chat-window");
     seedChatFeed();
     windowNode.hidden = false;
     toggle.setAttribute("aria-expanded", "true");
+    positionChat();
     if (input) {
       window.setTimeout(() => {
         input.focus({ preventScroll: true });
@@ -1121,6 +1145,8 @@ function wireChatWidget() {
     closeChat();
   });
   close.addEventListener("click", closeChat);
+  window.addEventListener("resize", positionChat);
+  window.addEventListener("scroll", positionChat, { passive: true });
 }
 
 function wireSOSWidget() {

@@ -1408,6 +1408,18 @@ body.ui-ready .reveal-after-language {
   z-index: 200;
 }
 
+.chat-window.chat-window-portal {
+  position: fixed;
+  margin-top: 0;
+  z-index: 1000;
+  pointer-events: auto;
+  touch-action: manipulation;
+}
+
+.chat-window.chat-window-portal * {
+  pointer-events: auto;
+}
+
 .chat-window {
   max-height: min(68vh, 31rem);
   overflow: hidden;
