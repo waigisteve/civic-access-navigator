@@ -1249,13 +1249,9 @@ body.ui-ready .reveal-after-language {
 
 .chat-feed {
   display: grid;
-  align-content: start;
   gap: 10px;
-  flex: 1 1 auto;
-  min-height: 160px;
-  max-height: none;
+  max-height: 14lh;
   overflow: auto;
-  -webkit-overflow-scrolling: touch;
   margin: 14px 0;
   padding-right: 4px;
 }
@@ -1288,13 +1284,9 @@ body.ui-ready .reveal-after-language {
 }
 
 .bot-composer {
-  flex: 0 0 auto;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 10px;
-  padding-top: 8px;
-  border-top: 1px solid rgba(16, 23, 26, 0.08);
-  background: rgba(255, 253, 248, 0.98);
 }
 
 .bot-composer input {
@@ -1417,11 +1409,8 @@ body.ui-ready .reveal-after-language {
 }
 
 .chat-window {
-  height: min(72vh, 34rem);
-  max-height: min(72vh, 34rem);
+  max-height: min(68vh, 31rem);
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
 }
 
 .chat-header {
@@ -1471,13 +1460,9 @@ body.ui-ready .reveal-after-language {
 }
 
 .voice-query-row {
-  flex: 0 0 auto;
   display: grid;
   gap: 8px;
   margin: 12px 0;
-  padding-top: 8px;
-  border-top: 1px solid rgba(16, 23, 26, 0.08);
-  background: rgba(255, 253, 248, 0.98);
 }
 
 .voice-query-status,
@@ -1775,73 +1760,25 @@ body.ui-ready .reveal-after-language {
   .chat-window,
   .sos-panel,
   .nearby-panel {
-    width: auto;
+    left: 0;
+    right: auto;
+    width: min(340px, calc(100vw - 24px));
   }
 
   .chat-window {
-    position: fixed;
-    top: 72px;
-    bottom: 12px;
-    left: 12px;
-    right: 12px;
-    width: auto;
-    height: auto;
-    max-height: none;
-    overflow: auto;
-    overscroll-behavior: contain;
-    padding-bottom: max(18px, env(safe-area-inset-bottom));
-    z-index: 500;
+    max-height: min(58vh, 28rem);
   }
 
   .chat-feed {
-    flex: 0 1 auto;
-    min-height: 0;
-    max-height: 96px;
-    margin: 8px 0;
-  }
-
-  .voice-query-row,
-  .bot-composer {
-    position: sticky;
-    left: 0;
-    right: 0;
-    background: rgba(255, 253, 248, 0.98);
-    z-index: 2;
-  }
-
-  .voice-query-row {
-    bottom: 68px;
-  }
-
-  .bot-composer {
-    bottom: 0;
-    padding-bottom: max(6px, env(safe-area-inset-bottom));
-  }
-
-  .voice-button,
-  .chat-send,
-  .chat-input {
-    font-size: 16px;
+    margin: 10px 0;
   }
 
   .bot-copy {
-    margin-bottom: 8px;
-    font-size: 0.96rem;
-    line-height: 1.45;
-  }
-
-  #bot-try,
-  #bot-followup {
-    display: none;
+    margin-bottom: 0;
   }
 
   .chat-header {
-    margin-bottom: 6px;
-  }
-
-  #chat-welcome {
-    font-size: 0.96rem;
-    line-height: 1.4;
+    margin-bottom: 10px;
   }
 
   .nearby-actions {
