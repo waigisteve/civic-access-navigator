@@ -58,13 +58,27 @@ def _validate_africastalking_request(payload: dict[str, str], request: Request) 
     return True
 
 
+def _require_admin_token(request: Request) -> None:
+    expected = os.getenv("CAN_ADMIN_TOKEN", "").strip()
+    if not expected:
+        raise HTTPException(status_code=503, detail="Admin token not configured")
+    supplied = (
+        request.headers.get("X-CAN-ADMIN-TOKEN")
+        or request.query_params.get("token")
+        or ""
+    ).strip()
+    if not supplied or supplied != expected:
+        raise HTTPException(status_code=403, detail="Invalid admin token")
+
+
 def register_routes(app) -> None:
     @app.post("/api/chat")
     def chat(payload: ChatRequest) -> dict[str, object]:
         return chat_answer(payload.message, region=payload.region)
 
-    @app.get("/api/sms/inbox")
-    def sms_inbox() -> dict[str, object]:
+    @app.get("/api/admin/sms/inbox")
+    def sms_inbox(request: Request) -> dict[str, object]:
+        _require_admin_token(request)
         return {"items": list_sms_messages()}
 
     @app.post("/api/sms/inbound/africastalking")

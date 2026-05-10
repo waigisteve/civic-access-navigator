@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Civic Access Navigator · SMS Admin</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="page">
+      <section class="panel">
+        <div class="panel-head">
+          <h1 style="font-size:2rem;margin-bottom:0;">SMS Admin Inbox</h1>
+          <span class="status">Admin only</span>
+        </div>
+        <p class="queue-copy">Enter the admin token to view inbound SMS peace and protection messages.</p>
+        <form id="admin-form" class="bot-composer" style="margin-bottom:16px;">
+          <input id="admin-token" class="chat-input" type="password" placeholder="Admin token" aria-label="Admin token" />
+          <button type="submit" class="chat-send">Load</button>
+        </form>
+        <div class="panel-head-actions" style="margin-bottom:16px;">
+          <button class="mini-action" type="button" id="admin-refresh">Refresh</button>
+          <span id="admin-status" class="status status-dark">Not loaded</span>
+        </div>
+        <div id="admin-sms-list" class="sms-list"></div>
+      </section>
+    </main>
+    <script>
+      const tokenInput = document.getElementById("admin-token");
+      const form = document.getElementById("admin-form");
+      const refresh = document.getElementById("admin-refresh");
+      const status = document.getElementById("admin-status");
+      const list = document.getElementById("admin-sms-list");
+
+      function render(items) {
+        list.innerHTML = "";
+        if (!items.length) {
+          const empty = document.createElement("div");
+          empty.className = "queue-empty";
+          empty.textContent = "No inbound SMS items have been received yet.";
+          list.appendChild(empty);
+          return;
+        }
+        for (const item of items) {
+          const outboundReply = item.meta?.outbound_reply;
+          const outboundStatus =
+            outboundReply && !outboundReply.error
+              ? "Reply sent"
+              : outboundReply?.error
+                ? `Reply failed: ${outboundReply.error}`
+                : "Not sent yet";
+          const row = document.createElement("article");
+          row.className = "sms-item";
+          row.innerHTML = `
+            <div class="sms-item-top">
+              <strong>${item.sender || "Unknown sender"}</strong>
+              <span class="sms-badge${item.urgent ? " urgent" : ""}">${item.urgent ? "Urgent" : "Standard"}</span>
+            </div>
+            <p>${item.message || "No message body received."}</p>
+            <div class="sms-item-meta">
+              <span>Provider: ${item.provider}</span>
+              <span>Answer path: ${item.answer_provider} · ${item.answer_mode}</span>
+            </div>
+            <div class="sms-item-reply">
+              <strong>Reply candidate</strong>
+              <span>${item.reply || "No reply candidate was generated."}</span>
+            </div>
+            <div class="sms-item-meta">
+              <span>Delivery: ${outboundStatus}</span>
+            </div>
+          `;
+          list.appendChild(row);
+        }
+      }
+
+      async function loadInbox() {
+        const token = tokenInput.value.trim();
+        if (!token) {
+          status.textContent = "Admin token required";
+          return;
+        }
+        status.textContent = "Loading...";
+        const response = await fetch("/api/admin/sms/inbox", {
+          headers: {
+            "X-CAN-ADMIN-TOKEN": token,
+          },
+        });
+        if (!response.ok) {
+          status.textContent = response.status === 403 ? "Invalid token" : "Load failed";
+          return;
+        }
+        const data = await response.json();
+        render(Array.isArray(data.items) ? data.items : []);
+        status.textContent = "Loaded";
+      }
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        void loadInbox();
+      });
+      refresh.addEventListener("click", () => void loadInbox());
+    </script>
+  </body>
+</html>

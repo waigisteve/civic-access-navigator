@@ -216,10 +216,12 @@ Current adapters:
 
 - `POST /api/sms/inbound/africastalking`
 - `POST /api/sms/inbound/twilio`
-- `GET /api/sms/inbox` for a simple proof-of-concept inbox view
+- `GET /api/admin/sms/inbox` for the admin-only proof-of-concept inbox
+- `GET /admin/sms` for a simple admin inbox page
 
 Configuration:
 
+- `CAN_ADMIN_TOKEN` for viewing the admin inbox
 - `AFRICASTALKING_USERNAME`
 - `AFRICASTALKING_API_KEY`
 - optional `AFRICASTALKING_FROM`
@@ -245,6 +247,8 @@ Relevant provider docs:
 
 Notes:
 
+- the SMS inbox is no longer shown in the public UI
+- inbound SMS messages should only be reviewed from the admin page or the protected admin API
 - the Africa's Talking route currently returns a simple 200 acknowledgement for the proof-of-concept
 - the Twilio route returns a TwiML SMS reply using the grounded response candidate
 - the Africa's Talking route can also send an outbound SMS reply through the Messaging API when `AFRICASTALKING_REPLY_ENABLED=1`
