@@ -175,7 +175,7 @@ The bot can route through one of three providers:
 Provider-specific settings:
 
 - OpenAI: `OPENAI_API_KEY`, optional `OPENAI_MODEL`
-- Gemini: `GEMINI_API_KEY`
+- Gemini: `GEMINI_API_KEY`, optional `GEMINI_MODEL` (default: `gemini-2.5-flash`)
 - Ollama: `OLLAMA_BASE_URL`, optional `OLLAMA_MODEL`
 
 ## Chat Knowledge Path

@@ -4,6 +4,7 @@ import json
 import os
 import re
 import time
+import urllib.parse
 import urllib.error
 import urllib.request
 from dataclasses import dataclass
@@ -349,10 +350,123 @@ def _openai_answer(query: str, region: str | None = None) -> dict[str, Any]:
     return local_answer(query, region=region)
 
 
+def _gemini_extract_text(payload: dict[str, Any]) -> str:
+    candidates = payload.get("candidates") or []
+    parts: list[str] = []
+    for candidate in candidates:
+        content = candidate.get("content") or {}
+        for part in content.get("parts") or []:
+            text = part.get("text")
+            if text:
+                parts.append(text.strip())
+    return "\n".join([item for item in parts if item]).strip()
+
+
+def _gemini_answer(query: str, region: str | None = None) -> dict[str, Any]:
+    api_key = os.getenv("GEMINI_API_KEY", "").strip()
+    if not api_key:
+        return local_answer(query, region=region)
+
+    faq = retrieve_faq(query, region=region)
+    hits = retrieve_sources(query, region=region)
+    live_snippets = retrieve_live_snippets(hits, query)
+    if not faq and not hits:
+        return local_answer(query, region=region)
+
+    source_block = "\n\n".join(
+        [f"{hit.title}\nSummary: {hit.summary}\nDetail: {hit.body}\nURL: {hit.url}" for hit in hits]
+    )
+    faq_block = ""
+    citations = _citations_from_hits(hits)
+    if faq:
+        faq_block = f"FAQ match\nQuestion: {faq['question']}\nAnswer: {faq['answer']}\n"
+        citations = _faq_citations(faq, hits)
+    if live_snippets:
+        citations = citations + [f"{item.title} ({item.url})" for item in live_snippets]
+
+    live_block = ""
+    if live_snippets:
+        live_block = "Live website snippets:\n" + "\n\n".join(
+            [f"{item.title}\nURL: {item.url}\nSnippet: {item.snippet}" for item in live_snippets]
+        )
+
+    model = os.getenv("GEMINI_MODEL", "gemini-2.5-flash").strip()
+    endpoint = (
+        "https://generativelanguage.googleapis.com/v1beta/models/"
+        f"{urllib.parse.quote(model, safe='')}:generateContent"
+    )
+    payload = {
+        "system_instruction": {
+            "parts": [
+                {
+                    "text": (
+                        "You are Civic Access Navigator. "
+                        "Answer only from the provided internal documentation, FAQ entries, and curated source notes. "
+                        "Do not invent facts. If the sources are weak or partial, say so plainly. "
+                        "Keep the answer concise and useful."
+                    )
+                }
+            ]
+        },
+        "contents": [
+            {
+                "parts": [
+                    {
+                        "text": (
+                            f"Question: {query}\n"
+                            f"Region: {region or 'kenya'}\n\n"
+                            f"{faq_block}\n"
+                            f"Internal documentation:\n{source_block}\n\n"
+                            f"{live_block}"
+                        )
+                    }
+                ]
+            }
+        ],
+    }
+
+    request = urllib.request.Request(
+        endpoint,
+        data=json.dumps(payload).encode("utf-8"),
+        headers={
+            "Content-Type": "application/json",
+            "x-goog-api-key": api_key,
+        },
+        method="POST",
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=20) as response:
+            raw = response.read().decode("utf-8")
+        answer = _gemini_extract_text(json.loads(raw))
+        if answer:
+            return _format_response(
+                answer,
+                citations,
+                "grounded-docs+live" if live_snippets else "grounded-docs",
+                "gemini",
+            )
+    except Exception as exc:
+        return _format_response(
+            f"Gemini was configured, but the grounded answer could not be generated just now: {exc}. The app fell back to internal documentation.",
+            citations,
+            "gemini-error",
+            "gemini",
+        )
+
+    return local_answer(query, region=region)
+
+
 def chat_answer(query: str, region: str | None = None) -> dict[str, Any]:
     provider = os.getenv("CHAT_PROVIDER", "auto").strip().lower()
     if provider == "auto":
-        provider = "openai" if os.getenv("OPENAI_API_KEY") else "local"
+        if os.getenv("OPENAI_API_KEY"):
+            provider = "openai"
+        elif os.getenv("GEMINI_API_KEY"):
+            provider = "gemini"
+        else:
+            provider = "local"
     if provider == "openai":
         return _openai_answer(query, region=region)
+    if provider == "gemini":
+        return _gemini_answer(query, region=region)
     return local_answer(query, region=region)

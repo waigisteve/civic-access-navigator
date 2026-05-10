@@ -1448,8 +1448,16 @@ body.ui-ready .reveal-after-language {
   border: 1px solid var(--line);
   border-radius: 999px;
   background: #fff;
+  color: var(--ink);
+  -webkit-text-fill-color: var(--ink);
+  caret-color: var(--accent);
   font: inherit;
   font-size: 16px;
+}
+
+.chat-input::placeholder {
+  color: rgba(91, 102, 109, 0.78);
+  -webkit-text-fill-color: rgba(91, 102, 109, 0.78);
 }
 
 .chat-send {

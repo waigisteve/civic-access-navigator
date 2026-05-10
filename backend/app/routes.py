@@ -23,13 +23,15 @@ def register_routes(app) -> None:
         model = os.getenv("OPENAI_MODEL", "").strip()
         api_key = os.getenv("OPENAI_API_KEY", "").strip()
         gemini_key = os.getenv("GEMINI_API_KEY", "").strip()
+        gemini_model = os.getenv("GEMINI_MODEL", "").strip()
         ollama_base = os.getenv("OLLAMA_BASE_URL", "").strip()
         return {
             "chat_provider": provider,
             "openai_configured": bool(api_key),
             "openai_model": model or None,
             "gemini_configured": bool(gemini_key),
+            "gemini_model": gemini_model or None,
             "ollama_configured": bool(ollama_base),
-            "fallback_mode": provider != "openai",
+            "fallback_mode": provider not in {"openai", "gemini"},
             "live_source_ingestion": os.getenv("LIVE_SOURCE_INGESTION", "0").strip() == "1",
         }
