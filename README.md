@@ -201,6 +201,45 @@ The current allowlist is intentionally narrow:
 - `unhcr.org`
 - `icrc.org`
 
+## SMS Intake
+
+The prototype now supports inbound SMS webhook intake for low-connectivity use cases.
+
+What this does:
+
+- accepts inbound SMS messages from a gateway provider
+- classifies urgent peace and protection queries
+- stores them in a lightweight local inbox at `data/runtime/sms_inbox.jsonl`
+- generates a grounded reply candidate from the same internal FAQ and curated OSF-aligned source path used by `Lets Chat`
+
+Current adapters:
+
+- `POST /api/sms/inbound/africastalking`
+- `POST /api/sms/inbound/twilio`
+- `GET /api/sms/inbox` for a simple proof-of-concept inbox view
+
+Important constraint:
+
+- users do not need internet on their phone to send the SMS
+- the app server still needs internet so the SMS gateway can deliver the webhook
+
+Recommended provider for the Kenya-first prototype:
+
+- Africa's Talking, using a two-way shortcode or shared shortcode keyword
+- for a true toll-free experience in Kenya, use a toll-free shortcode/keyword rather than a normal sender ID
+
+Relevant provider docs:
+
+- Africa's Talking shortcode guidance: https://help.africastalking.com/en/articles/4095180-how-do-i-setup-a-shortcode
+- Africa's Talking incoming message callbacks: https://help.africastalking.com/en/articles/742510-where-are-my-incoming-messages
+- Twilio incoming SMS webhooks: https://www.twilio.com/docs/usage/webhooks/messaging-webhooks
+
+Notes:
+
+- the Africa's Talking route currently returns a simple 200 acknowledgement for the proof-of-concept
+- the Twilio route returns a TwiML SMS reply using the grounded response candidate
+- this inbox is file-backed for the capstone; it is not durable production storage
+
 ## PeaceTech Track
 
 The product is now intentionally centered on `Voice & accountability`.
