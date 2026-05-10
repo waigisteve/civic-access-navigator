@@ -1068,6 +1068,7 @@ function wireChatWidget() {
   const toggle = document.getElementById("chat-toggle");
   const close = document.getElementById("chat-close");
   const windowNode = document.getElementById("chat-window");
+  const input = document.getElementById("bot-input");
   if (!toggle || !close || !windowNode) {
     return;
   }
@@ -1098,6 +1099,11 @@ function wireChatWidget() {
     seedChatFeed();
     windowNode.hidden = false;
     toggle.setAttribute("aria-expanded", "true");
+    if (input) {
+      window.setTimeout(() => {
+        input.focus({ preventScroll: true });
+      }, 80);
+    }
   };
 
   const closeChat = () => {

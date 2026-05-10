@@ -1787,18 +1787,35 @@ body.ui-ready .reveal-after-language {
     width: auto;
     height: auto;
     max-height: none;
+    overflow: auto;
+    overscroll-behavior: contain;
     padding-bottom: max(18px, env(safe-area-inset-bottom));
     z-index: 500;
   }
 
   .chat-feed {
-    min-height: 72px;
+    flex: 0 1 auto;
+    min-height: 0;
+    max-height: 96px;
     margin: 8px 0;
   }
 
   .voice-query-row,
   .bot-composer {
+    position: sticky;
+    left: 0;
+    right: 0;
     background: rgba(255, 253, 248, 0.98);
+    z-index: 2;
+  }
+
+  .voice-query-row {
+    bottom: 68px;
+  }
+
+  .bot-composer {
+    bottom: 0;
+    padding-bottom: max(6px, env(safe-area-inset-bottom));
   }
 
   .voice-button,
@@ -1820,6 +1837,11 @@ body.ui-ready .reveal-after-language {
 
   .chat-header {
     margin-bottom: 6px;
+  }
+
+  #chat-welcome {
+    font-size: 0.96rem;
+    line-height: 1.4;
   }
 
   .nearby-actions {
