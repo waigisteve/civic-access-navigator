@@ -1780,17 +1780,20 @@ body.ui-ready .reveal-after-language {
 
   .chat-window {
     position: fixed;
-    top: 96px;
+    top: 72px;
+    bottom: 12px;
     left: 12px;
     right: 12px;
     width: auto;
-    height: min(76vh, 38rem);
-    max-height: calc(100dvh - 108px);
+    height: auto;
+    max-height: none;
     padding-bottom: max(18px, env(safe-area-inset-bottom));
+    z-index: 500;
   }
 
   .chat-feed {
-    min-height: 0;
+    min-height: 72px;
+    margin: 8px 0;
   }
 
   .voice-query-row,
@@ -1802,6 +1805,21 @@ body.ui-ready .reveal-after-language {
   .chat-send,
   .chat-input {
     font-size: 16px;
+  }
+
+  .bot-copy {
+    margin-bottom: 8px;
+    font-size: 0.96rem;
+    line-height: 1.45;
+  }
+
+  #bot-try,
+  #bot-followup {
+    display: none;
+  }
+
+  .chat-header {
+    margin-bottom: 6px;
   }
 
   .nearby-actions {
