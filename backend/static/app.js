@@ -404,6 +404,63 @@ function renderQueue() {
   }
 }
 
+async function loadSmsInbox() {
+  const list = document.getElementById("sms-list");
+  if (!list) {
+    return;
+  }
+  const pack = LANG.copy[currentLanguage] || LANG.copy.en;
+  list.innerHTML = "";
+  try {
+    const response = await fetch("/api/sms/inbox");
+    const data = await response.json();
+    const items = Array.isArray(data.items) ? data.items : [];
+    if (items.length === 0) {
+      const empty = document.createElement("div");
+      empty.className = "queue-empty";
+      empty.textContent = pack.smsEmpty;
+      list.appendChild(empty);
+      return;
+    }
+    for (const item of items) {
+      const row = document.createElement("article");
+      row.className = "sms-item";
+      const urgent = item.urgent ? pack.smsUrgent : pack.smsNormal;
+      const outboundReply = item.meta?.outbound_reply;
+      const outboundStatus =
+        outboundReply && !outboundReply.error
+          ? pack.smsReplySent
+          : outboundReply?.error
+            ? `${pack.smsReplyError}: ${outboundReply.error}`
+            : pack.smsReplyPending;
+      row.innerHTML = `
+        <div class="sms-item-top">
+          <strong>${item.sender || pack.smsUnknownSender}</strong>
+          <span class="sms-badge${item.urgent ? " urgent" : ""}">${urgent}</span>
+        </div>
+        <p>${item.message || pack.smsNoMessage}</p>
+        <div class="sms-item-meta">
+          <span>${pack.smsProviderLabel}: ${item.provider}</span>
+          <span>${pack.smsModeLabel}: ${item.answer_provider} · ${item.answer_mode}</span>
+        </div>
+        <div class="sms-item-reply">
+          <strong>${pack.smsReplyLabel}</strong>
+          <span>${item.reply || pack.smsNoReply}</span>
+        </div>
+        <div class="sms-item-meta">
+          <span>${pack.smsDeliveryLabel}: ${outboundStatus}</span>
+        </div>
+      `;
+      list.appendChild(row);
+    }
+  } catch {
+    const empty = document.createElement("div");
+    empty.className = "queue-empty";
+    empty.textContent = pack.smsLoadError;
+    list.appendChild(empty);
+  }
+}
+
 function enqueueAccountabilityAction(title, note) {
   const pack = LANG.copy[currentLanguage] || LANG.copy.en;
   const queue = readAccountabilityQueue();
@@ -574,6 +631,10 @@ function setLanguage(language) {
   setText("queue-heading", pack.queueHeading);
   setText("queue-status", pack.queueStatus);
   setText("queue-copy", pack.queueCopy);
+  setText("sms-heading", pack.smsHeading);
+  setText("sms-status", pack.smsStatus);
+  setText("sms-copy", pack.smsCopy);
+  setText("sms-refresh", pack.smsRefresh);
   setText("map-title", pack.mapTitle);
   setText("map-status", pack.mapStatus);
   setText("country-heading", pack.countryHeading);
@@ -698,6 +759,7 @@ function setLanguage(language) {
   renderIncidentWorkflows();
   renderCtaPanel();
   renderQueue();
+  void loadSmsInbox();
   void loadResources();
   void loadHealth();
 }
@@ -824,6 +886,16 @@ function wireQuickExit() {
   }
   button.addEventListener("click", () => {
     window.location.replace("https://www.google.com");
+  });
+}
+
+function wireSmsInbox() {
+  const refresh = document.getElementById("sms-refresh");
+  if (!refresh) {
+    return;
+  }
+  refresh.addEventListener("click", () => {
+    void loadSmsInbox();
   });
 }
 
@@ -1455,6 +1527,7 @@ async function bootstrap() {
   wireControlTabs();
   wireLanguageSwitcher();
   wireQuickExit();
+  wireSmsInbox();
   wireVoiceControls();
   wireFeedback();
   wireDetails();
@@ -1477,6 +1550,7 @@ async function bootstrap() {
   renderCountries();
   setZone(currentZone);
   await Promise.all([loadResources(), loadHealth()]);
+  await loadSmsInbox();
   await loadProject();
   setLanguage(currentLanguage);
 }

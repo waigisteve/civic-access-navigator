@@ -358,6 +358,76 @@ body {
   border: 1px solid var(--line);
 }
 
+.panel-head-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.mini-action {
+  min-height: 36px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--ink);
+  font: inherit;
+  cursor: pointer;
+}
+
+.sms-list {
+  display: grid;
+  gap: 12px;
+}
+
+.sms-item {
+  display: grid;
+  gap: 10px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--line);
+}
+
+.sms-item p,
+.sms-item strong,
+.sms-item span {
+  margin: 0;
+}
+
+.sms-item-top,
+.sms-item-meta,
+.sms-item-reply {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.sms-item-meta,
+.sms-item-reply span {
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.sms-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 0.9rem;
+}
+
+.sms-badge.urgent {
+  background: rgba(194, 74, 54, 0.14);
+  color: #8d2c2c;
+}
+
 .scenario-layout {
   display: grid;
   grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);

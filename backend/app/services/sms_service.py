@@ -1,12 +1,15 @@
 from __future__ import annotations
 
 import json
+import os
 import re
 import time
 import uuid
 from pathlib import Path
 from typing import Any
 from urllib.parse import parse_qs
+import urllib.parse
+import urllib.request
 
 from backend.app.services.chat_service import chat_answer
 
@@ -64,12 +67,26 @@ def _record_message(entry: dict[str, Any]) -> None:
         handle.write(json.dumps(entry, ensure_ascii=False) + "\n")
 
 
+def write_sms_messages(items: list[dict[str, Any]]) -> None:
+    _ensure_runtime_dir()
+    with SMS_INBOX_PATH.open("w", encoding="utf-8") as handle:
+        for item in items:
+            handle.write(json.dumps(item, ensure_ascii=False) + "\n")
+
+
 def list_sms_messages(limit: int = 50) -> list[dict[str, Any]]:
     if not SMS_INBOX_PATH.exists():
         return []
     lines = SMS_INBOX_PATH.read_text(encoding="utf-8").splitlines()
     messages = [json.loads(line) for line in lines if line.strip()]
     return list(reversed(messages[-limit:]))
+
+
+def _load_all_sms_messages() -> list[dict[str, Any]]:
+    if not SMS_INBOX_PATH.exists():
+        return []
+    lines = SMS_INBOX_PATH.read_text(encoding="utf-8").splitlines()
+    return [json.loads(line) for line in lines if line.strip()]
 
 
 def _africastalking_payload(payload: dict[str, str]) -> tuple[str, str, dict[str, Any]]:
@@ -133,3 +150,48 @@ def handle_inbound_sms(provider: str, payload: dict[str, str], region: str = "ke
     _record_message(entry)
     return entry
 
+
+def send_africastalking_sms_reply(*, to: str, message: str, link_id: str | None = None) -> dict[str, Any]:
+    username = os.getenv("AFRICASTALKING_USERNAME", "").strip()
+    api_key = os.getenv("AFRICASTALKING_API_KEY", "").strip()
+    sender = os.getenv("AFRICASTALKING_FROM", "").strip()
+    if not username or not api_key:
+        raise RuntimeError("Africa's Talking outbound reply is not configured.")
+
+    payload = {
+        "username": username,
+        "to": to,
+        "message": message,
+    }
+    if sender:
+        payload["from"] = sender
+    if link_id:
+        payload["linkId"] = link_id
+
+    data = urllib.parse.urlencode(payload).encode("utf-8")
+    request = urllib.request.Request(
+        "https://api.africastalking.com/version1/messaging",
+        data=data,
+        headers={
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded",
+            "apiKey": api_key,
+        },
+        method="POST",
+    )
+    with urllib.request.urlopen(request, timeout=20) as response:
+        raw = response.read().decode("utf-8")
+    return json.loads(raw)
+
+
+def attach_africastalking_reply(record_id: str, result: dict[str, Any]) -> None:
+    messages = _load_all_sms_messages()
+    updated = False
+    for item in messages:
+        if item.get("id") == record_id:
+            item.setdefault("meta", {})
+            item["meta"]["outbound_reply"] = result
+            updated = True
+            break
+    if updated:
+        write_sms_messages(messages)

@@ -218,6 +218,15 @@ Current adapters:
 - `POST /api/sms/inbound/twilio`
 - `GET /api/sms/inbox` for a simple proof-of-concept inbox view
 
+Configuration:
+
+- `AFRICASTALKING_USERNAME`
+- `AFRICASTALKING_API_KEY`
+- optional `AFRICASTALKING_FROM`
+- optional `AFRICASTALKING_REPLY_ENABLED=1` to send reply candidates back out through Africa's Talking
+- optional `AFRICASTALKING_INBOUND_TOKEN=<shared-secret>` if you want to protect the inbound callback URL with a query token
+- `TWILIO_AUTH_TOKEN` for validating Twilio webhook signatures
+
 Important constraint:
 
 - users do not need internet on their phone to send the SMS
@@ -238,6 +247,7 @@ Notes:
 
 - the Africa's Talking route currently returns a simple 200 acknowledgement for the proof-of-concept
 - the Twilio route returns a TwiML SMS reply using the grounded response candidate
+- the Africa's Talking route can also send an outbound SMS reply through the Messaging API when `AFRICASTALKING_REPLY_ENABLED=1`
 - this inbox is file-backed for the capstone; it is not durable production storage
 
 ## PeaceTech Track
