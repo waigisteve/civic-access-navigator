@@ -1255,6 +1255,7 @@ body.ui-ready .reveal-after-language {
   min-height: 160px;
   max-height: none;
   overflow: auto;
+  -webkit-overflow-scrolling: touch;
   margin: 14px 0;
   padding-right: 4px;
 }
@@ -1448,6 +1449,7 @@ body.ui-ready .reveal-after-language {
   border-radius: 999px;
   background: #fff;
   font: inherit;
+  font-size: 16px;
 }
 
 .chat-send {
@@ -1457,6 +1459,7 @@ body.ui-ready .reveal-after-language {
   background: var(--accent);
   color: #fff;
   cursor: pointer;
+  font-size: 16px;
 }
 
 .voice-query-row {
@@ -1764,14 +1767,33 @@ body.ui-ready .reveal-after-language {
   .chat-window,
   .sos-panel,
   .nearby-panel {
-    left: 0;
-    right: auto;
-    width: min(340px, calc(100vw - 24px));
+    width: auto;
   }
 
   .chat-window {
-    height: min(70vh, 34rem);
-    max-height: min(70vh, 34rem);
+    position: fixed;
+    top: 96px;
+    left: 12px;
+    right: 12px;
+    width: auto;
+    height: min(76vh, 38rem);
+    max-height: calc(100dvh - 108px);
+    padding-bottom: max(18px, env(safe-area-inset-bottom));
+  }
+
+  .chat-feed {
+    min-height: 0;
+  }
+
+  .voice-query-row,
+  .bot-composer {
+    background: rgba(255, 253, 248, 0.98);
+  }
+
+  .voice-button,
+  .chat-send,
+  .chat-input {
+    font-size: 16px;
   }
 
   .nearby-actions {
