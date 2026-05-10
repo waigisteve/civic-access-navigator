@@ -486,6 +486,39 @@ function writeAccountabilityQueue(items) {
   }
 }
 
+function seedChatFeed(force = false) {
+  const feed = document.getElementById("chat-feed");
+  if (!feed) {
+    return;
+  }
+  if (!force && feed.children.length > 0) {
+    return;
+  }
+  feed.innerHTML = "";
+  const pack = LANG.copy[currentLanguage] || LANG.copy.en;
+
+  const tryBubble = document.createElement("div");
+  tryBubble.className = "chat-bubble bot";
+  tryBubble.id = "bot-try";
+  tryBubble.textContent = pack.botTry;
+
+  const followupBubble = document.createElement("div");
+  followupBubble.className = "chat-bubble user";
+  followupBubble.id = "bot-followup";
+  followupBubble.textContent = pack.botFollowup;
+
+  const welcomeBubble = document.createElement("div");
+  welcomeBubble.className = "chat-bubble bot";
+  const welcomeCopy = document.createElement("p");
+  welcomeCopy.id = "chat-welcome";
+  welcomeCopy.textContent = pack.chatWelcome;
+  welcomeBubble.appendChild(welcomeCopy);
+
+  feed.appendChild(tryBubble);
+  feed.appendChild(followupBubble);
+  feed.appendChild(welcomeBubble);
+}
+
 function getIncidentDefinition(pack, id) {
   const lookup = {
     checkpoint: { title: pack.incidentCheckpointTitle, copy: pack.incidentCheckpointCopy },
@@ -760,6 +793,8 @@ function wireAccessModes() {
         hint.className = "chat-bubble bot";
         hint.textContent = (LANG.copy[currentLanguage] || LANG.copy.en).safeModeChatReset;
         chatFeed.appendChild(hint);
+      } else {
+        seedChatFeed(true);
       }
       applyAccessModes();
     });
@@ -1060,6 +1095,7 @@ function wireChatWidget() {
 
   const openChat = () => {
     closeFloatingPanels("chat-window");
+    seedChatFeed();
     windowNode.hidden = false;
     toggle.setAttribute("aria-expanded", "true");
   };
@@ -1241,6 +1277,8 @@ function wireBotPreview() {
   if (!form || !input || !feed) {
     return;
   }
+
+  seedChatFeed();
 
   const refreshVoiceUI = () => {
     const pack = LANG.copy[currentLanguage] || LANG.copy.en;
