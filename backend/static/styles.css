@@ -296,9 +296,9 @@ body {
 .incident-card,
 .cta-card {
   display: grid;
-  gap: 6px;
+  gap: 4px;
   width: 100%;
-  padding: 16px;
+  padding: 14px 16px;
   border: 1px solid var(--line);
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.86);
@@ -311,7 +311,8 @@ body {
 
 .incident-card:hover,
 .cta-card:hover,
-.incident-card.is-active {
+.incident-card.is-active,
+.cta-card.is-active {
   transform: translateY(-1px);
   border-color: rgba(11, 110, 79, 0.28);
   box-shadow: 0 12px 24px rgba(16, 23, 26, 0.1);
@@ -331,6 +332,11 @@ body {
 .queue-item small {
   color: var(--muted);
   line-height: 1.5;
+}
+
+.incident-card span,
+.cta-card span {
+  display: none;
 }
 
 .cta-panel {

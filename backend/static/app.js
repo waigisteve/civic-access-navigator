@@ -381,7 +381,7 @@ function renderIncidentWorkflows() {
   const pack = LANG.copy[currentLanguage] || LANG.copy.en;
   const scenario = getScenarioData(currentScenario);
   currentScenarioDetail = scenario;
-  setText("workflow-copy", scenario?.summary || pack.workflowCopy);
+  setText("workflow-copy", pack.workflowCopy);
   const incidents = Array.isArray(scenario?.incidents) ? scenario.incidents : [];
   grid.innerHTML = "";
   if (incidents.length === 0) {
@@ -397,9 +397,10 @@ function renderIncidentWorkflows() {
     button.type = "button";
     button.className = `incident-card${currentIncident === incident.code ? " is-active" : ""}`;
     button.dataset.incident = incident.code;
-    button.innerHTML = `<strong>${incident.title || fallback.title}</strong><span>${incident.summary || fallback.copy}</span>`;
+    button.innerHTML = `<strong>${incident.title || fallback.title}</strong>`;
     button.addEventListener("click", async () => {
       currentIncident = incident.code;
+      currentActionPoint = null;
       await loadWorkflowIncidentDetail(currentScenario, currentIncident);
       renderIncidentWorkflows();
       renderCtaPanel();
@@ -439,14 +440,19 @@ function renderCtaPanel() {
     grid.appendChild(empty);
     return;
   }
+  const activeAction =
+    actionPoints.find((item) => item.code === currentActionPoint?.code) || actionPoints[0] || null;
+  currentActionPoint = activeAction;
+
   for (const actionPoint of actionPoints) {
     const card = document.createElement("button");
     card.type = "button";
-    card.className = "cta-card";
-    card.innerHTML = `<strong>${actionPoint.title}</strong><span>${actionPoint.description}</span>`;
+    card.className = `cta-card${activeAction?.code === actionPoint.code ? " is-active" : ""}`;
+    card.innerHTML = `<strong>${actionPoint.title}</strong>`;
     card.addEventListener("click", () => handleWorkflowAction(actionPoint, pack));
     grid.appendChild(card);
   }
+  renderActionForm();
 }
 
 function renderQueue() {
@@ -528,7 +534,7 @@ function renderActionForm() {
   const incident = currentIncidentDetail.incident;
   title.textContent = currentActionPoint.title;
   status.textContent = `${incident.risk_level || "n/a"} risk`;
-  copy.textContent = currentActionPoint.description;
+  copy.textContent = "Complete the fields below and save the report.";
   locationText.value = "";
   eventTime.value = "";
   deniedItem.value = "";
@@ -540,7 +546,7 @@ function renderActionForm() {
   locationText.placeholder = "Location, checkpoint, office, or landmark";
   deniedItem.placeholder = "Aid, service, movement, document, or access denied";
   requestedAction.placeholder = "Expected next action from an institution, observer, or responder";
-  textarea.placeholder = `Describe what happened during "${incident.title}". Include any demands, refusal, and the immediate risk.`;
+  textarea.placeholder = `Briefly describe what happened during "${incident.title}".`;
   alias.placeholder = safeModeEnabled ? "Alias only" : "Alias or leave blank";
   sourceList.innerHTML = "";
   for (const source of incident.sources || []) {
