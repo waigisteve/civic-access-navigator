@@ -163,7 +163,18 @@
               </div>
               <p class="control-copy" id="action-form-copy">Capture the incident details and save them to the accountability workflow database.</p>
               <form id="action-form" class="action-form">
-                <textarea id="action-report-text" class="action-textarea" rows="5" placeholder="Describe what happened, where, and what was demanded or refused."></textarea>
+                <div class="action-form-row">
+                  <input id="action-location-text" class="action-input" type="text" placeholder="Location or landmark" />
+                  <div class="action-map-picker">
+                    <button type="button" class="hero-action" id="action-use-location">Use current location</button>
+                  </div>
+                </div>
+                <div class="action-form-row">
+                  <input id="action-event-time" class="action-input" type="datetime-local" />
+                  <input id="action-denied-item" class="action-input" type="text" placeholder="What was denied?" />
+                </div>
+                <textarea id="action-requested-action" class="action-textarea" rows="3" placeholder="What next action do you expect from the institution or responder?"></textarea>
+                <textarea id="action-report-text" class="action-textarea" rows="5" placeholder="Add a short factual narrative of what happened."></textarea>
                 <div class="action-form-row">
                   <input id="action-alias" class="action-input" type="text" placeholder="Alias or leave blank" />
                   <select id="action-contact-preference" class="action-input">

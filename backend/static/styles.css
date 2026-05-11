@@ -380,6 +380,16 @@ body {
   gap: 8px;
 }
 
+.action-map-picker {
+  display: flex;
+  align-items: stretch;
+}
+
+.action-map-picker .hero-action {
+  width: 100%;
+  justify-content: center;
+}
+
 .action-source-item {
   font-size: 0.92rem;
   line-height: 1.5;

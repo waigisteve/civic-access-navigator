@@ -65,6 +65,10 @@ class WorkflowReportRequest(BaseModel):
     action_code: str = Field(min_length=2)
     action_title: str = Field(min_length=2)
     report_text: str = Field(min_length=5)
+    location_text: str | None = None
+    event_time: str | None = None
+    denied_item: str | None = None
+    requested_action: str | None = None
     contact_preference: str = "anonymous"
     submitter_alias: str | None = None
     region: str | None = None

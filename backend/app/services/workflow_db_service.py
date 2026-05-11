@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from sqlalchemy import select
+from sqlalchemy import select, text
 from sqlalchemy.orm import selectinload
 
 from backend.app.db import SessionLocal, database_configured, engine
@@ -35,8 +35,23 @@ def initialize_workflow_database() -> bool:
     import backend.app.models  # noqa: F401
 
     Base.metadata.create_all(bind=engine)
+    ensure_workflow_report_columns()
     seed_workflow_catalog()
     return True
+
+
+def ensure_workflow_report_columns() -> None:
+    if not workflow_database_ready():
+        return
+    statements = [
+        "ALTER TABLE workflow_reports ADD COLUMN IF NOT EXISTS location_text VARCHAR(255)",
+        "ALTER TABLE workflow_reports ADD COLUMN IF NOT EXISTS event_time VARCHAR(64)",
+        "ALTER TABLE workflow_reports ADD COLUMN IF NOT EXISTS denied_item VARCHAR(255)",
+        "ALTER TABLE workflow_reports ADD COLUMN IF NOT EXISTS requested_action TEXT",
+    ]
+    with engine.begin() as connection:
+        for statement in statements:
+            connection.execute(text(statement))
 
 
 def seed_workflow_catalog() -> None:
@@ -178,6 +193,10 @@ def create_workflow_report(payload: dict[str, Any]) -> dict[str, Any]:
         action_code=str(payload.get("action_code") or "").strip(),
         action_title=str(payload.get("action_title") or "").strip(),
         report_text=str(payload.get("report_text") or "").strip(),
+        location_text=(str(payload.get("location_text")).strip() if payload.get("location_text") else None),
+        event_time=(str(payload.get("event_time")).strip() if payload.get("event_time") else None),
+        denied_item=(str(payload.get("denied_item")).strip() if payload.get("denied_item") else None),
+        requested_action=(str(payload.get("requested_action")).strip() if payload.get("requested_action") else None),
         contact_preference=str(payload.get("contact_preference") or "anonymous").strip(),
         submitter_alias=(str(payload.get("submitter_alias")).strip() if payload.get("submitter_alias") else None),
         region=(str(payload.get("region")).strip() if payload.get("region") else None),
@@ -197,6 +216,10 @@ def create_workflow_report(payload: dict[str, Any]) -> dict[str, Any]:
             "action_code": report.action_code,
             "action_title": report.action_title,
             "report_text": report.report_text,
+            "location_text": report.location_text,
+            "event_time": report.event_time,
+            "denied_item": report.denied_item,
+            "requested_action": report.requested_action,
             "contact_preference": report.contact_preference,
             "submitter_alias": report.submitter_alias,
             "region": report.region,

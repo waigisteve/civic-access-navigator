@@ -496,11 +496,15 @@ function renderActionForm() {
   const status = document.getElementById("action-form-status");
   const copy = document.getElementById("action-form-copy");
   const textarea = document.getElementById("action-report-text");
+  const locationText = document.getElementById("action-location-text");
+  const eventTime = document.getElementById("action-event-time");
+  const deniedItem = document.getElementById("action-denied-item");
+  const requestedAction = document.getElementById("action-requested-action");
   const alias = document.getElementById("action-alias");
   const contact = document.getElementById("action-contact-preference");
   const sourceList = document.getElementById("action-source-list");
   const saveButton = document.getElementById("action-save-button");
-  if (!card || !title || !status || !copy || !textarea || !alias || !contact || !sourceList || !saveButton) {
+  if (!card || !title || !status || !copy || !textarea || !locationText || !eventTime || !deniedItem || !requestedAction || !alias || !contact || !sourceList || !saveButton) {
     return;
   }
   if (!currentActionPoint || !currentIncidentDetail?.incident) {
@@ -511,11 +515,18 @@ function renderActionForm() {
   title.textContent = currentActionPoint.title;
   status.textContent = `${incident.risk_level || "n/a"} risk`;
   copy.textContent = currentActionPoint.description;
+  locationText.value = "";
+  eventTime.value = "";
+  deniedItem.value = "";
+  requestedAction.value = "";
   textarea.value = "";
   alias.value = "";
   contact.value = safeModeEnabled ? "anonymous" : "anonymous";
   saveButton.textContent = "Save report";
-  textarea.placeholder = `Describe what happened during "${incident.title}". Include the place, time, what was demanded or refused, and what next step you need.`;
+  locationText.placeholder = "Location, checkpoint, office, or landmark";
+  deniedItem.placeholder = "Aid, service, movement, document, or access denied";
+  requestedAction.placeholder = "Expected next action from an institution, observer, or responder";
+  textarea.placeholder = `Describe what happened during "${incident.title}". Include any demands, refusal, and the immediate risk.`;
   alias.placeholder = safeModeEnabled ? "Alias only" : "Alias or leave blank";
   sourceList.innerHTML = "";
   for (const source of incident.sources || []) {
@@ -529,13 +540,42 @@ function renderActionForm() {
 
 function wireActionForm() {
   const form = document.getElementById("action-form");
+  const locationText = document.getElementById("action-location-text");
+  const eventTime = document.getElementById("action-event-time");
+  const deniedItem = document.getElementById("action-denied-item");
+  const requestedAction = document.getElementById("action-requested-action");
   const textarea = document.getElementById("action-report-text");
   const alias = document.getElementById("action-alias");
   const contact = document.getElementById("action-contact-preference");
   const status = document.getElementById("action-form-status");
   const saveButton = document.getElementById("action-save-button");
-  if (!form || !textarea || !alias || !contact || !status || !saveButton) {
+  const useLocation = document.getElementById("action-use-location");
+  if (!form || !locationText || !eventTime || !deniedItem || !requestedAction || !textarea || !alias || !contact || !status || !saveButton) {
     return;
+  }
+
+  if (useLocation) {
+    useLocation.addEventListener("click", () => {
+      if (safeModeEnabled) {
+        status.textContent = "Location fill is hidden in Safe Mode";
+        return;
+      }
+      if (!navigator.geolocation) {
+        status.textContent = "Device location is not available in this browser";
+        return;
+      }
+      status.textContent = "Capturing location...";
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          locationText.value = `${position.coords.latitude.toFixed(5)}, ${position.coords.longitude.toFixed(5)}`;
+          status.textContent = "Location captured";
+        },
+        () => {
+          status.textContent = "Location access was blocked";
+        },
+        { enableHighAccuracy: true, timeout: 12000, maximumAge: 60000 }
+      );
+    });
   }
 
   form.addEventListener("submit", async (event) => {
@@ -548,13 +588,26 @@ function wireActionForm() {
       status.textContent = "Add incident details first";
       return;
     }
+    const structuredSummary = [
+      locationText.value.trim() ? `Location: ${locationText.value.trim()}` : "",
+      eventTime.value ? `Time: ${eventTime.value}` : "",
+      deniedItem.value.trim() ? `Denied: ${deniedItem.value.trim()}` : "",
+      requestedAction.value.trim() ? `Expected action: ${requestedAction.value.trim()}` : "",
+      `Narrative: ${reportText}`,
+    ]
+      .filter(Boolean)
+      .join("\n");
 
     const payload = {
       scenario_code: currentScenario,
       incident_code: currentIncident,
       action_code: currentActionPoint.code,
       action_title: currentActionPoint.title,
-      report_text: reportText,
+      report_text: structuredSummary,
+      location_text: locationText.value.trim() || null,
+      event_time: eventTime.value || null,
+      denied_item: deniedItem.value.trim() || null,
+      requested_action: requestedAction.value.trim() || null,
       contact_preference: contact.value,
       submitter_alias: alias.value.trim() || null,
       region: currentIncidentDetail.incident.region || currentRegion,
@@ -577,13 +630,17 @@ function wireActionForm() {
       }
       const data = await response.json();
       if (payload.status === "queued") {
-        enqueueAccountabilityAction(currentActionPoint.title, reportText);
+        enqueueAccountabilityAction(currentActionPoint.title, structuredSummary);
       }
       status.textContent = `Saved to DB #${data.item?.id || ""}`.trim();
+      locationText.value = "";
+      eventTime.value = "";
+      deniedItem.value = "";
+      requestedAction.value = "";
       textarea.value = "";
       alias.value = "";
     } catch {
-      enqueueAccountabilityAction(currentActionPoint.title, reportText);
+      enqueueAccountabilityAction(currentActionPoint.title, structuredSummary);
       status.textContent = "Saved locally. Will send when connected.";
     } finally {
       saveButton.disabled = false;
