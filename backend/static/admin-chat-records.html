@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat Records Admin</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="page" style="padding-top: 32px;">
+      <section class="panel">
+        <div class="panel-head">
+          <h1>Chat Records Admin</h1>
+          <span class="status">Admin only</span>
+        </div>
+        <div class="action-form" style="max-width: 720px;">
+          <input id="admin-token" class="action-input" type="password" placeholder="Admin token" />
+          <button id="load-chat-records" class="hero-action primary" type="button">Load chat records</button>
+          <div id="admin-status" class="control-copy">Enter the admin token to inspect saved chat records.</div>
+          <div id="chat-record-list" class="queue-list"></div>
+        </div>
+      </section>
+    </main>
+    <script>
+      const tokenInput = document.getElementById("admin-token");
+      const loadButton = document.getElementById("load-chat-records");
+      const statusNode = document.getElementById("admin-status");
+      const listNode = document.getElementById("chat-record-list");
+      loadButton.addEventListener("click", async () => {
+        const token = tokenInput.value.trim();
+        if (!token) {
+          statusNode.textContent = "Admin token is required.";
+          return;
+        }
+        statusNode.textContent = "Loading chat records...";
+        listNode.innerHTML = "";
+        try {
+          const response = await fetch("/api/admin/chat-records", {
+            headers: { "X-CAN-ADMIN-TOKEN": token },
+          });
+          if (!response.ok) throw new Error(`Request failed: ${response.status}`);
+          const data = await response.json();
+          const items = Array.isArray(data.items) ? data.items : [];
+          statusNode.textContent = `${items.length} chat record(s) loaded.`;
+          for (const item of items) {
+            const row = document.createElement("article");
+            row.className = "queue-item";
+            row.innerHTML = `
+              <strong>#${item.id} · ${item.provider} · ${item.mode}</strong>
+              <span><strong>Scenario:</strong> ${item.scenario_code || "-"} · <strong>Incident:</strong> ${item.incident_code || "-"}</span>
+              <span><strong>User:</strong> ${item.user_message}</span>
+              <span><strong>Answer:</strong> ${item.answer_text}</span>
+              <small>${item.created_at}</small>
+            `;
+            listNode.appendChild(row);
+          }
+        } catch (error) {
+          statusNode.textContent = `Could not load chat records: ${error.message}`;
+        }
+      });
+    </script>
+  </body>
+</html>

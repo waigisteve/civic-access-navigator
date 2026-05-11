@@ -84,6 +84,16 @@ def admin_workflow_reports() -> FileResponse:
     return FileResponse(STATIC_DIR / "admin-workflow-reports.html")
 
 
+@app.get("/admin/chat-records")
+def admin_chat_records() -> FileResponse:
+    return FileResponse(STATIC_DIR / "admin-chat-records.html")
+
+
+@app.get("/admin/sos-requests")
+def admin_sos_requests() -> FileResponse:
+    return FileResponse(STATIC_DIR / "admin-sos-requests.html")
+
+
 register_routes(app)
 app.mount("/", StaticFiles(directory=STATIC_DIR), name="static")
 

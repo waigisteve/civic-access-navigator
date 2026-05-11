@@ -25,8 +25,12 @@ from backend.app.services.sms_service import (
     send_africastalking_sms_reply,
 )
 from backend.app.services.workflow_db_service import (
+    create_chat_record,
+    create_sos_request,
     create_workflow_report,
     get_workflow_incident,
+    list_chat_records,
+    list_sos_requests,
     list_workflow_reports,
     list_workflow_scenarios,
     seed_workflow_catalog,
@@ -37,6 +41,12 @@ from backend.app.services.workflow_db_service import (
 class ChatRequest(BaseModel):
     message: str = Field(min_length=1)
     region: str | None = None
+    scenario: str | None = None
+    incident_code: str | None = None
+    language: str | None = None
+    session_id: str | None = None
+    safe_mode: bool = False
+    lite_mode: bool = False
 
 
 class ApprovedResourceRequest(BaseModel):
@@ -77,6 +87,19 @@ class WorkflowReportRequest(BaseModel):
     safe_mode: bool = False
     lite_mode: bool = False
     status: str = "submitted"
+
+
+class SosRequestPayload(BaseModel):
+    channel: str = Field(min_length=2)
+    note: str | None = None
+    location_text: str | None = None
+    region: str | None = None
+    language: str | None = None
+    scenario_code: str | None = None
+    incident_code: str | None = None
+    safe_mode: bool = False
+    lite_mode: bool = False
+    status: str = "opened"
 
 
 def _validate_twilio_signature(request: Request, payload: dict[str, str]) -> bool:
@@ -128,7 +151,28 @@ def _require_admin_token(request: Request) -> None:
 def register_routes(app) -> None:
     @app.post("/api/chat")
     def chat(payload: ChatRequest) -> dict[str, object]:
-        return chat_answer(payload.message, region=payload.region)
+        result = chat_answer(payload.message, region=payload.region)
+        if workflow_database_ready():
+            try:
+                create_chat_record(
+                    {
+                        "session_id": payload.session_id or "anonymous",
+                        "user_message": payload.message,
+                        "answer_text": result.get("answer", ""),
+                        "citations": list(result.get("citations", [])),
+                        "provider": result.get("provider", "local"),
+                        "mode": result.get("mode", "fallback"),
+                        "region": payload.region,
+                        "scenario_code": payload.scenario,
+                        "incident_code": payload.incident_code,
+                        "language": payload.language,
+                        "safe_mode": payload.safe_mode,
+                        "lite_mode": payload.lite_mode,
+                    }
+                )
+            except Exception:
+                pass
+        return result
 
     @app.get("/api/workflows")
     def workflow_scenarios() -> dict[str, object]:
@@ -149,6 +193,13 @@ def register_routes(app) -> None:
         if not workflow_database_ready():
             raise HTTPException(status_code=503, detail="Workflow database is not configured")
         item = create_workflow_report(payload.model_dump())
+        return {"item": item}
+
+    @app.post("/api/sos/request")
+    def sos_request(payload: SosRequestPayload) -> dict[str, object]:
+        if not workflow_database_ready():
+            raise HTTPException(status_code=503, detail="Workflow database is not configured")
+        item = create_sos_request(payload.model_dump())
         return {"item": item}
 
     @app.get("/api/admin/resources")
@@ -205,6 +256,16 @@ def register_routes(app) -> None:
                 limit=limit,
             )
         }
+
+    @app.get("/api/admin/chat-records")
+    def admin_chat_records(request: Request, limit: int = 100) -> dict[str, object]:
+        _require_admin_token(request)
+        return {"items": list_chat_records(limit=limit)}
+
+    @app.get("/api/admin/sos-requests")
+    def admin_sos_requests(request: Request, limit: int = 100) -> dict[str, object]:
+        _require_admin_token(request)
+        return {"items": list_sos_requests(limit=limit)}
 
     @app.get("/api/admin/sms/inbox")
     def sms_inbox(request: Request) -> dict[str, object]:

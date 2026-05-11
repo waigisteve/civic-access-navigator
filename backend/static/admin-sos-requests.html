@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SOS Requests Admin</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="page" style="padding-top: 32px;">
+      <section class="panel">
+        <div class="panel-head">
+          <h1>SOS Requests Admin</h1>
+          <span class="status">Admin only</span>
+        </div>
+        <div class="action-form" style="max-width: 720px;">
+          <input id="admin-token" class="action-input" type="password" placeholder="Admin token" />
+          <button id="load-sos-requests" class="hero-action primary" type="button">Load SOS requests</button>
+          <div id="admin-status" class="control-copy">Enter the admin token to inspect saved SOS requests.</div>
+          <div id="sos-request-list" class="queue-list"></div>
+        </div>
+      </section>
+    </main>
+    <script>
+      const tokenInput = document.getElementById("admin-token");
+      const loadButton = document.getElementById("load-sos-requests");
+      const statusNode = document.getElementById("admin-status");
+      const listNode = document.getElementById("sos-request-list");
+      loadButton.addEventListener("click", async () => {
+        const token = tokenInput.value.trim();
+        if (!token) {
+          statusNode.textContent = "Admin token is required.";
+          return;
+        }
+        statusNode.textContent = "Loading SOS requests...";
+        listNode.innerHTML = "";
+        try {
+          const response = await fetch("/api/admin/sos-requests", {
+            headers: { "X-CAN-ADMIN-TOKEN": token },
+          });
+          if (!response.ok) throw new Error(`Request failed: ${response.status}`);
+          const data = await response.json();
+          const items = Array.isArray(data.items) ? data.items : [];
+          statusNode.textContent = `${items.length} SOS request(s) loaded.`;
+          for (const item of items) {
+            const row = document.createElement("article");
+            row.className = "queue-item";
+            row.innerHTML = `
+              <strong>#${item.id} · ${item.channel}</strong>
+              <span><strong>Scenario:</strong> ${item.scenario_code || "-"} · <strong>Incident:</strong> ${item.incident_code || "-"}</span>
+              <span><strong>Location:</strong> ${item.location_text || "-"}</span>
+              <span><strong>Note:</strong> ${item.note || "-"}</span>
+              <small>${item.created_at} · ${item.status}</small>
+            `;
+            listNode.appendChild(row);
+          }
+        } catch (error) {
+          statusNode.textContent = `Could not load SOS requests: ${error.message}`;
+        }
+      });
+    </script>
+  </body>
+</html>

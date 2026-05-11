@@ -155,6 +155,7 @@ const LANGUAGE_COPY = Object.fromEntries(Object.entries(LANG.copy).map(([key, va
 const LANGUAGE_LABELS = Object.fromEntries(Object.entries(LANG.languages).map(([key, value]) => [key, value.label]));
 const RESOURCE_CACHE_KEY = "can_resource_cache_v1";
 const ACCOUNTABILITY_QUEUE_KEY = "can_accountability_queue_v1";
+const CHAT_SESSION_KEY = "can_chat_session_id_v1";
 
 const VOICE_SUMMARY = {
   kenya: "Kenya pilot. Civic Access Navigator helps users find trusted peace and civic guidance, with grounded answers, business-ready controls, and a region-aware interface.",
@@ -178,6 +179,19 @@ let resourceCache = [];
 let availableVoices = [];
 let workflowCatalog = [];
 const workflowDetailCache = new Map();
+
+function getChatSessionId() {
+  try {
+    let value = window.localStorage.getItem(CHAT_SESSION_KEY);
+    if (!value) {
+      value = `chat-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+      window.localStorage.setItem(CHAT_SESSION_KEY, value);
+    }
+    return value;
+  } catch {
+    return `chat-${Date.now()}`;
+  }
+}
 
 async function loadProject() {
   const response = await fetch("/api/project");
@@ -1385,6 +1399,31 @@ function wireSOSWidget() {
   if (!toggle || !panel) {
     return;
   }
+  const sosLocation = document.getElementById("sos-location-text");
+  const sosNote = document.getElementById("sos-note-input");
+
+  const logSosRequest = async (channel) => {
+    try {
+      await fetch("/api/sos/request", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          channel,
+          note: sosNote?.value?.trim() || null,
+          location_text: sosLocation?.value?.trim() || null,
+          region: currentRegion,
+          language: currentLanguage,
+          scenario_code: currentScenario,
+          incident_code: currentIncident,
+          safe_mode: safeModeEnabled,
+          lite_mode: liteModeEnabled,
+          status: "opened",
+        }),
+      });
+    } catch {
+      // Do not block the user’s emergency path if logging fails.
+    }
+  };
 
   const setOpen = (open) => {
     const chat = document.getElementById("chat-window");
@@ -1404,6 +1443,24 @@ function wireSOSWidget() {
   toggle.addEventListener("click", () => setOpen(panel.hidden));
   if (heroOpen) {
     heroOpen.addEventListener("click", () => setOpen(true));
+  }
+  const email = document.getElementById("sos-email");
+  const sms = document.getElementById("sos-sms");
+  const call = document.getElementById("sos-call");
+  if (email) {
+    email.addEventListener("click", () => {
+      void logSosRequest("email");
+    });
+  }
+  if (sms) {
+    sms.addEventListener("click", () => {
+      void logSosRequest("sms");
+    });
+  }
+  if (call) {
+    call.addEventListener("click", () => {
+      void logSosRequest("call");
+    });
   }
 }
 
@@ -1627,6 +1684,11 @@ function wireBotPreview() {
         message: fullMessage,
         region: currentRegion,
         scenario: currentScenario,
+        incident_code: currentIncident,
+        language: currentLanguage,
+        session_id: getChatSessionId(),
+        safe_mode: safeModeEnabled,
+        lite_mode: liteModeEnabled,
       }),
     })
       .then((response) => response.json())

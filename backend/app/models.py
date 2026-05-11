@@ -93,3 +93,39 @@ class WorkflowReport(Base):
     lite_mode: Mapped[bool] = mapped_column(Boolean, default=False)
     status: Mapped[str] = mapped_column(String(64), default="submitted")
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+
+class ChatRecord(Base):
+    __tablename__ = "chat_records"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    session_id: Mapped[str] = mapped_column(String(128), index=True)
+    user_message: Mapped[str] = mapped_column(Text)
+    answer_text: Mapped[str] = mapped_column(Text)
+    citations_json: Mapped[str] = mapped_column(Text, default="[]")
+    provider: Mapped[str] = mapped_column(String(64), default="local")
+    mode: Mapped[str] = mapped_column(String(64), default="fallback")
+    region: Mapped[str] = mapped_column(String(64), nullable=True)
+    scenario_code: Mapped[str] = mapped_column(String(64), nullable=True)
+    incident_code: Mapped[str] = mapped_column(String(64), nullable=True)
+    language: Mapped[str] = mapped_column(String(16), nullable=True)
+    safe_mode: Mapped[bool] = mapped_column(Boolean, default=False)
+    lite_mode: Mapped[bool] = mapped_column(Boolean, default=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+
+class SosRequest(Base):
+    __tablename__ = "sos_requests"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    channel: Mapped[str] = mapped_column(String(64), index=True)
+    note: Mapped[str] = mapped_column(Text, nullable=True)
+    location_text: Mapped[str] = mapped_column(String(255), nullable=True)
+    region: Mapped[str] = mapped_column(String(64), nullable=True)
+    language: Mapped[str] = mapped_column(String(16), nullable=True)
+    scenario_code: Mapped[str] = mapped_column(String(64), nullable=True)
+    incident_code: Mapped[str] = mapped_column(String(64), nullable=True)
+    safe_mode: Mapped[bool] = mapped_column(Boolean, default=False)
+    lite_mode: Mapped[bool] = mapped_column(Boolean, default=False)
+    status: Mapped[str] = mapped_column(String(64), default="opened")
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)

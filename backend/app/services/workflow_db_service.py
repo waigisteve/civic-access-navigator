@@ -9,6 +9,8 @@ from sqlalchemy.orm import selectinload
 
 from backend.app.db import SessionLocal, database_configured, engine
 from backend.app.models import (
+    ChatRecord,
+    SosRequest,
     WorkflowActionPoint,
     WorkflowIncident,
     WorkflowReport,
@@ -261,6 +263,132 @@ def list_workflow_reports(
                 "submitter_alias": row.submitter_alias,
                 "region": row.region,
                 "language": row.language,
+                "safe_mode": row.safe_mode,
+                "lite_mode": row.lite_mode,
+                "status": row.status,
+                "created_at": row.created_at.isoformat(),
+            }
+            for row in rows
+        ]
+
+
+def create_chat_record(payload: dict[str, Any]) -> dict[str, Any]:
+    if not workflow_database_ready():
+        raise RuntimeError("Workflow database is not configured")
+    record = ChatRecord(
+        session_id=str(payload.get("session_id") or "anonymous").strip(),
+        user_message=str(payload.get("user_message") or "").strip(),
+        answer_text=str(payload.get("answer_text") or "").strip(),
+        citations_json=json.dumps(payload.get("citations") or []),
+        provider=str(payload.get("provider") or "local").strip(),
+        mode=str(payload.get("mode") or "fallback").strip(),
+        region=(str(payload.get("region")).strip() if payload.get("region") else None),
+        scenario_code=(str(payload.get("scenario_code")).strip() if payload.get("scenario_code") else None),
+        incident_code=(str(payload.get("incident_code")).strip() if payload.get("incident_code") else None),
+        language=(str(payload.get("language")).strip() if payload.get("language") else None),
+        safe_mode=bool(payload.get("safe_mode")),
+        lite_mode=bool(payload.get("lite_mode")),
+    )
+    with SessionLocal() as session:
+        session.add(record)
+        session.commit()
+        session.refresh(record)
+        return {
+            "id": record.id,
+            "session_id": record.session_id,
+            "user_message": record.user_message,
+            "answer_text": record.answer_text,
+            "citations": json.loads(record.citations_json or "[]"),
+            "provider": record.provider,
+            "mode": record.mode,
+            "region": record.region,
+            "scenario_code": record.scenario_code,
+            "incident_code": record.incident_code,
+            "language": record.language,
+            "safe_mode": record.safe_mode,
+            "lite_mode": record.lite_mode,
+            "created_at": record.created_at.isoformat(),
+        }
+
+
+def list_chat_records(limit: int = 100) -> list[dict[str, Any]]:
+    if not workflow_database_ready():
+        return []
+    stmt = select(ChatRecord).order_by(ChatRecord.created_at.desc()).limit(max(1, min(limit, 300)))
+    with SessionLocal() as session:
+        rows = session.execute(stmt).scalars().all()
+        return [
+            {
+                "id": row.id,
+                "session_id": row.session_id,
+                "user_message": row.user_message,
+                "answer_text": row.answer_text,
+                "citations": json.loads(row.citations_json or "[]"),
+                "provider": row.provider,
+                "mode": row.mode,
+                "region": row.region,
+                "scenario_code": row.scenario_code,
+                "incident_code": row.incident_code,
+                "language": row.language,
+                "safe_mode": row.safe_mode,
+                "lite_mode": row.lite_mode,
+                "created_at": row.created_at.isoformat(),
+            }
+            for row in rows
+        ]
+
+
+def create_sos_request(payload: dict[str, Any]) -> dict[str, Any]:
+    if not workflow_database_ready():
+        raise RuntimeError("Workflow database is not configured")
+    record = SosRequest(
+        channel=str(payload.get("channel") or "unknown").strip(),
+        note=(str(payload.get("note")).strip() if payload.get("note") else None),
+        location_text=(str(payload.get("location_text")).strip() if payload.get("location_text") else None),
+        region=(str(payload.get("region")).strip() if payload.get("region") else None),
+        language=(str(payload.get("language")).strip() if payload.get("language") else None),
+        scenario_code=(str(payload.get("scenario_code")).strip() if payload.get("scenario_code") else None),
+        incident_code=(str(payload.get("incident_code")).strip() if payload.get("incident_code") else None),
+        safe_mode=bool(payload.get("safe_mode")),
+        lite_mode=bool(payload.get("lite_mode")),
+        status=str(payload.get("status") or "opened").strip(),
+    )
+    with SessionLocal() as session:
+        session.add(record)
+        session.commit()
+        session.refresh(record)
+        return {
+            "id": record.id,
+            "channel": record.channel,
+            "note": record.note,
+            "location_text": record.location_text,
+            "region": record.region,
+            "language": record.language,
+            "scenario_code": record.scenario_code,
+            "incident_code": record.incident_code,
+            "safe_mode": record.safe_mode,
+            "lite_mode": record.lite_mode,
+            "status": record.status,
+            "created_at": record.created_at.isoformat(),
+        }
+
+
+def list_sos_requests(limit: int = 100) -> list[dict[str, Any]]:
+    if not workflow_database_ready():
+        return []
+    stmt = select(SosRequest).order_by(SosRequest.created_at.desc()).limit(max(1, min(limit, 300)))
+    with SessionLocal() as session:
+        rows = session.execute(stmt).scalars().all()
+        return [
+            {
+                "id": row.id,
+                "channel": row.channel,
+                "note": row.note,
+                "location_text": row.location_text,
+                "region": row.region,
+                "language": row.language,
+                "scenario_code": row.scenario_code,
+                "incident_code": row.incident_code,
                 "safe_mode": row.safe_mode,
                 "lite_mode": row.lite_mode,
                 "status": row.status,
