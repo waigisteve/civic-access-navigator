@@ -340,6 +340,61 @@ body {
   border: 1px solid rgba(31, 73, 102, 0.12);
 }
 
+.action-form-card {
+  margin-top: 16px;
+  padding: 16px;
+  border-radius: 16px;
+  background: rgba(255, 252, 247, 0.92);
+  border: 1px solid rgba(18, 34, 34, 0.12);
+}
+
+.action-form {
+  display: grid;
+  gap: 12px;
+}
+
+.action-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.action-input,
+.action-textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.94);
+  color: var(--ink);
+  padding: 12px 14px;
+  font: inherit;
+}
+
+.action-textarea {
+  min-height: 132px;
+  resize: vertical;
+}
+
+.action-source-list {
+  display: grid;
+  gap: 8px;
+}
+
+.action-source-item {
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.action-source-item a {
+  color: inherit;
+}
+
+.action-form-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .cta-panel h3,
 .queue-item strong {
   margin: 0 0 8px;
@@ -1864,6 +1919,10 @@ body.ui-ready .reveal-after-language {
   }
 
   .nearby-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .action-form-row {
     grid-template-columns: 1fr;
   }
 

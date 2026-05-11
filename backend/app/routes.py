@@ -25,6 +25,7 @@ from backend.app.services.sms_service import (
     send_africastalking_sms_reply,
 )
 from backend.app.services.workflow_db_service import (
+    create_workflow_report,
     get_workflow_incident,
     list_workflow_scenarios,
     seed_workflow_catalog,
@@ -56,6 +57,21 @@ class ApprovedResourceImportRequest(BaseModel):
 class EvaluateChatRequest(BaseModel):
     message: str = Field(min_length=3)
     region: str | None = None
+
+
+class WorkflowReportRequest(BaseModel):
+    scenario_code: str = Field(min_length=2)
+    incident_code: str = Field(min_length=2)
+    action_code: str = Field(min_length=2)
+    action_title: str = Field(min_length=2)
+    report_text: str = Field(min_length=5)
+    contact_preference: str = "anonymous"
+    submitter_alias: str | None = None
+    region: str | None = None
+    language: str | None = None
+    safe_mode: bool = False
+    lite_mode: bool = False
+    status: str = "submitted"
 
 
 def _validate_twilio_signature(request: Request, payload: dict[str, str]) -> bool:
@@ -122,6 +138,13 @@ def register_routes(app) -> None:
         if not item:
             raise HTTPException(status_code=404, detail="Workflow incident not found")
         return item
+
+    @app.post("/api/workflows/report")
+    def workflow_report(payload: WorkflowReportRequest) -> dict[str, object]:
+        if not workflow_database_ready():
+            raise HTTPException(status_code=503, detail="Workflow database is not configured")
+        item = create_workflow_report(payload.model_dump())
+        return {"item": item}
 
     @app.get("/api/admin/resources")
     def admin_resources(request: Request) -> dict[str, object]:

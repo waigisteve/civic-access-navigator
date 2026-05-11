@@ -170,6 +170,7 @@ let currentScenario = "resident";
 let currentIncident = null;
 let currentScenarioDetail = null;
 let currentIncidentDetail = null;
+let currentActionPoint = null;
 let liteModeEnabled = false;
 let safeModeEnabled = false;
 let speechUtterance = null;
@@ -405,6 +406,8 @@ function renderCtaPanel() {
   setText("cta-copy", currentIncident ? pack.ctaCopyReady : pack.ctaCopyIdle);
   grid.innerHTML = "";
   if (!currentIncident) {
+    currentActionPoint = null;
+    hideActionForm();
     const empty = document.createElement("div");
     empty.className = "cta-empty";
     empty.textContent = pack.ctaEmpty;
@@ -414,6 +417,8 @@ function renderCtaPanel() {
   const incident = currentIncidentDetail?.incident;
   const actionPoints = Array.isArray(incident?.action_points) ? incident.action_points : [];
   if (actionPoints.length === 0) {
+    currentActionPoint = null;
+    hideActionForm();
     const empty = document.createElement("div");
     empty.className = "cta-empty";
     empty.textContent = pack.botServiceFallback;
@@ -474,17 +479,116 @@ function handleWorkflowAction(actionPoint, pack) {
   if (!actionPoint) {
     return;
   }
-  if (actionPoint.channel === "queue") {
-    enqueueAccountabilityAction(actionPoint.title, actionPoint.description);
+  currentActionPoint = actionPoint;
+  renderActionForm();
+}
+
+function hideActionForm() {
+  const card = document.getElementById("action-form-card");
+  if (card) {
+    card.hidden = true;
   }
-  const sources = Array.isArray(currentIncidentDetail?.incident?.sources) ? currentIncidentDetail.incident.sources : [];
-  const meta = [
-    `${pack.contextScenarioLabel}: ${getScenarioPack(pack).label}`,
-    `${pack.detailRegionLabel}: ${currentCountry}`,
-    `Risk: ${currentIncidentDetail?.incident?.risk_level || "n/a"}`,
-    ...sources.map((source) => `${source.title} - ${source.url}`),
-  ];
-  openDetail(actionPoint.title, actionPoint.description, meta, pack.ctaHeading);
+}
+
+function renderActionForm() {
+  const card = document.getElementById("action-form-card");
+  const title = document.getElementById("action-form-title");
+  const status = document.getElementById("action-form-status");
+  const copy = document.getElementById("action-form-copy");
+  const textarea = document.getElementById("action-report-text");
+  const alias = document.getElementById("action-alias");
+  const contact = document.getElementById("action-contact-preference");
+  const sourceList = document.getElementById("action-source-list");
+  const saveButton = document.getElementById("action-save-button");
+  if (!card || !title || !status || !copy || !textarea || !alias || !contact || !sourceList || !saveButton) {
+    return;
+  }
+  if (!currentActionPoint || !currentIncidentDetail?.incident) {
+    card.hidden = true;
+    return;
+  }
+  const incident = currentIncidentDetail.incident;
+  title.textContent = currentActionPoint.title;
+  status.textContent = `${incident.risk_level || "n/a"} risk`;
+  copy.textContent = currentActionPoint.description;
+  textarea.value = "";
+  alias.value = "";
+  contact.value = safeModeEnabled ? "anonymous" : "anonymous";
+  saveButton.textContent = "Save report";
+  textarea.placeholder = `Describe what happened during "${incident.title}". Include the place, time, what was demanded or refused, and what next step you need.`;
+  alias.placeholder = safeModeEnabled ? "Alias only" : "Alias or leave blank";
+  sourceList.innerHTML = "";
+  for (const source of incident.sources || []) {
+    const row = document.createElement("div");
+    row.className = "action-source-item";
+    row.innerHTML = `<strong>${source.title}</strong><br /><a href="${source.url}" target="_blank" rel="noreferrer">${source.url}</a>`;
+    sourceList.appendChild(row);
+  }
+  card.hidden = false;
+}
+
+function wireActionForm() {
+  const form = document.getElementById("action-form");
+  const textarea = document.getElementById("action-report-text");
+  const alias = document.getElementById("action-alias");
+  const contact = document.getElementById("action-contact-preference");
+  const status = document.getElementById("action-form-status");
+  const saveButton = document.getElementById("action-save-button");
+  if (!form || !textarea || !alias || !contact || !status || !saveButton) {
+    return;
+  }
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (!currentActionPoint || !currentIncidentDetail?.incident) {
+      return;
+    }
+    const reportText = textarea.value.trim();
+    if (!reportText) {
+      status.textContent = "Add incident details first";
+      return;
+    }
+
+    const payload = {
+      scenario_code: currentScenario,
+      incident_code: currentIncident,
+      action_code: currentActionPoint.code,
+      action_title: currentActionPoint.title,
+      report_text: reportText,
+      contact_preference: contact.value,
+      submitter_alias: alias.value.trim() || null,
+      region: currentIncidentDetail.incident.region || currentRegion,
+      language: currentLanguage,
+      safe_mode: safeModeEnabled,
+      lite_mode: liteModeEnabled,
+      status: currentActionPoint.channel === "queue" ? "queued" : "submitted",
+    };
+
+    saveButton.disabled = true;
+    status.textContent = "Saving...";
+    try {
+      const response = await fetch("/api/workflows/report", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!response.ok) {
+        throw new Error("save_failed");
+      }
+      const data = await response.json();
+      if (payload.status === "queued") {
+        enqueueAccountabilityAction(currentActionPoint.title, reportText);
+      }
+      status.textContent = `Saved to DB #${data.item?.id || ""}`.trim();
+      textarea.value = "";
+      alias.value = "";
+    } catch {
+      enqueueAccountabilityAction(currentActionPoint.title, reportText);
+      status.textContent = "Saved locally. Will send when connected.";
+    } finally {
+      saveButton.disabled = false;
+    }
+  });
 }
 
 function localizeResource(item) {
@@ -854,6 +958,7 @@ function wireAccessModes() {
         seedChatFeed(true);
       }
       applyAccessModes();
+      renderActionForm();
     });
   }
 }
@@ -866,6 +971,7 @@ function wireScenarioSelector() {
       currentScenarioDetail = getScenarioData(currentScenario);
       currentIncident = null;
       currentIncidentDetail = null;
+      currentActionPoint = null;
       for (const other of buttons) {
         setPressed(other, other === button);
       }
@@ -1532,6 +1638,7 @@ async function bootstrap() {
   wireSOSWidget();
   wireNearbyWidget();
   wireBotPreview();
+  wireActionForm();
   await loadWorkflowCatalog();
   renderQueue();
   if ("speechSynthesis" in window) {

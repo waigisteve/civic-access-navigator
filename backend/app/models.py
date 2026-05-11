@@ -1,6 +1,8 @@
 from __future__ import annotations
 
-from sqlalchemy import ForeignKey, Integer, String, Text
+from datetime import datetime
+
+from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from backend.app.db import Base
@@ -70,3 +72,22 @@ class WorkflowActionPoint(Base):
     priority: Mapped[int] = mapped_column(Integer)
 
     incident: Mapped["WorkflowIncident"] = relationship(back_populates="action_points")
+
+
+class WorkflowReport(Base):
+    __tablename__ = "workflow_reports"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    scenario_code: Mapped[str] = mapped_column(String(64), index=True)
+    incident_code: Mapped[str] = mapped_column(String(64), index=True)
+    action_code: Mapped[str] = mapped_column(String(64), index=True)
+    action_title: Mapped[str] = mapped_column(String(255))
+    report_text: Mapped[str] = mapped_column(Text)
+    contact_preference: Mapped[str] = mapped_column(String(64), default="anonymous")
+    submitter_alias: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    region: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    language: Mapped[str | None] = mapped_column(String(16), nullable=True)
+    safe_mode: Mapped[bool] = mapped_column(Boolean, default=False)
+    lite_mode: Mapped[bool] = mapped_column(Boolean, default=False)
+    status: Mapped[str] = mapped_column(String(64), default="submitted")
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)

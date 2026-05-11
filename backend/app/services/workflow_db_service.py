@@ -11,6 +11,7 @@ from backend.app.db import SessionLocal, database_configured, engine
 from backend.app.models import (
     WorkflowActionPoint,
     WorkflowIncident,
+    WorkflowReport,
     WorkflowScenario,
     WorkflowSourceLink,
 )
@@ -165,4 +166,43 @@ def get_workflow_incident(scenario_code: str, incident_code: str) -> dict[str, A
                 "summary": scenario.summary,
             },
             "incident": _serialize_incident(incident),
+        }
+
+
+def create_workflow_report(payload: dict[str, Any]) -> dict[str, Any]:
+    if not workflow_database_ready():
+        raise RuntimeError("Workflow database is not configured")
+    report = WorkflowReport(
+        scenario_code=str(payload.get("scenario_code") or "").strip(),
+        incident_code=str(payload.get("incident_code") or "").strip(),
+        action_code=str(payload.get("action_code") or "").strip(),
+        action_title=str(payload.get("action_title") or "").strip(),
+        report_text=str(payload.get("report_text") or "").strip(),
+        contact_preference=str(payload.get("contact_preference") or "anonymous").strip(),
+        submitter_alias=(str(payload.get("submitter_alias")).strip() if payload.get("submitter_alias") else None),
+        region=(str(payload.get("region")).strip() if payload.get("region") else None),
+        language=(str(payload.get("language")).strip() if payload.get("language") else None),
+        safe_mode=bool(payload.get("safe_mode")),
+        lite_mode=bool(payload.get("lite_mode")),
+        status=str(payload.get("status") or "submitted").strip(),
+    )
+    with SessionLocal() as session:
+        session.add(report)
+        session.commit()
+        session.refresh(report)
+        return {
+            "id": report.id,
+            "scenario_code": report.scenario_code,
+            "incident_code": report.incident_code,
+            "action_code": report.action_code,
+            "action_title": report.action_title,
+            "report_text": report.report_text,
+            "contact_preference": report.contact_preference,
+            "submitter_alias": report.submitter_alias,
+            "region": report.region,
+            "language": report.language,
+            "safe_mode": report.safe_mode,
+            "lite_mode": report.lite_mode,
+            "status": report.status,
+            "created_at": report.created_at.isoformat(),
         }

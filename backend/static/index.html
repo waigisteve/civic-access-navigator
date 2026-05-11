@@ -156,6 +156,28 @@
               Dynamic CTA tabs appear here after an incident is selected.
             </p>
             <div class="cta-grid" id="cta-grid"></div>
+            <div class="action-form-card" id="action-form-card" hidden>
+              <div class="panel-head compact">
+                <h4 id="action-form-title">Create report</h4>
+                <span class="status status-dark" id="action-form-status">Ready</span>
+              </div>
+              <p class="control-copy" id="action-form-copy">Capture the incident details and save them to the accountability workflow database.</p>
+              <form id="action-form" class="action-form">
+                <textarea id="action-report-text" class="action-textarea" rows="5" placeholder="Describe what happened, where, and what was demanded or refused."></textarea>
+                <div class="action-form-row">
+                  <input id="action-alias" class="action-input" type="text" placeholder="Alias or leave blank" />
+                  <select id="action-contact-preference" class="action-input">
+                    <option value="anonymous">Anonymous</option>
+                    <option value="sms">SMS follow-up</option>
+                    <option value="email">Email follow-up</option>
+                  </select>
+                </div>
+                <div class="action-source-list" id="action-source-list"></div>
+                <div class="action-form-actions">
+                  <button type="submit" class="hero-action primary" id="action-save-button">Save report</button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       </section>
