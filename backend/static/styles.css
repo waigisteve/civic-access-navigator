@@ -593,7 +593,8 @@ body.lite-mode .access-toggle-group,
 body.lite-mode .language-toggle,
 body.lite-mode .chat-toggle,
 body.lite-mode .sos-toggle,
-body.lite-mode .nearby-toggle {
+body.lite-mode .nearby-toggle,
+body.lite-mode .admin-toggle {
   background: #f8f5ef;
   color: var(--ink);
   border-color: rgba(31, 49, 57, 0.12);
@@ -689,6 +690,7 @@ body.safe-mode .sos-toggle {
 
 body.safe-mode .chat-toggle,
 body.safe-mode .nearby-toggle,
+body.safe-mode .admin-toggle,
 body.safe-mode .hero-action.primary,
 body.safe-mode .access-toggle-btn.is-active,
 body.safe-mode .scenario-toggle-btn.is-active,
@@ -1497,7 +1499,8 @@ body.ui-ready .reveal-after-language {
 
 .chat-toggle,
 .sos-toggle,
-.nearby-toggle {
+.nearby-toggle,
+.admin-toggle {
   display: inline-flex;
   align-items: center;
   gap: 10px;
@@ -1526,6 +1529,12 @@ body.ui-ready .reveal-after-language {
 .nearby-toggle {
   background: linear-gradient(135deg, #1f4966, #2b6b94);
   color: #fff;
+}
+
+.admin-toggle {
+  background: linear-gradient(135deg, #5a4a12, #876d1b);
+  color: #fff7da;
+  text-decoration: none;
 }
 
 .chat-window,

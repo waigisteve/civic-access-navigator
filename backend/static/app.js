@@ -895,6 +895,7 @@ function setLanguage(language) {
   setText("sos-call", pack.sosCall);
   setText("sos-note", pack.sosNote);
   setText("nearby-toggle", pack.nearbyToggle);
+  setText("admin-toggle", pack.adminToggle);
   setText("nearby-title", pack.nearbyTitle);
   setText("nearby-intro", pack.nearbyIntro);
   setText("nearby-status", pack.nearbyStatus);
