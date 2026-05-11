@@ -335,6 +335,68 @@ function getLocalizedIncidentFallback(pack, incidentCode) {
   return getIncidentDefinition(pack, incidentCode);
 }
 
+function getLocalizedScenarioTitle(pack, scenarioCode, fallbackTitle = "") {
+  const lookup = {
+    resident: pack.scenarioResident,
+    idp: pack.scenarioIdp,
+    refugee: pack.scenarioRefugee,
+  };
+  return lookup[scenarioCode] || fallbackTitle || scenarioCode;
+}
+
+function getRiskLabel(pack, riskLevel) {
+  const lookup = {
+    low: pack.riskLow,
+    medium: pack.riskMedium,
+    high: pack.riskHigh,
+  };
+  return lookup[(riskLevel || "").toLowerCase()] || (riskLevel || pack.riskUnknown);
+}
+
+function getWorkflowActionDefinition(pack, actionCode, fallbackTitle = "", fallbackCopy = "") {
+  const lookup = {
+    note_incident: { title: pack.actionNoteIncidentTitle, copy: pack.actionNoteIncidentCopy },
+    queue_report: { title: pack.actionQueueReportTitle, copy: pack.actionQueueReportCopy },
+    rights_prompt: { title: pack.actionRightsPromptTitle, copy: pack.actionRightsPromptCopy },
+    capture_refusal: { title: pack.actionCaptureRefusalTitle, copy: pack.actionCaptureRefusalCopy },
+    safety_triage: { title: pack.actionSafetyTriageTitle, copy: pack.actionSafetyTriageCopy },
+    queue_aid_case: { title: pack.actionQueueAidCaseTitle, copy: pack.actionQueueAidCaseCopy },
+    minimize_exposure: { title: pack.actionMinimizeExposureTitle, copy: pack.actionMinimizeExposureCopy },
+    preserve_evidence: { title: pack.actionPreserveEvidenceTitle, copy: pack.actionPreserveEvidenceCopy },
+    send_safe_report: { title: pack.actionSendSafeReportTitle, copy: pack.actionSendSafeReportCopy },
+    safe_route_note: { title: pack.actionSafeRouteNoteTitle, copy: pack.actionSafeRouteNoteCopy },
+    queue_route_issue: { title: pack.actionQueueRouteIssueTitle, copy: pack.actionQueueRouteIssueCopy },
+    nearby_help: { title: pack.actionNearbyHelpTitle, copy: pack.actionNearbyHelpCopy },
+    identify_missing_doc: { title: pack.actionIdentifyMissingDocTitle, copy: pack.actionIdentifyMissingDocCopy },
+    capture_last_known: { title: pack.actionCaptureLastKnownTitle, copy: pack.actionCaptureLastKnownCopy },
+    queue_document_help: { title: pack.actionQueueDocumentHelpTitle, copy: pack.actionQueueDocumentHelpCopy },
+    note_border_issue: { title: pack.actionNoteBorderIssueTitle, copy: pack.actionNoteBorderIssueCopy },
+    protect_identity: { title: pack.actionProtectIdentityTitle, copy: pack.actionProtectIdentityCopy },
+    queue_border_support: { title: pack.actionQueueBorderSupportTitle, copy: pack.actionQueueBorderSupportCopy },
+  };
+  return lookup[actionCode] || { title: fallbackTitle || actionCode, copy: fallbackCopy || "" };
+}
+
+function getWorkflowSourceDefinition(pack, source, fallbackTitle = "") {
+  const titleLookup = {
+    "kenya-bill-of-rights": pack.sourceKenyaBillOfRightsTitle,
+    "osf-democratic-practice": pack.sourceOsfDemocraticPracticeTitle,
+    "va-checkpoint-rights": pack.sourceCheckpointGuidanceTitle,
+    "va-aid-denial": pack.sourceAidDenialTitle,
+    "osf-rights-dignity": pack.sourceOsfRightsDignityTitle,
+    "kenya-civic-rights": pack.sourceKenyaCivicRightsTitle,
+    "icrc-conflict-protection": pack.sourceIcrcProtectionTitle,
+    "va-safety-standard": pack.sourceSafetyStandardTitle,
+    "va-displacement-safe-reporting": pack.sourceDisplacementReportingTitle,
+    "osf-transformative-peace-africa": pack.sourceOsfPeaceAfricaTitle,
+    "unhcr-displacement-support": pack.sourceUnhcrDisplacementTitle,
+    "osf-equity-governance": pack.sourceOsfEquityGovernanceTitle,
+  };
+  return {
+    title: titleLookup[source?.source_id] || fallbackTitle || source?.title || source?.source_id || "",
+  };
+}
+
 async function loadWorkflowCatalog() {
   try {
     const response = await fetch("/api/workflows");
@@ -397,7 +459,7 @@ function renderIncidentWorkflows() {
     button.type = "button";
     button.className = `incident-card${currentIncident === incident.code ? " is-active" : ""}`;
     button.dataset.incident = incident.code;
-    button.innerHTML = `<strong>${incident.title || fallback.title}</strong>`;
+    button.innerHTML = `<strong>${fallback.title || incident.title}</strong>`;
     button.addEventListener("click", async () => {
       currentIncident = incident.code;
       currentActionPoint = null;
@@ -415,8 +477,8 @@ function renderCtaPanel() {
     return;
   }
   const pack = LANG.copy[currentLanguage] || LANG.copy.en;
-  const selectedTitle = currentIncidentDetail?.incident?.title
-    || (currentIncident ? getIncidentDefinition(pack, currentIncident).title : "");
+  const localizedIncident = currentIncident ? getIncidentDefinition(pack, currentIncident) : { title: "" };
+  const selectedTitle = localizedIncident.title || currentIncidentDetail?.incident?.title || "";
   setText("workflow-status", selectedTitle || pack.workflowStatus);
   setText("cta-copy", currentIncident ? pack.ctaCopyReady : pack.ctaCopyIdle);
   grid.innerHTML = "";
@@ -445,10 +507,11 @@ function renderCtaPanel() {
   currentActionPoint = activeAction;
 
   for (const actionPoint of actionPoints) {
+    const localizedAction = getWorkflowActionDefinition(pack, actionPoint.code, actionPoint.title, actionPoint.description);
     const card = document.createElement("button");
     card.type = "button";
     card.className = `cta-card${activeAction?.code === actionPoint.code ? " is-active" : ""}`;
-    card.innerHTML = `<strong>${actionPoint.title}</strong>`;
+    card.innerHTML = `<strong>${localizedAction.title}</strong>`;
     card.addEventListener("click", () => handleWorkflowAction(actionPoint, pack));
     grid.appendChild(card);
   }
@@ -531,10 +594,13 @@ function renderActionForm() {
     card.hidden = true;
     return;
   }
+  const pack = LANG.copy[currentLanguage] || LANG.copy.en;
   const incident = currentIncidentDetail.incident;
-  title.textContent = currentActionPoint.title;
-  status.textContent = `${incident.risk_level || "n/a"} risk`;
-  copy.textContent = "Complete the fields below and save the report.";
+  const localizedIncident = getIncidentDefinition(pack, incident.code);
+  const localizedAction = getWorkflowActionDefinition(pack, currentActionPoint.code, currentActionPoint.title, currentActionPoint.description);
+  title.textContent = localizedAction.title;
+  status.textContent = `${getRiskLabel(pack, incident.risk_level)} ${pack.riskSuffix}`.trim();
+  copy.textContent = pack.actionFormCopy;
   locationText.value = "";
   eventTime.value = "";
   deniedItem.value = "";
@@ -542,17 +608,18 @@ function renderActionForm() {
   textarea.value = "";
   alias.value = "";
   contact.value = safeModeEnabled ? "anonymous" : "anonymous";
-  saveButton.textContent = "Save report";
-  locationText.placeholder = "Location, checkpoint, office, or landmark";
-  deniedItem.placeholder = "Aid, service, movement, document, or access denied";
-  requestedAction.placeholder = "Expected next action from an institution, observer, or responder";
-  textarea.placeholder = `Briefly describe what happened during "${incident.title}".`;
-  alias.placeholder = safeModeEnabled ? "Alias only" : "Alias or leave blank";
+  saveButton.textContent = pack.actionSave;
+  locationText.placeholder = pack.actionLocationPlaceholder;
+  deniedItem.placeholder = pack.actionDeniedPlaceholder;
+  requestedAction.placeholder = pack.actionRequestedActionPlaceholder;
+  textarea.placeholder = pack.actionNarrativePlaceholder.replace("{incident}", localizedIncident.title || incident.title);
+  alias.placeholder = safeModeEnabled ? pack.actionAliasOnly : pack.actionAliasPlaceholder;
   sourceList.innerHTML = "";
   for (const source of incident.sources || []) {
+    const localizedSource = getWorkflowSourceDefinition(pack, source, source.title);
     const row = document.createElement("div");
     row.className = "action-source-item";
-    row.innerHTML = `<strong>${source.title}</strong><br /><a href="${source.url}" target="_blank" rel="noreferrer">${source.url}</a>`;
+    row.innerHTML = `<strong>${localizedSource.title}</strong><br /><a href="${source.url}" target="_blank" rel="noreferrer">${source.url}</a>`;
     sourceList.appendChild(row);
   }
   card.hidden = false;
@@ -576,22 +643,23 @@ function wireActionForm() {
 
   if (useLocation) {
     useLocation.addEventListener("click", () => {
+      const pack = LANG.copy[currentLanguage] || LANG.copy.en;
       if (safeModeEnabled) {
-        status.textContent = "Location fill is hidden in Safe Mode";
+        status.textContent = pack.actionStatusLocationHidden;
         return;
       }
       if (!navigator.geolocation) {
-        status.textContent = "Device location is not available in this browser";
+        status.textContent = pack.actionStatusLocationUnavailable;
         return;
       }
-      status.textContent = "Capturing location...";
+      status.textContent = pack.actionStatusCapturing;
       navigator.geolocation.getCurrentPosition(
         (position) => {
           locationText.value = `${position.coords.latitude.toFixed(5)}, ${position.coords.longitude.toFixed(5)}`;
-          status.textContent = "Location captured";
+          status.textContent = pack.actionStatusCaptured;
         },
         () => {
-          status.textContent = "Location access was blocked";
+          status.textContent = pack.actionStatusLocationBlocked;
         },
         { enableHighAccuracy: true, timeout: 12000, maximumAge: 60000 }
       );
@@ -603,26 +671,33 @@ function wireActionForm() {
     if (!currentActionPoint || !currentIncidentDetail?.incident) {
       return;
     }
+    const pack = LANG.copy[currentLanguage] || LANG.copy.en;
+    const localizedScenarioTitle = getLocalizedScenarioTitle(pack, currentScenario, currentIncidentDetail?.scenario?.title);
+    const localizedIncident = getIncidentDefinition(pack, currentIncident);
+    const localizedAction = getWorkflowActionDefinition(pack, currentActionPoint.code, currentActionPoint.title, currentActionPoint.description);
     const reportText = textarea.value.trim();
     if (!reportText) {
-      status.textContent = "Add incident details first";
+      status.textContent = pack.actionStatusAddDetails;
       return;
     }
     const structuredSummary = [
-      locationText.value.trim() ? `Location: ${locationText.value.trim()}` : "",
-      eventTime.value ? `Time: ${eventTime.value}` : "",
-      deniedItem.value.trim() ? `Denied: ${deniedItem.value.trim()}` : "",
-      requestedAction.value.trim() ? `Expected action: ${requestedAction.value.trim()}` : "",
-      `Narrative: ${reportText}`,
+      locationText.value.trim() ? `${pack.actionSummaryLocationLabel}: ${locationText.value.trim()}` : "",
+      eventTime.value ? `${pack.actionSummaryTimeLabel}: ${eventTime.value}` : "",
+      deniedItem.value.trim() ? `${pack.actionSummaryDeniedLabel}: ${deniedItem.value.trim()}` : "",
+      requestedAction.value.trim() ? `${pack.actionSummaryRequestedActionLabel}: ${requestedAction.value.trim()}` : "",
+      `${pack.actionSummaryNarrativeLabel}: ${reportText}`,
     ]
       .filter(Boolean)
       .join("\n");
 
     const payload = {
       scenario_code: currentScenario,
+      scenario_title_display: localizedScenarioTitle,
       incident_code: currentIncident,
+      incident_title_display: localizedIncident.title || currentIncidentDetail?.incident?.title || currentIncident,
       action_code: currentActionPoint.code,
-      action_title: currentActionPoint.title,
+      action_title: localizedAction.title,
+      action_title_display: localizedAction.title,
       report_text: structuredSummary,
       location_text: locationText.value.trim() || null,
       event_time: eventTime.value || null,
@@ -638,7 +713,7 @@ function wireActionForm() {
     };
 
     saveButton.disabled = true;
-    status.textContent = "Saving...";
+    status.textContent = pack.actionStatusSaving;
     try {
       const response = await fetch("/api/workflows/report", {
         method: "POST",
@@ -650,9 +725,9 @@ function wireActionForm() {
       }
       const data = await response.json();
       if (payload.status === "queued") {
-        enqueueAccountabilityAction(currentActionPoint.title, structuredSummary);
+        enqueueAccountabilityAction(localizedAction.title, structuredSummary);
       }
-      status.textContent = `Saved to DB #${data.item?.id || ""}`.trim();
+      status.textContent = pack.actionStatusSavedDb.replace("{id}", String(data.item?.id || ""));
       locationText.value = "";
       eventTime.value = "";
       deniedItem.value = "";
@@ -660,8 +735,8 @@ function wireActionForm() {
       textarea.value = "";
       alias.value = "";
     } catch {
-      enqueueAccountabilityAction(currentActionPoint.title, structuredSummary);
-      status.textContent = "Saved locally. Will send when connected.";
+      enqueueAccountabilityAction(localizedAction.title, structuredSummary);
+      status.textContent = pack.actionStatusSavedLocal;
     } finally {
       saveButton.disabled = false;
     }
@@ -773,14 +848,19 @@ function buildChatContextPrefix() {
   if (!currentIncidentDetail?.incident) {
     return "";
   }
+  const pack = LANG.copy[currentLanguage] || LANG.copy.en;
   const incident = currentIncidentDetail.incident;
-  const sourceTitles = (incident.sources || []).map((item) => item.title).join(", ");
+  const localizedScenarioTitle = getLocalizedScenarioTitle(pack, currentScenario, currentIncidentDetail.scenario?.title);
+  const localizedIncident = getIncidentDefinition(pack, incident.code);
+  const sourceTitles = (incident.sources || [])
+    .map((item) => getWorkflowSourceDefinition(pack, item, item.title).title)
+    .join(", ");
   return [
-    `Scenario: ${currentIncidentDetail.scenario?.title || currentScenario}`,
-    `Incident: ${incident.title}`,
-    `Risk level: ${incident.risk_level}`,
-    `Region: ${incident.region}`,
-    sourceTitles ? `Relevant sources: ${sourceTitles}` : "",
+    `${pack.contextScenarioLabel}: ${localizedScenarioTitle}`,
+    `${pack.workflowIncidentLabel}: ${localizedIncident.title || incident.title}`,
+    `${pack.workflowRiskLabel}: ${getRiskLabel(pack, incident.risk_level)}`,
+    `${pack.detailRegionLabel}: ${incident.region}`,
+    sourceTitles ? `${pack.workflowSourcesLabel}: ${sourceTitles}` : "",
   ]
     .filter(Boolean)
     .join("\n");
@@ -913,8 +993,29 @@ function setLanguage(language) {
   setText("nearby-note", pack.nearbyNote);
   setText("detail-summary-label", pack.detailSummary);
   setText("detail-context-label", pack.detailContext);
+  setText("action-use-location", pack.actionUseCurrentLocation);
+  setText("action-save-button", pack.actionSave);
   const botInput = document.getElementById("bot-input");
   if (botInput) botInput.placeholder = pack.botPlaceholder;
+  const actionLocation = document.getElementById("action-location-text");
+  const actionDenied = document.getElementById("action-denied-item");
+  const actionRequested = document.getElementById("action-requested-action");
+  const actionReport = document.getElementById("action-report-text");
+  const actionAlias = document.getElementById("action-alias");
+  if (actionLocation) actionLocation.placeholder = pack.actionLocationPlaceholder;
+  if (actionDenied) actionDenied.placeholder = pack.actionDeniedPlaceholder;
+  if (actionRequested) actionRequested.placeholder = pack.actionRequestedActionPlaceholder;
+  if (actionReport && !currentIncident) actionReport.placeholder = pack.actionNarrativePlaceholderGeneric;
+  if (actionAlias) actionAlias.placeholder = safeModeEnabled ? pack.actionAliasOnly : pack.actionAliasPlaceholder;
+  const actionContact = document.getElementById("action-contact-preference");
+  if (actionContact) {
+    const anonymous = actionContact.querySelector('option[value="anonymous"]');
+    const sms = actionContact.querySelector('option[value="sms"]');
+    const email = actionContact.querySelector('option[value="email"]');
+    if (anonymous) anonymous.textContent = pack.contactAnonymous;
+    if (sms) sms.textContent = pack.contactSms;
+    if (email) email.textContent = pack.contactEmail;
+  }
   const pilotOneTitle = document.getElementById("pilot-one-title");
   const pilotOneCopy = document.getElementById("pilot-one-copy");
   const pilotTwoTitle = document.getElementById("pilot-two-title");

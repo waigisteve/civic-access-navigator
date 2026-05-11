@@ -46,10 +46,13 @@ def ensure_workflow_report_columns() -> None:
     if not workflow_database_ready():
         return
     statements = [
+        "ALTER TABLE workflow_reports ADD COLUMN IF NOT EXISTS scenario_title_display VARCHAR(255)",
+        "ALTER TABLE workflow_reports ADD COLUMN IF NOT EXISTS incident_title_display VARCHAR(255)",
         "ALTER TABLE workflow_reports ADD COLUMN IF NOT EXISTS location_text VARCHAR(255)",
         "ALTER TABLE workflow_reports ADD COLUMN IF NOT EXISTS event_time VARCHAR(64)",
         "ALTER TABLE workflow_reports ADD COLUMN IF NOT EXISTS denied_item VARCHAR(255)",
         "ALTER TABLE workflow_reports ADD COLUMN IF NOT EXISTS requested_action TEXT",
+        "ALTER TABLE workflow_reports ADD COLUMN IF NOT EXISTS action_title_display VARCHAR(255)",
     ]
     with engine.begin() as connection:
         for statement in statements:
@@ -191,9 +194,12 @@ def create_workflow_report(payload: dict[str, Any]) -> dict[str, Any]:
         raise RuntimeError("Workflow database is not configured")
     report = WorkflowReport(
         scenario_code=str(payload.get("scenario_code") or "").strip(),
+        scenario_title_display=(str(payload.get("scenario_title_display")).strip() if payload.get("scenario_title_display") else None),
         incident_code=str(payload.get("incident_code") or "").strip(),
+        incident_title_display=(str(payload.get("incident_title_display")).strip() if payload.get("incident_title_display") else None),
         action_code=str(payload.get("action_code") or "").strip(),
         action_title=str(payload.get("action_title") or "").strip(),
+        action_title_display=(str(payload.get("action_title_display")).strip() if payload.get("action_title_display") else None),
         report_text=str(payload.get("report_text") or "").strip(),
         location_text=(str(payload.get("location_text")).strip() if payload.get("location_text") else None),
         event_time=(str(payload.get("event_time")).strip() if payload.get("event_time") else None),
@@ -214,9 +220,12 @@ def create_workflow_report(payload: dict[str, Any]) -> dict[str, Any]:
         return {
             "id": report.id,
             "scenario_code": report.scenario_code,
+            "scenario_title_display": report.scenario_title_display,
             "incident_code": report.incident_code,
+            "incident_title_display": report.incident_title_display,
             "action_code": report.action_code,
             "action_title": report.action_title,
+            "action_title_display": report.action_title_display,
             "report_text": report.report_text,
             "location_text": report.location_text,
             "event_time": report.event_time,
@@ -251,9 +260,12 @@ def list_workflow_reports(
             {
                 "id": row.id,
                 "scenario_code": row.scenario_code,
+                "scenario_title_display": row.scenario_title_display,
                 "incident_code": row.incident_code,
+                "incident_title_display": row.incident_title_display,
                 "action_code": row.action_code,
                 "action_title": row.action_title,
+                "action_title_display": row.action_title_display,
                 "report_text": row.report_text,
                 "location_text": row.location_text,
                 "event_time": row.event_time,

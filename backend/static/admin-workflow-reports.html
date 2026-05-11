@@ -61,9 +61,12 @@
           for (const item of items) {
             const row = document.createElement("article");
             row.className = "queue-item";
+            const scenarioLabel = item.scenario_title_display || item.scenario_code;
+            const incidentLabel = item.incident_title_display || item.incident_code;
+            const actionLabel = item.action_title_display || item.action_title;
             row.innerHTML = `
-              <strong>#${item.id} · ${item.action_title}</strong>
-              <span><strong>Scenario:</strong> ${item.scenario_code} · <strong>Incident:</strong> ${item.incident_code}</span>
+              <strong>#${item.id} · ${actionLabel}</strong>
+              <span><strong>Scenario:</strong> ${scenarioLabel} · <strong>Incident:</strong> ${incidentLabel}</span>
               <span><strong>Location:</strong> ${item.location_text || "-"}</span>
               <span><strong>Time:</strong> ${item.event_time || "-"}</span>
               <span><strong>Denied:</strong> ${item.denied_item || "-"}</span>

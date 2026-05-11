@@ -72,9 +72,12 @@ class EvaluateChatRequest(BaseModel):
 
 class WorkflowReportRequest(BaseModel):
     scenario_code: str = Field(min_length=2)
+    scenario_title_display: str | None = None
     incident_code: str = Field(min_length=2)
+    incident_title_display: str | None = None
     action_code: str = Field(min_length=2)
     action_title: str = Field(min_length=2)
+    action_title_display: str | None = None
     report_text: str = Field(min_length=5)
     location_text: str | None = None
     event_time: str | None = None

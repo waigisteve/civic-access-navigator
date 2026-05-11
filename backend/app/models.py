@@ -77,9 +77,12 @@ class WorkflowReport(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     scenario_code: Mapped[str] = mapped_column(String(64), index=True)
+    scenario_title_display: Mapped[str] = mapped_column(String(255), nullable=True)
     incident_code: Mapped[str] = mapped_column(String(64), index=True)
+    incident_title_display: Mapped[str] = mapped_column(String(255), nullable=True)
     action_code: Mapped[str] = mapped_column(String(64), index=True)
     action_title: Mapped[str] = mapped_column(String(255))
+    action_title_display: Mapped[str] = mapped_column(String(255), nullable=True)
     report_text: Mapped[str] = mapped_column(Text)
     location_text: Mapped[str] = mapped_column(String(255), nullable=True)
     event_time: Mapped[str] = mapped_column(String(64), nullable=True)
