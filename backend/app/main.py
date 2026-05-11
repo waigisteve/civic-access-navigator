@@ -69,6 +69,11 @@ def index() -> FileResponse:
     return FileResponse(STATIC_DIR / "index.html")
 
 
+@app.get("/admin")
+def admin_index() -> FileResponse:
+    return FileResponse(STATIC_DIR / "admin-index.html")
+
+
 @app.get("/admin/sms")
 def admin_sms() -> FileResponse:
     return FileResponse(STATIC_DIR / "admin-sms.html")

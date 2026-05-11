@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CAN Admin Dashboard</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="page" style="padding-top: 32px;">
+      <section class="panel">
+        <div class="panel-head">
+          <h1>CAN Admin Dashboard</h1>
+          <span class="status">Admin tools</span>
+        </div>
+        <p class="workflow-copy">
+          Use these admin surfaces to review workflow reports, chat records, SOS requests, and inbound SMS activity.
+        </p>
+        <div class="grid">
+          <a class="card" href="/admin/workflow-reports">
+            <h3>Workflow Reports</h3>
+            <p>Review structured incident reports saved from the workflow action forms.</p>
+          </a>
+          <a class="card" href="/admin/chat-records">
+            <h3>Chat Records</h3>
+            <p>Inspect grounded chat prompts, answers, citations, provider, and mode.</p>
+          </a>
+          <a class="card" href="/admin/sos-requests">
+            <h3>SOS Requests</h3>
+            <p>Review help-channel usage captured from SOS email, SMS, and call flows.</p>
+          </a>
+          <a class="card" href="/admin/sms">
+            <h3>SMS Inbox</h3>
+            <p>Inspect inbound SMS traffic and reply handling from configured gateways.</p>
+          </a>
+          <a class="card" href="/admin/resources">
+            <h3>Approved Resources</h3>
+            <p>Upload and review approved resources used in grounded retrieval.</p>
+          </a>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
