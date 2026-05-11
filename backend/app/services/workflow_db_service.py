@@ -229,3 +229,42 @@ def create_workflow_report(payload: dict[str, Any]) -> dict[str, Any]:
             "status": report.status,
             "created_at": report.created_at.isoformat(),
         }
+
+
+def list_workflow_reports(
+    scenario_code: str | None = None,
+    incident_code: str | None = None,
+    limit: int = 50,
+) -> list[dict[str, Any]]:
+    if not workflow_database_ready():
+        return []
+    stmt = select(WorkflowReport).order_by(WorkflowReport.created_at.desc()).limit(max(1, min(limit, 200)))
+    if scenario_code:
+        stmt = stmt.where(WorkflowReport.scenario_code == scenario_code)
+    if incident_code:
+        stmt = stmt.where(WorkflowReport.incident_code == incident_code)
+    with SessionLocal() as session:
+        rows = session.execute(stmt).scalars().all()
+        return [
+            {
+                "id": row.id,
+                "scenario_code": row.scenario_code,
+                "incident_code": row.incident_code,
+                "action_code": row.action_code,
+                "action_title": row.action_title,
+                "report_text": row.report_text,
+                "location_text": row.location_text,
+                "event_time": row.event_time,
+                "denied_item": row.denied_item,
+                "requested_action": row.requested_action,
+                "contact_preference": row.contact_preference,
+                "submitter_alias": row.submitter_alias,
+                "region": row.region,
+                "language": row.language,
+                "safe_mode": row.safe_mode,
+                "lite_mode": row.lite_mode,
+                "status": row.status,
+                "created_at": row.created_at.isoformat(),
+            }
+            for row in rows
+        ]

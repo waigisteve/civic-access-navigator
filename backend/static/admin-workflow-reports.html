@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Workflow Reports Admin</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="page" style="padding-top: 32px;">
+      <section class="panel">
+        <div class="panel-head">
+          <h1>Workflow Reports Admin</h1>
+          <span class="status">Admin only</span>
+        </div>
+        <div class="action-form" style="max-width: 720px;">
+          <input id="admin-token" class="action-input" type="password" placeholder="Admin token" />
+          <div class="action-form-row">
+            <input id="filter-scenario" class="action-input" type="text" placeholder="Scenario code (optional)" />
+            <input id="filter-incident" class="action-input" type="text" placeholder="Incident code (optional)" />
+          </div>
+          <button id="load-reports" class="hero-action primary" type="button">Load reports</button>
+          <div id="admin-status" class="control-copy">Enter the admin token to verify whether reports were stored.</div>
+          <div id="report-list" class="queue-list"></div>
+        </div>
+      </section>
+    </main>
+    <script>
+      const tokenInput = document.getElementById("admin-token");
+      const scenarioInput = document.getElementById("filter-scenario");
+      const incidentInput = document.getElementById("filter-incident");
+      const loadButton = document.getElementById("load-reports");
+      const statusNode = document.getElementById("admin-status");
+      const listNode = document.getElementById("report-list");
+
+      loadButton.addEventListener("click", async () => {
+        const token = tokenInput.value.trim();
+        if (!token) {
+          statusNode.textContent = "Admin token is required.";
+          return;
+        }
+        const params = new URLSearchParams();
+        if (scenarioInput.value.trim()) params.set("scenario", scenarioInput.value.trim());
+        if (incidentInput.value.trim()) params.set("incident", incidentInput.value.trim());
+        statusNode.textContent = "Loading reports...";
+        listNode.innerHTML = "";
+        try {
+          const response = await fetch(`/api/admin/workflow-reports?${params.toString()}`, {
+            headers: { "X-CAN-ADMIN-TOKEN": token },
+          });
+          if (!response.ok) {
+            throw new Error(`Request failed: ${response.status}`);
+          }
+          const data = await response.json();
+          const items = Array.isArray(data.items) ? data.items : [];
+          statusNode.textContent = `${items.length} report(s) loaded.`;
+          if (items.length === 0) {
+            listNode.innerHTML = '<div class="queue-empty">No matching workflow reports found.</div>';
+            return;
+          }
+          for (const item of items) {
+            const row = document.createElement("article");
+            row.className = "queue-item";
+            row.innerHTML = `
+              <strong>#${item.id} · ${item.action_title}</strong>
+              <span><strong>Scenario:</strong> ${item.scenario_code} · <strong>Incident:</strong> ${item.incident_code}</span>
+              <span><strong>Location:</strong> ${item.location_text || "-"}</span>
+              <span><strong>Time:</strong> ${item.event_time || "-"}</span>
+              <span><strong>Denied:</strong> ${item.denied_item || "-"}</span>
+              <span><strong>Expected action:</strong> ${item.requested_action || "-"}</span>
+              <span><strong>Contact:</strong> ${item.contact_preference} · <strong>Alias:</strong> ${item.submitter_alias || "-"}</span>
+              <small>${item.created_at} · ${item.status}</small>
+              <span>${item.report_text}</span>
+            `;
+            listNode.appendChild(row);
+          }
+        } catch (error) {
+          statusNode.textContent = `Could not load workflow reports: ${error.message}`;
+        }
+      });
+    </script>
+  </body>
+</html>

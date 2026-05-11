@@ -27,6 +27,7 @@ from backend.app.services.sms_service import (
 from backend.app.services.workflow_db_service import (
     create_workflow_report,
     get_workflow_incident,
+    list_workflow_reports,
     list_workflow_scenarios,
     seed_workflow_catalog,
     workflow_database_ready,
@@ -188,6 +189,22 @@ def register_routes(app) -> None:
             raise HTTPException(status_code=503, detail="Workflow database is not configured")
         seed_workflow_catalog()
         return {"status": "ok"}
+
+    @app.get("/api/admin/workflow-reports")
+    def admin_workflow_reports(
+        request: Request,
+        scenario: str | None = None,
+        incident: str | None = None,
+        limit: int = 50,
+    ) -> dict[str, object]:
+        _require_admin_token(request)
+        return {
+            "items": list_workflow_reports(
+                scenario_code=scenario,
+                incident_code=incident,
+                limit=limit,
+            )
+        }
 
     @app.get("/api/admin/sms/inbox")
     def sms_inbox(request: Request) -> dict[str, object]:
