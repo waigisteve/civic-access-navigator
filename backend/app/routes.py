@@ -24,6 +24,7 @@ from backend.app.services.sms_service import (
     parse_form_body,
     send_africastalking_sms_reply,
 )
+from backend.app.services.ussd_service import handle_africastalking_ussd
 from backend.app.services.workflow_db_service import (
     create_chat_record,
     create_sos_request,
@@ -31,6 +32,7 @@ from backend.app.services.workflow_db_service import (
     get_workflow_incident,
     list_chat_records,
     list_sos_requests,
+    list_ussd_session_records,
     list_workflow_reports,
     list_workflow_scenarios,
     seed_workflow_catalog,
@@ -275,6 +277,22 @@ def register_routes(app) -> None:
         _require_admin_token(request)
         return {"items": list_sms_messages()}
 
+    @app.get("/api/admin/ussd-sessions")
+    def admin_ussd_sessions(
+        request: Request,
+        session_id: str | None = None,
+        phone_number: str | None = None,
+        limit: int = 100,
+    ) -> dict[str, object]:
+        _require_admin_token(request)
+        return {
+            "items": list_ussd_session_records(
+                session_id=session_id,
+                phone_number=phone_number,
+                limit=limit,
+            )
+        }
+
     @app.post("/api/sms/inbound/africastalking")
     async def sms_inbound_africastalking(request: Request) -> PlainTextResponse:
         payload = parse_form_body(await request.body())
@@ -307,6 +325,14 @@ def register_routes(app) -> None:
         xml = f"<?xml version=\"1.0\" encoding=\"UTF-8\"?><Response><Message>{body}</Message></Response>"
         return Response(content=xml, media_type="application/xml")
 
+    @app.post("/api/ussd/inbound/africastalking")
+    async def ussd_inbound_africastalking(request: Request) -> PlainTextResponse:
+        payload = parse_form_body(await request.body())
+        if not _validate_africastalking_request(payload, request):
+            raise HTTPException(status_code=403, detail="Invalid Africa's Talking webhook request")
+        result = handle_africastalking_ussd(payload)
+        return PlainTextResponse(result["body"], status_code=200)
+
     @app.get("/api/debug/config")
     def debug_config() -> dict[str, object]:
         provider = os.getenv("CHAT_PROVIDER", "auto").strip().lower()
@@ -326,4 +352,5 @@ def register_routes(app) -> None:
             "live_source_ingestion": os.getenv("LIVE_SOURCE_INGESTION", "0").strip() == "1",
             "sms_inbox_enabled": True,
             "africastalking_reply_enabled": os.getenv("AFRICASTALKING_REPLY_ENABLED", "0").strip() == "1",
+            "ussd_enabled": True,
         }

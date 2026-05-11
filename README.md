@@ -337,6 +337,72 @@ Notes:
 - the Africa's Talking route can also send an outbound SMS reply through the Messaging API when `AFRICASTALKING_REPLY_ENABLED=1`
 - this inbox is file-backed for the capstone; it is not durable production storage
 
+## USSD Intake
+
+The prototype now also supports a dedicated low-connectivity USSD flow for Kenya-first field use.
+
+What this does:
+
+- accepts inbound USSD callbacks from Africa's Talking
+- presents a short menu flow that works on feature phones
+- supports:
+  - `Start report`
+  - `Follow up`
+  - `Rights help`
+  - `Emergency`
+- saves incident reports into the same Postgres-backed workflow report table used by the web app
+- stores USSD session traffic for admin review
+
+Endpoints:
+
+- `POST /api/ussd/inbound/africastalking`
+- `GET /api/admin/ussd-sessions`
+- `GET /admin/ussd`
+
+Current USSD flow:
+
+1. choose language: English or Kiswahili
+2. choose action:
+   - start report
+   - follow up
+   - rights help
+   - emergency
+3. if starting a report:
+   - choose user context
+   - choose incident
+   - enter location
+   - enter denied item or harm
+   - enter expected next action
+   - choose contact preference
+4. receive a reference ID for later follow-up
+
+Configuration:
+
+- reuse the existing Africa's Talking webhook protection settings:
+  - `AFRICASTALKING_USERNAME`
+  - optional `AFRICASTALKING_INBOUND_TOKEN`
+- set the USSD callback URL in Africa's Talking to:
+  - `https://your-app/api/ussd/inbound/africastalking`
+
+Important constraint:
+
+- the application can implement the USSD callback and state machine
+- the actual **toll-free** or **dedicated** USSD service code must be provisioned by the gateway and telcos
+- for Kenya, that means configuring either:
+  - a shared USSD channel, or
+  - a dedicated USSD code
+
+Recommended provider for this capstone:
+
+- Africa's Talking USSD for Kenya
+
+Relevant provider docs:
+
+- Africa's Talking USSD Kenya overview: https://help.africastalking.com/en/articles/8165894-ussd-kenya
+- Africa's Talking callback URL setup: https://help.africastalking.com/en/articles/9915125-how-do-i-go-live-with-ussd
+- Africa's Talking USSD types: https://help.africastalking.com/en/articles/1162965-what-are-the-different-types-of-ussd-codes
+- Africa's Talking USSD character limits in Kenya: https://help.africastalking.com/en/articles/1284096-what-is-the-character-limit-for-ussd-menus-and-user-input-in-kenya
+
 ## PeaceTech Track
 
 The product is now intentionally centered on `Voice & accountability`.

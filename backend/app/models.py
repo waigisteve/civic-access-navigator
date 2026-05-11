@@ -132,3 +132,20 @@ class SosRequest(Base):
     lite_mode: Mapped[bool] = mapped_column(Boolean, default=False)
     status: Mapped[str] = mapped_column(String(64), default="opened")
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+
+class UssdSessionRecord(Base):
+    __tablename__ = "ussd_session_records"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    session_id: Mapped[str] = mapped_column(String(128), index=True)
+    phone_number: Mapped[str] = mapped_column(String(64), index=True)
+    service_code: Mapped[str] = mapped_column(String(64), nullable=True)
+    provider: Mapped[str] = mapped_column(String(32), default="africastalking")
+    language: Mapped[str] = mapped_column(String(16), nullable=True)
+    user_path: Mapped[str] = mapped_column(Text, default="")
+    stage: Mapped[str] = mapped_column(String(64), default="entry")
+    menu_text: Mapped[str] = mapped_column(Text)
+    terminal: Mapped[bool] = mapped_column(Boolean, default=False)
+    workflow_report_id: Mapped[int] = mapped_column(Integer, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)

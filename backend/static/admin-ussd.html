@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>USSD Sessions Admin</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="page" style="padding-top: 32px;">
+      <section class="panel">
+        <div class="panel-head">
+          <h1>USSD Sessions Admin</h1>
+          <span class="status">Admin only</span>
+        </div>
+        <div class="action-form" style="max-width: 720px;">
+          <input id="admin-token" class="action-input" type="password" placeholder="Admin token" />
+          <div class="action-form-row">
+            <input id="filter-session" class="action-input" type="text" placeholder="Session ID (optional)" />
+            <input id="filter-phone" class="action-input" type="text" placeholder="Phone number (optional)" />
+          </div>
+          <button id="load-sessions" class="hero-action primary" type="button">Load sessions</button>
+          <div id="admin-status" class="control-copy">Enter the admin token to review USSD traffic.</div>
+          <div id="session-list" class="queue-list"></div>
+        </div>
+      </section>
+    </main>
+    <script>
+      const tokenInput = document.getElementById("admin-token");
+      const sessionInput = document.getElementById("filter-session");
+      const phoneInput = document.getElementById("filter-phone");
+      const loadButton = document.getElementById("load-sessions");
+      const statusNode = document.getElementById("admin-status");
+      const listNode = document.getElementById("session-list");
+
+      loadButton.addEventListener("click", async () => {
+        const token = tokenInput.value.trim();
+        if (!token) {
+          statusNode.textContent = "Admin token is required.";
+          return;
+        }
+        const params = new URLSearchParams();
+        if (sessionInput.value.trim()) params.set("session_id", sessionInput.value.trim());
+        if (phoneInput.value.trim()) params.set("phone_number", phoneInput.value.trim());
+        statusNode.textContent = "Loading USSD sessions...";
+        listNode.innerHTML = "";
+        try {
+          const response = await fetch(`/api/admin/ussd-sessions?${params.toString()}`, {
+            headers: { "X-CAN-ADMIN-TOKEN": token },
+          });
+          if (!response.ok) throw new Error(`Request failed: ${response.status}`);
+          const data = await response.json();
+          const items = Array.isArray(data.items) ? data.items : [];
+          statusNode.textContent = `${items.length} USSD session item(s) loaded.`;
+          if (items.length === 0) {
+            listNode.innerHTML = '<div class="queue-empty">No USSD session items found.</div>';
+            return;
+          }
+          for (const item of items) {
+            const row = document.createElement("article");
+            row.className = "queue-item";
+            row.innerHTML = `
+              <strong>#${item.id} · ${item.stage}</strong>
+              <span><strong>Phone:</strong> ${item.phone_number || "-"}</span>
+              <span><strong>Session:</strong> ${item.session_id || "-"}</span>
+              <span><strong>Language:</strong> ${item.language || "-"}</span>
+              <span><strong>Path:</strong> ${item.user_path || "-"}</span>
+              <span><strong>Report ID:</strong> ${item.workflow_report_id || "-"}</span>
+              <small>${item.created_at} · ${item.terminal ? "END" : "CON"}</small>
+              <span>${item.menu_text || ""}</span>
+            `;
+            listNode.appendChild(row);
+          }
+        } catch (error) {
+          statusNode.textContent = `Could not load USSD sessions: ${error.message}`;
+        }
+      });
+    </script>
+  </body>
+</html>

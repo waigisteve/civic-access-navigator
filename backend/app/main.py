@@ -79,6 +79,11 @@ def admin_sms() -> FileResponse:
     return FileResponse(STATIC_DIR / "admin-sms.html")
 
 
+@app.get("/admin/ussd")
+def admin_ussd() -> FileResponse:
+    return FileResponse(STATIC_DIR / "admin-ussd.html")
+
+
 @app.get("/admin/resources")
 def admin_resources() -> FileResponse:
     return FileResponse(STATIC_DIR / "admin-resources.html")

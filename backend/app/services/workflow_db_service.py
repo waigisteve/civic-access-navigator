@@ -16,6 +16,7 @@ from backend.app.models import (
     WorkflowReport,
     WorkflowScenario,
     WorkflowSourceLink,
+    UssdSessionRecord,
 )
 
 
@@ -408,3 +409,103 @@ def list_sos_requests(limit: int = 100) -> list[dict[str, Any]]:
             }
             for row in rows
         ]
+
+
+def create_ussd_session_record(payload: dict[str, Any]) -> dict[str, Any]:
+    if not workflow_database_ready():
+        raise RuntimeError("Workflow database is not configured")
+    record = UssdSessionRecord(
+        session_id=str(payload.get("session_id") or "").strip(),
+        phone_number=str(payload.get("phone_number") or "").strip(),
+        service_code=(str(payload.get("service_code")).strip() if payload.get("service_code") else None),
+        provider=str(payload.get("provider") or "africastalking").strip(),
+        language=(str(payload.get("language")).strip() if payload.get("language") else None),
+        user_path=str(payload.get("user_path") or "").strip(),
+        stage=str(payload.get("stage") or "entry").strip(),
+        menu_text=str(payload.get("menu_text") or "").strip(),
+        terminal=bool(payload.get("terminal")),
+        workflow_report_id=int(payload["workflow_report_id"]) if payload.get("workflow_report_id") else None,
+    )
+    with SessionLocal() as session:
+        session.add(record)
+        session.commit()
+        session.refresh(record)
+        return {
+            "id": record.id,
+            "session_id": record.session_id,
+            "phone_number": record.phone_number,
+            "service_code": record.service_code,
+            "provider": record.provider,
+            "language": record.language,
+            "user_path": record.user_path,
+            "stage": record.stage,
+            "menu_text": record.menu_text,
+            "terminal": record.terminal,
+            "workflow_report_id": record.workflow_report_id,
+            "created_at": record.created_at.isoformat(),
+        }
+
+
+def list_ussd_session_records(
+    session_id: str | None = None,
+    phone_number: str | None = None,
+    limit: int = 100,
+) -> list[dict[str, Any]]:
+    if not workflow_database_ready():
+        return []
+    stmt = select(UssdSessionRecord).order_by(UssdSessionRecord.created_at.desc()).limit(max(1, min(limit, 300)))
+    if session_id:
+        stmt = stmt.where(UssdSessionRecord.session_id == session_id)
+    if phone_number:
+        stmt = stmt.where(UssdSessionRecord.phone_number == phone_number)
+    with SessionLocal() as session:
+        rows = session.execute(stmt).scalars().all()
+        return [
+            {
+                "id": row.id,
+                "session_id": row.session_id,
+                "phone_number": row.phone_number,
+                "service_code": row.service_code,
+                "provider": row.provider,
+                "language": row.language,
+                "user_path": row.user_path,
+                "stage": row.stage,
+                "menu_text": row.menu_text,
+                "terminal": row.terminal,
+                "workflow_report_id": row.workflow_report_id,
+                "created_at": row.created_at.isoformat(),
+            }
+            for row in rows
+        ]
+
+
+def get_workflow_report(report_id: int) -> dict[str, Any] | None:
+    if not workflow_database_ready():
+        return None
+    with SessionLocal() as session:
+        row = session.get(WorkflowReport, report_id)
+        if not row:
+            return None
+        return {
+            "id": row.id,
+            "scenario_code": row.scenario_code,
+            "scenario_title_display": row.scenario_title_display,
+            "incident_code": row.incident_code,
+            "incident_title_display": row.incident_title_display,
+            "action_code": row.action_code,
+            "action_title": row.action_title,
+            "action_title_display": row.action_title_display,
+            "report_text": row.report_text,
+            "location_text": row.location_text,
+            "event_time": row.event_time,
+            "denied_item": row.denied_item,
+            "requested_action": row.requested_action,
+            "contact_preference": row.contact_preference,
+            "submitter_alias": row.submitter_alias,
+            "region": row.region,
+            "language": row.language,
+            "safe_mode": row.safe_mode,
+            "lite_mode": row.lite_mode,
+            "status": row.status,
+            "created_at": row.created_at.isoformat(),
+        }
