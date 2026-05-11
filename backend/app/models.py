@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
+from typing import Optional
 
 from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -84,9 +85,9 @@ class WorkflowReport(Base):
     action_title: Mapped[str] = mapped_column(String(255))
     report_text: Mapped[str] = mapped_column(Text)
     contact_preference: Mapped[str] = mapped_column(String(64), default="anonymous")
-    submitter_alias: Mapped[str | None] = mapped_column(String(255), nullable=True)
-    region: Mapped[str | None] = mapped_column(String(64), nullable=True)
-    language: Mapped[str | None] = mapped_column(String(16), nullable=True)
+    submitter_alias: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    region: Mapped[Optional[str]] = mapped_column(String(64), nullable=True)
+    language: Mapped[Optional[str]] = mapped_column(String(16), nullable=True)
     safe_mode: Mapped[bool] = mapped_column(Boolean, default=False)
     lite_mode: Mapped[bool] = mapped_column(Boolean, default=False)
     status: Mapped[str] = mapped_column(String(64), default="submitted")
