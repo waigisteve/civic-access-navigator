@@ -156,22 +156,6 @@ const LANGUAGE_LABELS = Object.fromEntries(Object.entries(LANG.languages).map(([
 const RESOURCE_CACHE_KEY = "can_resource_cache_v1";
 const ACCOUNTABILITY_QUEUE_KEY = "can_accountability_queue_v1";
 
-const INCIDENT_WORKFLOWS = {
-  resident: ["checkpoint", "denied_aid", "report_abuse", "nearest_help"],
-  idp: ["denied_aid", "movement_risk", "lost_documents", "nearest_help"],
-  refugee: ["border_delay", "lost_documents", "report_abuse", "nearest_help"],
-};
-
-const INCIDENT_CTA_MAP = {
-  checkpoint: ["rights_note", "anonymous_report", "legal_observer"],
-  denied_aid: ["aid_report", "rights_note", "queue_case"],
-  report_abuse: ["anonymous_report", "legal_observer", "queue_case"],
-  nearest_help: ["open_nearby_help", "queue_case", "safe_exit"],
-  movement_risk: ["safe_route_note", "queue_case", "safe_exit"],
-  lost_documents: ["document_note", "queue_case", "legal_observer"],
-  border_delay: ["border_note", "anonymous_report", "queue_case"],
-};
-
 const VOICE_SUMMARY = {
   kenya: "Kenya pilot. Civic Access Navigator helps users find trusted peace and civic guidance, with grounded answers, business-ready controls, and a region-aware interface.",
   "east-africa": "East Africa view. The same product expands into a regional layer with language switching, voiceover, and shared accountability features.",
@@ -184,11 +168,15 @@ let currentZone = "english";
 let currentCountry = "Kenya";
 let currentScenario = "resident";
 let currentIncident = null;
+let currentScenarioDetail = null;
+let currentIncidentDetail = null;
 let liteModeEnabled = false;
 let safeModeEnabled = false;
 let speechUtterance = null;
 let resourceCache = [];
 let availableVoices = [];
+let workflowCatalog = [];
+const workflowDetailCache = new Map();
 
 async function loadProject() {
   const response = await fetch("/api/project");
@@ -324,23 +312,80 @@ function updateContextPanel() {
   setText("context-safety-value", getSafetyLabel(pack));
 }
 
+function getScenarioData(scenarioCode = currentScenario) {
+  return workflowCatalog.find((item) => item.code === scenarioCode) || null;
+}
+
+function getLocalizedIncidentFallback(pack, incidentCode) {
+  return getIncidentDefinition(pack, incidentCode);
+}
+
+async function loadWorkflowCatalog() {
+  try {
+    const response = await fetch("/api/workflows");
+    const data = await response.json();
+    workflowCatalog = Array.isArray(data.scenarios) ? data.scenarios : [];
+    currentScenarioDetail = getScenarioData(currentScenario);
+  } catch {
+    workflowCatalog = [];
+    currentScenarioDetail = null;
+  }
+}
+
+async function loadWorkflowIncidentDetail(scenarioCode, incidentCode) {
+  if (!scenarioCode || !incidentCode) {
+    currentIncidentDetail = null;
+    return null;
+  }
+  const cacheKey = `${scenarioCode}:${incidentCode}`;
+  if (workflowDetailCache.has(cacheKey)) {
+    currentIncidentDetail = workflowDetailCache.get(cacheKey);
+    return currentIncidentDetail;
+  }
+  try {
+    const response = await fetch(`/api/workflows/${encodeURIComponent(scenarioCode)}/${encodeURIComponent(incidentCode)}`);
+    if (!response.ok) {
+      currentIncidentDetail = null;
+      return null;
+    }
+    const data = await response.json();
+    workflowDetailCache.set(cacheKey, data);
+    currentIncidentDetail = data;
+    return data;
+  } catch {
+    currentIncidentDetail = null;
+    return null;
+  }
+}
+
 function renderIncidentWorkflows() {
   const grid = document.getElementById("incident-grid");
   if (!grid) {
     return;
   }
   const pack = LANG.copy[currentLanguage] || LANG.copy.en;
-  const incidents = INCIDENT_WORKFLOWS[currentScenario] || INCIDENT_WORKFLOWS.resident;
+  const scenario = getScenarioData(currentScenario);
+  currentScenarioDetail = scenario;
+  setText("workflow-copy", scenario?.summary || pack.workflowCopy);
+  const incidents = Array.isArray(scenario?.incidents) ? scenario.incidents : [];
   grid.innerHTML = "";
-  for (const incidentId of incidents) {
-    const incident = getIncidentDefinition(pack, incidentId);
+  if (incidents.length === 0) {
+    const empty = document.createElement("div");
+    empty.className = "cta-empty";
+    empty.textContent = pack.botServiceFallback;
+    grid.appendChild(empty);
+    return;
+  }
+  for (const incident of incidents) {
+    const fallback = getLocalizedIncidentFallback(pack, incident.code);
     const button = document.createElement("button");
     button.type = "button";
-    button.className = `incident-card${currentIncident === incidentId ? " is-active" : ""}`;
-    button.dataset.incident = incidentId;
-    button.innerHTML = `<strong>${incident.title}</strong><span>${incident.copy}</span>`;
-    button.addEventListener("click", () => {
-      currentIncident = incidentId;
+    button.className = `incident-card${currentIncident === incident.code ? " is-active" : ""}`;
+    button.dataset.incident = incident.code;
+    button.innerHTML = `<strong>${incident.title || fallback.title}</strong><span>${incident.summary || fallback.copy}</span>`;
+    button.addEventListener("click", async () => {
+      currentIncident = incident.code;
+      await loadWorkflowIncidentDetail(currentScenario, currentIncident);
       renderIncidentWorkflows();
       renderCtaPanel();
     });
@@ -354,7 +399,9 @@ function renderCtaPanel() {
     return;
   }
   const pack = LANG.copy[currentLanguage] || LANG.copy.en;
-  setText("workflow-status", currentIncident ? getIncidentDefinition(pack, currentIncident).title : pack.workflowStatus);
+  const selectedTitle = currentIncidentDetail?.incident?.title
+    || (currentIncident ? getIncidentDefinition(pack, currentIncident).title : "");
+  setText("workflow-status", selectedTitle || pack.workflowStatus);
   setText("cta-copy", currentIncident ? pack.ctaCopyReady : pack.ctaCopyIdle);
   grid.innerHTML = "";
   if (!currentIncident) {
@@ -364,15 +411,21 @@ function renderCtaPanel() {
     grid.appendChild(empty);
     return;
   }
-
-  const ctas = INCIDENT_CTA_MAP[currentIncident] || [];
-  for (const ctaId of ctas) {
-    const cta = getCtaDefinition(pack, ctaId);
+  const incident = currentIncidentDetail?.incident;
+  const actionPoints = Array.isArray(incident?.action_points) ? incident.action_points : [];
+  if (actionPoints.length === 0) {
+    const empty = document.createElement("div");
+    empty.className = "cta-empty";
+    empty.textContent = pack.botServiceFallback;
+    grid.appendChild(empty);
+    return;
+  }
+  for (const actionPoint of actionPoints) {
     const card = document.createElement("button");
     card.type = "button";
     card.className = "cta-card";
-    card.innerHTML = `<strong>${cta.title}</strong><span>${cta.copy}</span>`;
-    card.addEventListener("click", () => handleCtaAction(ctaId, cta, pack));
+    card.innerHTML = `<strong>${actionPoint.title}</strong><span>${actionPoint.description}</span>`;
+    card.addEventListener("click", () => handleWorkflowAction(actionPoint, pack));
     grid.appendChild(card);
   }
 }
@@ -417,34 +470,21 @@ function enqueueAccountabilityAction(title, note) {
   renderQueue();
 }
 
-function handleCtaAction(ctaId, cta, pack) {
-  if (ctaId === "open_nearby_help") {
-    const nearbyToggle = document.getElementById("nearby-toggle");
-    if (nearbyToggle && !safeModeEnabled) {
-      nearbyToggle.click();
-    }
+function handleWorkflowAction(actionPoint, pack) {
+  if (!actionPoint) {
     return;
   }
-
-  if (ctaId === "safe_exit") {
-    const quickExit = document.getElementById("quick-exit-toggle");
-    if (quickExit) {
-      quickExit.click();
-    }
-    return;
+  if (actionPoint.channel === "queue") {
+    enqueueAccountabilityAction(actionPoint.title, actionPoint.description);
   }
-
-  enqueueAccountabilityAction(cta.title, cta.copy);
-  openDetail(
-    cta.title,
-    cta.copy,
-    [
-      `${pack.contextScenarioLabel}: ${getScenarioPack(pack).label}`,
-      `${pack.queueHeading}: ${pack.queuePendingStatus}`,
-      `${pack.detailRegionLabel}: ${currentCountry}`,
-    ],
-    pack.ctaHeading
-  );
+  const sources = Array.isArray(currentIncidentDetail?.incident?.sources) ? currentIncidentDetail.incident.sources : [];
+  const meta = [
+    `${pack.contextScenarioLabel}: ${getScenarioPack(pack).label}`,
+    `${pack.detailRegionLabel}: ${currentCountry}`,
+    `Risk: ${currentIncidentDetail?.incident?.risk_level || "n/a"}`,
+    ...sources.map((source) => `${source.title} - ${source.url}`),
+  ];
+  openDetail(actionPoint.title, actionPoint.description, meta, pack.ctaHeading);
 }
 
 function localizeResource(item) {
@@ -546,6 +586,23 @@ function getCtaDefinition(pack, id) {
     border_note: { title: pack.ctaBorderNoteTitle, copy: pack.ctaBorderNoteCopy },
   };
   return lookup[id] || { title: id, copy: "" };
+}
+
+function buildChatContextPrefix() {
+  if (!currentIncidentDetail?.incident) {
+    return "";
+  }
+  const incident = currentIncidentDetail.incident;
+  const sourceTitles = (incident.sources || []).map((item) => item.title).join(", ");
+  return [
+    `Scenario: ${currentIncidentDetail.scenario?.title || currentScenario}`,
+    `Incident: ${incident.title}`,
+    `Risk level: ${incident.risk_level}`,
+    `Region: ${incident.region}`,
+    sourceTitles ? `Relevant sources: ${sourceTitles}` : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
 }
 
 function setLanguage(language) {
@@ -804,13 +861,22 @@ function wireAccessModes() {
 function wireScenarioSelector() {
   const buttons = document.querySelectorAll(".scenario-toggle-btn");
   for (const button of buttons) {
-    button.addEventListener("click", () => {
+    button.addEventListener("click", async () => {
       currentScenario = button.dataset.scenario || "resident";
+      currentScenarioDetail = getScenarioData(currentScenario);
       currentIncident = null;
+      currentIncidentDetail = null;
       for (const other of buttons) {
         setPressed(other, other === button);
       }
       updateContextPanel();
+      renderIncidentWorkflows();
+      renderCtaPanel();
+      const firstIncident = currentScenarioDetail?.incidents?.[0]?.code;
+      if (firstIncident) {
+        currentIncident = firstIncident;
+        await loadWorkflowIncidentDetail(currentScenario, currentIncident);
+      }
       renderIncidentWorkflows();
       renderCtaPanel();
     });
@@ -1386,13 +1452,16 @@ function wireBotPreview() {
     input.value = "";
     feed.scrollTop = feed.scrollHeight;
 
+    const contextPrefix = buildChatContextPrefix();
+    const fullMessage = contextPrefix ? `${contextPrefix}\n\nUser question: ${message}` : message;
+
     fetch("/api/chat", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        message,
+        message: fullMessage,
         region: currentRegion,
         scenario: currentScenario,
       }),
@@ -1463,8 +1532,7 @@ async function bootstrap() {
   wireSOSWidget();
   wireNearbyWidget();
   wireBotPreview();
-  renderIncidentWorkflows();
-  renderCtaPanel();
+  await loadWorkflowCatalog();
   renderQueue();
   if ("speechSynthesis" in window) {
     const refreshVoices = () => {
@@ -1476,6 +1544,14 @@ async function bootstrap() {
   renderZoneMap();
   renderCountries();
   setZone(currentZone);
+  currentScenarioDetail = getScenarioData(currentScenario);
+  const initialIncident = currentScenarioDetail?.incidents?.[0]?.code || null;
+  if (initialIncident) {
+    currentIncident = initialIncident;
+    await loadWorkflowIncidentDetail(currentScenario, currentIncident);
+  }
+  renderIncidentWorkflows();
+  renderCtaPanel();
   await Promise.all([loadResources(), loadHealth()]);
   await loadProject();
   setLanguage(currentLanguage);
