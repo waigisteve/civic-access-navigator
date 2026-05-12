@@ -58,7 +58,7 @@ body {
 .brand-lockup {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
 }
 
 .brand-copy {
@@ -70,24 +70,27 @@ body {
 }
 
 .brand-mark {
-  width: 42px;
-  height: 42px;
-  border-radius: 14px;
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
   background: linear-gradient(135deg, #0b6e4f, #7cc9aa);
   box-shadow: 0 12px 24px rgba(16, 23, 26, 0.16);
+  flex: 0 0 auto;
 }
 
 .brand-kicker {
-  margin: 3px 0 0;
+  margin: 4px 0 0;
   color: #d8efe5;
-  font-size: 0.62rem;
+  font-size: 0.68rem;
+  font-weight: 600;
   letter-spacing: 0.02em;
 }
 
 .brand-name {
   display: block;
-  font-size: 1.28rem;
-  font-weight: 700;
+  font-size: 1.92rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
   color: #fffaf0;
 }
 
