@@ -12,7 +12,6 @@ window.CAN_I18N = {
       heroIntro:
         "A Kenya-first PeaceTech tool that helps citizens understand rights, find trusted civic guidance, and take the next accountable step when public systems feel distant or unclear.",
       regionNote: "Business case: turn rights and civic information into faster, safer public action for citizens and local partners.",
-      osfLinkText: "OSF Focus Areas",
       heroOsfLink: "Explore OSF focus areas",
       heroSosOpen: "SOS Help",
       nearbyToggle: "Nearby Help",
@@ -197,7 +196,6 @@ window.CAN_I18N = {
       heroIntro:
         "Zana ya PeaceTech ya kuanzia Kenya inayosaidia wananchi kuelewa haki, kupata mwongozo wa uraia unaoaminika, na kuchukua hatua inayowajibika.",
       regionNote: "Kesi ya biashara: geuza taarifa za haki na uraia kuwa hatua ya haraka na salama ya uwajibikaji wa umma.",
-      osfLinkText: "Maeneo ya OSF",
       heroOsfLink: "Chunguza maeneo ya OSF",
       heroSosOpen: "Msaada wa SOS",
       nearbyToggle: "Msaada wa karibu",
@@ -382,7 +380,6 @@ window.CAN_I18N = {
       heroIntro:
         "Un outil PeaceTech pilote au Kenya qui aide les citoyens a comprendre leurs droits, trouver des orientations civiques fiables et preparer une action publique plus responsable.",
       regionNote: "Cas d'affaires: transformer les informations sur les droits et la citoyennete en action publique plus rapide et plus sure.",
-      osfLinkText: "Axes d'OSF",
       heroOsfLink: "Explorer les axes d'OSF",
       heroSosOpen: "Aide SOS",
       nearbyToggle: "Aide proche",
@@ -567,7 +564,6 @@ window.CAN_I18N = {
       heroIntro:
         "أداة PeaceTech تبدأ من كينيا وتساعد المواطنين على فهم الحقوق والوصول إلى إرشاد مدني موثوق واتخاذ خطوة عامة أكثر مساءلة.",
       regionNote: "حالة العمل: تحويل معلومات الحقوق والمواطنة إلى فعل عام أسرع وأكثر أمانًا.",
-      osfLinkText: "مجالات OSF",
       heroOsfLink: "استكشاف مجالات OSF",
       heroSosOpen: "مساعدة SOS",
       nearbyToggle: "مساعدة قريبة",

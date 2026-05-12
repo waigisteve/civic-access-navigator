@@ -879,7 +879,6 @@ function setLanguage(language) {
   setText("hero-eyebrow", pack.heroEyebrow);
   setText("hero-intro", pack.heroIntro);
   setText("region-note", pack.regionNote);
-  setText("osf-link-text", pack.osfLinkText);
   setText("hero-osf-link", pack.heroOsfLink);
   setText("lite-mode-toggle", pack.liteModeToggle);
   setText("safe-mode-toggle", pack.safeModeToggle);
