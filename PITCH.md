@@ -1,4 +1,4 @@
-# Pitch
+# Civic Access Navigator for Open Society Foundations — Pitch
 
 ## Title
 

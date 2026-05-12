@@ -1,4 +1,4 @@
-# Civic Access Navigator — Architecture Diagram
+# Civic Access Navigator for Open Society Foundations — Architecture Diagram
 
 This file is the submission-ready architecture diagram for the current capstone implementation.
 

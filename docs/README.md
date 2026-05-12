@@ -1,6 +1,6 @@
 # Documentation Map
 
-This directory now keeps only the submission-facing and support documents that still match the current product.
+This directory now keeps only the submission-facing and support documents that still match Civic Access Navigator for Open Society Foundations.
 
 ## Current documents
 

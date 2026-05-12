@@ -1,6 +1,6 @@
-# Civic Access Navigator
+# Civic Access Navigator for Open Society Foundations
 
-Civic Access Navigator is a PeaceTech capstone aligned with the Open Society Foundations mission and the Transformative Peace in Africa initiative.
+Civic Access Navigator for Open Society Foundations is a PeaceTech capstone aligned with the Open Society Foundations mission and the Transformative Peace in Africa initiative.
 
 Business case in one line: Civic Access Navigator lowers the cost and risk of civic participation by turning rights information into safe, incident-specific accountability actions.
 

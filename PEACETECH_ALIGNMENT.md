@@ -1,4 +1,4 @@
-# PeaceTech Alignment
+# Civic Access Navigator for Open Society Foundations — PeaceTech Alignment
 
 ## Primary Track
 

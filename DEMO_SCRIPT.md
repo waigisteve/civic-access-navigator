@@ -1,8 +1,8 @@
-# Demo Script
+# Civic Access Navigator for Open Society Foundations — Demo Script
 
 ## Opening
 
-This project is Civic Access Navigator, a PeaceTech capstone aligned with the Open Society Foundations mission and the Transformative Peace in Africa initiative. The goal is to help users discover and understand trusted peace and civic information more easily while showing a prompt-aware, workshop-driven development workflow.
+This project is Civic Access Navigator for Open Society Foundations, a PeaceTech capstone aligned with the Open Society Foundations mission and the Transformative Peace in Africa initiative. The goal is to help users discover and understand trusted peace and civic information more easily while showing a prompt-aware, workshop-driven development workflow.
 
 ## Walkthrough
 

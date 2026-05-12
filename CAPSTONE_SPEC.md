@@ -1,4 +1,4 @@
-# Capstone spec — Civic Access Navigator
+# Capstone spec — Civic Access Navigator for Open Society Foundations
 
 ## Problem statement
 
