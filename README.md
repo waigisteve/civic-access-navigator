@@ -88,13 +88,32 @@ Codex supports the project by:
 
 ## Repository Layout
 
-- `docs/` project framing, architecture notes, milestones, and submission materials
+- `docs/` focused submission-support documents and architecture material
 - `backend/` FastAPI starter application
 - `backend/app/` API code and future service modules
 - `backend/static/` minimal front-end prototype served by the backend
 - `data/` placeholder space for curated peace and civic resources
 - `tests/` backend test coverage
 - `notes/` working notes, prompts, and research placeholders
+
+## Documentation Map
+
+Use these as the current source-of-truth set:
+
+- [CAPSTONE_SPEC.md](/mnt/c/Users/Hp/codex-demo/capstone/CAPSTONE_SPEC.md)
+  - build brief / ExecPlan
+- [PITCH.md](/mnt/c/Users/Hp/codex-demo/capstone/PITCH.md)
+  - short submission pitch
+- [DEMO_SCRIPT.md](/mnt/c/Users/Hp/codex-demo/capstone/DEMO_SCRIPT.md)
+  - live walkthrough
+- [PEACETECH_ALIGNMENT.md](/mnt/c/Users/Hp/codex-demo/capstone/PEACETECH_ALIGNMENT.md)
+  - theme and OSF fit
+- [docs/architecture-diagram.md](/mnt/c/Users/Hp/codex-demo/capstone/docs/architecture-diagram.md)
+  - submission-ready architecture diagram
+- [docs/chat-faq.md](/mnt/c/Users/Hp/codex-demo/capstone/docs/chat-faq.md)
+  - chat grounding FAQ
+- [docs/README.md](/mnt/c/Users/Hp/codex-demo/capstone/docs/README.md)
+  - docs index
 
 ## Local Run
 

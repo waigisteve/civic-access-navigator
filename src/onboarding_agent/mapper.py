@@ -6,10 +6,10 @@ def build_repo_map() -> dict[str, str]:
     return {
         "AGENTS.md": "workspace guidance for Codex runs",
         "CAPSTONE_SPEC.md": "capstone submission and onboarding spec",
-        "BUSINESS_CASE.md": "business case and adaptability framing",
         "CODEX_SETUP.md": "Codex workspace setup notes",
         "ONBOARDING.md": "onboarding summary and sample commands",
-        "ONBOARDING_AGENT.md": "onboarding agent workshop notes",
+        "PITCH.md": "short capstone pitch and positioning",
+        "PEACETECH_ALIGNMENT.md": "theme and OSF alignment notes",
         "pyproject.toml": "project metadata and package scaffold",
         "README.md": "project overview, run steps, and deployment notes",
         "src/onboarding_agent": "onboarding agent package",

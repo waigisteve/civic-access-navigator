@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from backend.app.config import settings
+from backend.app.health import health_status
 from backend.app.routes import register_routes
 from backend.app.services.resource_service import ResourceItem, get_resource_items
 from backend.app.services.workflow_db_service import initialize_workflow_database
@@ -34,7 +35,7 @@ def startup() -> None:
 
 @app.get("/api/health")
 def health() -> dict[str, str]:
-    return {"status": "ok"}
+    return {"status": "ok", **health_status()}
 
 
 @app.get("/api/project")

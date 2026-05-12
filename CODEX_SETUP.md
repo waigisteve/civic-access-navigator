@@ -35,8 +35,11 @@ After loading the config, Codex should show filesystem tools such as:
 - treat uncertainty as a signal to search, inspect, or ask rather than guess
 - keep the audience in mind: the submission should show both technical work and responsible use of AI
 
-## Onboarding Agent
+## Onboarding Scaffold
 
-The workshop also includes a codebase onboarding agent that should be part of the submission context.
+The repository still contains a lightweight onboarding scaffold under `src/onboarding_agent/`.
 
-See [ONBOARDING_AGENT.md](./ONBOARDING_AGENT.md) for the summary of the expected workflow and subcommands.
+Use it only as supporting workshop context. The current capstone source of truth for product scope is:
+
+- [CAPSTONE_SPEC.md](./CAPSTONE_SPEC.md)
+- [README.md](./README.md)
