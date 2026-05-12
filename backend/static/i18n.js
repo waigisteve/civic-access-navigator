@@ -7,7 +7,7 @@ window.CAN_I18N = {
   },
   copy: {
     en: {
-      headerKicker: "PeaceTech prototype",
+      headerKicker: "(Prototype)",
       heroEyebrow: "Voice & accountability prototype",
       heroIntro:
         "A Kenya-first PeaceTech tool that helps citizens understand rights, find trusted civic guidance, and take the next accountable step when public systems feel distant or unclear.",
@@ -191,7 +191,7 @@ window.CAN_I18N = {
       titleSuffix: "English",
     },
     sw: {
-      headerKicker: "Mfumo wa PeaceTech",
+      headerKicker: "(Prototype)",
       heroEyebrow: "Mfumo wa sauti na uwajibikaji",
       heroIntro:
         "Zana ya PeaceTech ya kuanzia Kenya inayosaidia wananchi kuelewa haki, kupata mwongozo wa uraia unaoaminika, na kuchukua hatua inayowajibika.",
@@ -375,7 +375,7 @@ window.CAN_I18N = {
       titleSuffix: "Swahili",
     },
     fr: {
-      headerKicker: "Prototype PeaceTech",
+      headerKicker: "(Prototype)",
       heroEyebrow: "Prototype voix et redevabilite",
       heroIntro:
         "Un outil PeaceTech pilote au Kenya qui aide les citoyens a comprendre leurs droits, trouver des orientations civiques fiables et preparer une action publique plus responsable.",
@@ -559,7 +559,7 @@ window.CAN_I18N = {
       titleSuffix: "Français",
     },
     ar: {
-      headerKicker: "نموذج PeaceTech",
+      headerKicker: "(Prototype)",
       heroEyebrow: "نموذج الصوت والمساءلة",
       heroIntro:
         "أداة PeaceTech تبدأ من كينيا وتساعد المواطنين على فهم الحقوق والوصول إلى إرشاد مدني موثوق واتخاذ خطوة عامة أكثر مساءلة.",

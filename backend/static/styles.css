@@ -61,6 +61,14 @@ body {
   gap: 12px;
 }
 
+.brand-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  line-height: 1;
+}
+
 .brand-mark {
   width: 42px;
   height: 42px;
@@ -70,16 +78,16 @@ body {
 }
 
 .brand-kicker {
-  margin: 0;
+  margin: 3px 0 0;
   color: #d8efe5;
-  font-size: 0.82rem;
-  text-transform: uppercase;
+  font-size: 0.62rem;
   letter-spacing: 0.02em;
 }
 
 .brand-name {
   display: block;
-  font-size: 1rem;
+  font-size: 1.28rem;
+  font-weight: 700;
   color: #fffaf0;
 }
 
