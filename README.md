@@ -8,6 +8,15 @@ Civic Access Navigator for Open Society Foundations is a PeaceTech capstone alig
 - **Latest commits on `main`:** https://github.com/waigisteve/civic-access-navigator/commits/main
 - **Current latest commit:** https://github.com/waigisteve/civic-access-navigator/commit/af00363
 
+## Admin Access for Testing
+
+Admin pages require `CAN_ADMIN_TOKEN`.
+
+- **Local/dev example:** `CAN_ADMIN_TOKEN=demo-admin-token`
+- **Admin entry point:** `https://codex-3bl9.onrender.com/admin`
+
+Do not publish a live production admin token in the repository. For hosted testing, use a separate demo token or share the active token privately with reviewers.
+
 Business case in one line: Civic Access Navigator lowers the cost and risk of civic participation by turning rights information into safe, incident-specific accountability actions.
 
 The project helps users move from a crisis incident to a safer next step through a simple AI-assisted interface. The initial scope is intentionally practical: a lightweight web application that turns approved civic data into incident-specific workflows, optional accountability actions, and low-friction help for conflict-affected communities.
