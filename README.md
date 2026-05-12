@@ -2,6 +2,12 @@
 
 Civic Access Navigator for Open Society Foundations is a PeaceTech capstone aligned with the Open Society Foundations mission and the Transformative Peace in Africa initiative.
 
+## Quick Links
+
+- **Test the live app:** https://codex-3bl9.onrender.com
+- **Latest commits on `main`:** https://github.com/waigisteve/civic-access-navigator/commits/main
+- **Current latest commit:** https://github.com/waigisteve/civic-access-navigator/commit/af00363
+
 Business case in one line: Civic Access Navigator lowers the cost and risk of civic participation by turning rights information into safe, incident-specific accountability actions.
 
 The project helps users move from a crisis incident to a safer next step through a simple AI-assisted interface. The initial scope is intentionally practical: a lightweight web application that turns approved civic data into incident-specific workflows, optional accountability actions, and low-friction help for conflict-affected communities.
