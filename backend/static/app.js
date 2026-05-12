@@ -472,8 +472,9 @@ function renderIncidentWorkflows() {
 }
 
 function renderCtaPanel() {
+  const panel = document.getElementById("cta-panel");
   const grid = document.getElementById("cta-grid");
-  if (!grid) {
+  if (!grid || !panel) {
     return;
   }
   const pack = LANG.copy[currentLanguage] || LANG.copy.en;
@@ -483,14 +484,12 @@ function renderCtaPanel() {
   setText("cta-copy", currentIncident ? pack.ctaCopyReady : pack.ctaCopyIdle);
   grid.innerHTML = "";
   if (!currentIncident) {
+    panel.hidden = true;
     currentActionPoint = null;
     hideActionForm();
-    const empty = document.createElement("div");
-    empty.className = "cta-empty";
-    empty.textContent = pack.ctaEmpty;
-    grid.appendChild(empty);
     return;
   }
+  panel.hidden = false;
   const incident = currentIncidentDetail?.incident;
   const actionPoints = Array.isArray(incident?.action_points) ? incident.action_points : [];
   if (actionPoints.length === 0) {
@@ -1154,13 +1153,6 @@ function wireScenarioSelector() {
         setPressed(other, other === button);
       }
       updateContextPanel();
-      renderIncidentWorkflows();
-      renderCtaPanel();
-      const firstIncident = currentScenarioDetail?.incidents?.[0]?.code;
-      if (firstIncident) {
-        currentIncident = firstIncident;
-        await loadWorkflowIncidentDetail(currentScenario, currentIncident);
-      }
       renderIncidentWorkflows();
       renderCtaPanel();
     });
@@ -1878,11 +1870,6 @@ async function bootstrap() {
   renderCountries();
   setZone(currentZone);
   currentScenarioDetail = getScenarioData(currentScenario);
-  const initialIncident = currentScenarioDetail?.incidents?.[0]?.code || null;
-  if (initialIncident) {
-    currentIncident = initialIncident;
-    await loadWorkflowIncidentDetail(currentScenario, currentIncident);
-  }
   renderIncidentWorkflows();
   renderCtaPanel();
   await Promise.all([loadResources(), loadHealth()]);
