@@ -24,7 +24,7 @@ The project helps users move from a crisis incident to a safer next step through
 
 ## Working Guidance
 
-This repository follows the local instructions in [AGENTS.md](/mnt/c/Users/Hp/codex-demo/capstone/AGENTS.md).
+This repository follows the local instructions in [AGENTS.md](./AGENTS.md).
 
 Key expectations from that file:
 
@@ -116,19 +116,19 @@ Codex supports the project by:
 
 Use these as the current source-of-truth set:
 
-- [CAPSTONE_SPEC.md](/mnt/c/Users/Hp/codex-demo/capstone/CAPSTONE_SPEC.md)
+- [CAPSTONE_SPEC.md](./CAPSTONE_SPEC.md)
   - build brief / ExecPlan
-- [PITCH.md](/mnt/c/Users/Hp/codex-demo/capstone/PITCH.md)
+- [PITCH.md](./PITCH.md)
   - short submission pitch
-- [DEMO_SCRIPT.md](/mnt/c/Users/Hp/codex-demo/capstone/DEMO_SCRIPT.md)
+- [DEMO_SCRIPT.md](./DEMO_SCRIPT.md)
   - live walkthrough
-- [PEACETECH_ALIGNMENT.md](/mnt/c/Users/Hp/codex-demo/capstone/PEACETECH_ALIGNMENT.md)
+- [PEACETECH_ALIGNMENT.md](./PEACETECH_ALIGNMENT.md)
   - theme and OSF fit
-- [docs/architecture-diagram.md](/mnt/c/Users/Hp/codex-demo/capstone/docs/architecture-diagram.md)
+- [docs/architecture-diagram.md](./docs/architecture-diagram.md)
   - submission-ready architecture diagram
-- [docs/chat-faq.md](/mnt/c/Users/Hp/codex-demo/capstone/docs/chat-faq.md)
+- [docs/chat-faq.md](./docs/chat-faq.md)
   - chat grounding FAQ
-- [docs/README.md](/mnt/c/Users/Hp/codex-demo/capstone/docs/README.md)
+- [docs/README.md](./docs/README.md)
   - docs index
 
 ## Local Run
@@ -219,7 +219,7 @@ The `Lets Chat` assistant is designed to answer from internal project knowledge 
 
 Current answer order:
 
-1. internal FAQ entries in [docs/chat-faq.md](/mnt/c/Users/Hp/codex-demo/capstone/docs/chat-faq.md)
+1. internal FAQ entries in [docs/chat-faq.md](./docs/chat-faq.md)
 2. curated OSF and peace-support knowledge notes in `data/curated/`
 3. optional live ingestion from an allowlist of public source websites already represented in the knowledge base
 4. optional public LLM synthesis over those retrieved internal sources and live snippets
