@@ -5,6 +5,7 @@ Civic Access Navigator for Open Society Foundations is a PeaceTech capstone alig
 ## Quick Links
 
 - **Test the live app:** https://codex-3bl9.onrender.com
+- **Video walkthrough:** https://www.loom.com/share/11aebd27d0834f67aaaf7ee9fd82ca6e
 - **Latest commits on `main`:** https://github.com/waigisteve/civic-access-navigator/commits/main
 - **Current latest commit:** https://github.com/waigisteve/civic-access-navigator/commit/af00363
 
